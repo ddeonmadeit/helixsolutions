@@ -10,18 +10,18 @@ interface StepData {
   websiteType: string;
   currentPlatform: string;
   monthlyCost: string;
-  monthlyVisitors: string;
   websiteUrl: string;
-  timeline: string;
+  name: string;
+  email: string;
 }
 
 const initialData: StepData = {
   websiteType: "",
   currentPlatform: "",
   monthlyCost: "",
-  monthlyVisitors: "",
   websiteUrl: "",
-  timeline: "",
+  name: "",
+  email: "",
 };
 
 const steps = [
@@ -64,7 +64,7 @@ const MigrationOnboarding = () => {
       case 0: return !!data.websiteType;
       case 1: return !!data.currentPlatform;
       case 2: return !!data.monthlyCost;
-      case 3: return !!data.websiteUrl && !!data.timeline;
+      case 3: return !!data.websiteUrl && !!data.name && !!data.email;
       default: return false;
     }
   };
@@ -157,40 +157,31 @@ const MigrationOnboarding = () => {
         return (
           <div className="space-y-5">
             <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Your Name</label>
+              <Input
+                placeholder="John Smith"
+                value={data.name}
+                onChange={(e) => setData({ ...data, name: e.target.value })}
+                className="glass-hover h-12 rounded-xl border-0 text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Email Address</label>
+              <Input
+                type="email"
+                placeholder="john@example.com"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+                className="glass-hover h-12 rounded-xl border-0 text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Current Website URL</label>
               <Input
                 placeholder="https://yourwebsite.com"
                 value={data.websiteUrl}
                 onChange={(e) => setData({ ...data, websiteUrl: e.target.value })}
                 className="glass-hover h-12 rounded-xl border-0 text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Preferred Timeline</label>
-              <GlassSelect
-                placeholder="When do you need this done?"
-                value={data.timeline}
-                onValueChange={(v) => setData({ ...data, timeline: v })}
-                options={[
-                  { value: "asap", label: "As soon as possible" },
-                  { value: "2weeks", label: "Within 2 weeks" },
-                  { value: "1month", label: "Within a month" },
-                  { value: "flexible", label: "I'm flexible" },
-                ]}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Monthly Visitors (optional)</label>
-              <GlassSelect
-                placeholder="Estimated monthly visitors"
-                value={data.monthlyVisitors}
-                onValueChange={(v) => setData({ ...data, monthlyVisitors: v })}
-                options={[
-                  { value: "under1k", label: "Under 1,000" },
-                  { value: "1k-10k", label: "1,000 – 10,000" },
-                  { value: "10k-50k", label: "10,000 – 50,000" },
-                  { value: "50k+", label: "50,000+" },
-                ]}
               />
             </div>
           </div>
