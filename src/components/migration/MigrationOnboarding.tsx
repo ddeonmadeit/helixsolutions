@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Globe, ShoppingCart, FileText, Briefcase, Palette, DollarSign, Layers, Zap, Rocket } from "lucide-react";
+import { ArrowRight, ArrowLeft, Globe, ShoppingCart, FileText, Briefcase, DollarSign, Rocket } from "lucide-react";
 import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
@@ -11,7 +11,6 @@ interface StepData {
   currentPlatform: string;
   monthlyCost: string;
   monthlyVisitors: string;
-  features: string[];
   websiteUrl: string;
   timeline: string;
 }
@@ -21,7 +20,6 @@ const initialData: StepData = {
   currentPlatform: "",
   monthlyCost: "",
   monthlyVisitors: "",
-  features: [],
   websiteUrl: "",
   timeline: "",
 };
@@ -30,7 +28,6 @@ const steps = [
   { title: "What type of website do you have?", subtitle: "This helps us tailor the migration process" },
   { title: "Where is your site currently hosted?", subtitle: "Select your current platform or provider" },
   { title: "How much do you pay monthly?", subtitle: "We'll show you how much you can save" },
-  { title: "What features do you need?", subtitle: "Select all that apply to your project" },
   { title: "Almost there! A few final details", subtitle: "Help us prepare your migration plan" },
 ];
 
@@ -62,22 +59,12 @@ const MigrationOnboarding = () => {
     }
   };
 
-  const toggleFeature = (feature: string) => {
-    setData((d) => ({
-      ...d,
-      features: d.features.includes(feature)
-        ? d.features.filter((f) => f !== feature)
-        : [...d.features, feature],
-    }));
-  };
-
   const canProceed = () => {
     switch (step) {
       case 0: return !!data.websiteType;
       case 1: return !!data.currentPlatform;
       case 2: return !!data.monthlyCost;
-      case 3: return data.features.length > 0;
-      case 4: return !!data.websiteUrl && !!data.timeline;
+      case 3: return !!data.websiteUrl && !!data.timeline;
       default: return false;
     }
   };
@@ -167,27 +154,6 @@ const MigrationOnboarding = () => {
           </div>
         );
       case 3:
-        return (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {[
-              { value: "ssl", label: "SSL Certificate", icon: <Zap className="h-5 w-5" /> },
-              { value: "seo", label: "SEO Optimization", icon: <Globe className="h-5 w-5" /> },
-              { value: "analytics", label: "Analytics", icon: <Layers className="h-5 w-5" /> },
-              { value: "ecommerce", label: "E-Commerce", icon: <ShoppingCart className="h-5 w-5" /> },
-              { value: "blog", label: "Blog / CMS", icon: <FileText className="h-5 w-5" /> },
-              { value: "custom", label: "Custom Design", icon: <Palette className="h-5 w-5" /> },
-            ].map((opt) => (
-              <OptionCard
-                key={opt.value}
-                label={opt.label}
-                icon={opt.icon}
-                selected={data.features.includes(opt.value)}
-                onClick={() => toggleFeature(opt.value)}
-              />
-            ))}
-          </div>
-        );
-      case 4:
         return (
           <div className="space-y-5">
             <div className="space-y-2">
