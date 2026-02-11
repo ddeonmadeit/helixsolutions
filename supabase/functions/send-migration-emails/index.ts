@@ -38,7 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send notification to owner
     await resend.emails.send({
-      from: "Migration Tool <noreply@helixsolution.au>",
+      from: "Helix Solutions <noreply@helixsolution.au>",
       to: [OWNER_EMAIL],
       subject: `New Migration Lead: ${name}`,
       html: `
