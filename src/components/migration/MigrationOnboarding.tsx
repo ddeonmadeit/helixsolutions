@@ -114,7 +114,7 @@ const MigrationOnboarding = () => {
               { value: "business", label: "Business Website", desc: "Company site, portfolio", icon: <Briefcase className="h-5 w-5" /> },
               { value: "ecommerce", label: "E-Commerce Store", desc: "Online shop, product catalog", icon: <ShoppingCart className="h-5 w-5" /> },
               { value: "blog", label: "Blog / Content Site", desc: "Articles, media, news", icon: <FileText className="h-5 w-5" /> },
-              { value: "webapp", label: "Web Application", desc: "SaaS, dashboard, tool", icon: <Globe className="h-5 w-5" /> },
+              
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
