@@ -150,11 +150,11 @@ const MigrationOnboarding = () => {
         return (
           <div className="grid gap-3">
             {[
-              { value: "0-25", label: "$0 – $25/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "25-50", label: "$25 – $50/mo", icon: <DollarSign className="h-5 w-5" /> },
+              { value: "0-50", label: "$0 – $50/mo", icon: <DollarSign className="h-5 w-5" /> },
               { value: "50-100", label: "$50 – $100/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "100-250", label: "$100 – $250/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "250+", label: "$250+/mo", icon: <DollarSign className="h-5 w-5" /> },
+              { value: "100-200", label: "$100 – $200/mo", icon: <DollarSign className="h-5 w-5" /> },
+              { value: "200-400", label: "$200 – $400/mo", icon: <DollarSign className="h-5 w-5" /> },
+              { value: "400+", label: "$400+/mo", icon: <DollarSign className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
