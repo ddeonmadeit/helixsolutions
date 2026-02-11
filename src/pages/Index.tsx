@@ -25,9 +25,6 @@ const Index = () => {
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
             Cut Your Website Costs in Half
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-xs sm:text-base text-muted-foreground">
-            Find out how much money you're wasting on your website
-          </p>
         </motion.div>
 
         <motion.div
@@ -36,6 +33,9 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full max-w-lg"
         >
+          <p className="mb-4 text-center text-xs sm:text-base text-muted-foreground">
+            Find out how much money you're wasting on your website
+          </p>
           <MigrationOnboarding />
         </motion.div>
 
