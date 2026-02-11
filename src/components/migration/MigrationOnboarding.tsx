@@ -238,6 +238,10 @@ const MigrationOnboarding = () => {
     <div className="mx-auto w-full max-w-lg space-y-8">
       <StepProgress currentStep={step} totalSteps={steps.length} />
 
+      <p className="mt-3 text-center text-xs sm:text-base text-muted-foreground">
+        Find out how much money you're wasting on your website
+      </p>
+
       <div className="glass glow-primary rounded-2xl p-8">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
