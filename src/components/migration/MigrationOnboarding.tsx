@@ -5,6 +5,8 @@ import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface StepData {
   websiteType: string;
@@ -42,13 +44,26 @@ const MigrationOnboarding = () => {
   const [direction, setDirection] = useState(0);
   const [data, setData] = useState<StepData>(initialData);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const next = () => {
+  const next = async () => {
     if (step < steps.length - 1) {
       setDirection(1);
       setStep(step + 1);
     } else {
-      setSubmitted(true);
+      setSubmitting(true);
+      try {
+        const { error } = await supabase.functions.invoke("send-migration-emails", {
+          body: data,
+        });
+        if (error) throw error;
+        setSubmitted(true);
+      } catch (err: any) {
+        console.error("Submission error:", err);
+        toast.error("Something went wrong. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -230,14 +245,14 @@ const MigrationOnboarding = () => {
         </button>
         <motion.button
           onClick={next}
-          disabled={!canProceed()}
+          disabled={!canProceed() || submitting}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           style={{ boxShadow: canProceed() ? "0 0 20px hsl(185 70% 50% / 0.3)" : "none" }}
         >
-          {step === steps.length - 1 ? "Submit" : "Continue"}
-          <ArrowRight className="h-4 w-4" />
+          {submitting ? "Submitting…" : step === steps.length - 1 ? "Submit" : "Continue"}
+          {!submitting && <ArrowRight className="h-4 w-4" />}
         </motion.button>
       </div>
     </div>
