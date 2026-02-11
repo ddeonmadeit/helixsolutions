@@ -140,7 +140,7 @@ const MigrationOnboarding = () => {
                 { value: "wix", label: "Wix" },
                 { value: "squarespace", label: "Squarespace" },
                 { value: "webflow", label: "Webflow" },
-                { value: "custom", label: "Custom Built" },
+                
                 { value: "other", label: "Other" },
               ]}
             />
