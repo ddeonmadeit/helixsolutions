@@ -33,9 +33,6 @@ const Index = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full max-w-lg"
         >
-          <p className="mb-4 text-center text-xs sm:text-base text-muted-foreground">
-            Find out how much money you're wasting on your website
-          </p>
           <MigrationOnboarding />
         </motion.div>
 
