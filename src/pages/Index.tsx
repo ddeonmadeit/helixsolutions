@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 const Index = () => {
   return (
-    <div className="relative min-h-screen bg-background bg-grid overflow-hidden">
+    <div className="relative min-h-screen bg-background overflow-hidden">
       {/* Ambient glow effects */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/5 blur-[120px]" />
@@ -23,7 +23,7 @@ const Index = () => {
             Free migration assessment
           </div>
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
-            Migrate Your Website
+            Cut Your Website Costs in Half
           </h1>
           <p className="mx-auto mt-3 max-w-md text-muted-foreground">
             Tell us about your current setup and we'll create a seamless migration plan — zero downtime guaranteed.
