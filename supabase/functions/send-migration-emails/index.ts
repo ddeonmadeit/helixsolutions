@@ -61,6 +61,8 @@ const handler = async (req: Request): Promise<Response> => {
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email],
+      cc: ["helixsolved@gmail.com"],
+      replyTo: "helixsolved@gmail.com",
       subject: "Thank you — we have all the info we need!",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0f; color: #e0e0e0; padding: 40px; border-radius: 16px;">
