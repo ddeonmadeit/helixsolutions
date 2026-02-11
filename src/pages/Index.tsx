@@ -26,7 +26,7 @@ const Index = () => {
             Cut Your Website Costs in Half
           </h1>
           <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-            Tell us about your current setup and we'll create a seamless migration plan — zero downtime guaranteed.
+            Find out how much money you're wasting on your website
           </p>
         </motion.div>
 
