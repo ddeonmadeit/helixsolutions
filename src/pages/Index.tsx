@@ -13,7 +13,7 @@ const Index = () => {
         <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-primary/3 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-16">
+      <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 pt-24 pb-16">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
