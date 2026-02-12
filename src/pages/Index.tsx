@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import MigrationOnboarding from "@/components/migration/MigrationOnboarding";
 import { ArrowRight } from "lucide-react";
+import Header from "@/components/Header";
 
 const Index = () => {
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
+      <Header />
       {/* Ambient glow effects */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-primary/5 blur-[120px]" />
