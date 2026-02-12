@@ -2,12 +2,12 @@ import helixLogo from "@/assets/helix-logo.png";
 
 const Header = () => {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex justify-center px-6 py-4">
+    <header className="absolute top-0 left-0 right-0 z-50 flex justify-center px-6 py-6">
       <a href="/">
         <img
           src={helixLogo}
           alt="Helix Solutions logo"
-          className="h-8 w-8"
+          className="h-14 w-14"
         />
       </a>
     </header>
