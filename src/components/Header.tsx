@@ -7,7 +7,7 @@ const Header = () => {
         <img
           src={helixLogo}
           alt="Helix Solutions logo"
-          className="h-14 w-14"
+          className="h-18 w-18"
         />
       </a>
     </header>
