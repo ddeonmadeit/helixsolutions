@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Globe, ShoppingCart, FileText, Briefcase, DollarSign, Rocket } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket } from "lucide-react";
 import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface StepData {
-  websiteType: string;
+  businessType: string;
   currentPlatform: string;
   monthlyCost: string;
   websiteUrl: string;
@@ -18,7 +18,7 @@ interface StepData {
 }
 
 const initialData: StepData = {
-  websiteType: "",
+  businessType: "",
   currentPlatform: "",
   monthlyCost: "",
   websiteUrl: "",
@@ -27,7 +27,7 @@ const initialData: StepData = {
 };
 
 const steps = [
-  { title: "What type of website do you have?", subtitle: "This helps us tailor the migration process" },
+  { title: "What type of business do you have?", subtitle: "This helps us tailor the right AI agent for you" },
   { title: "Where is your site currently hosted?", subtitle: "Select your current platform or provider" },
   { title: "How much do you pay monthly?", subtitle: "We'll show you how much you can save" },
   { title: "Almost there! A few final details", subtitle: "Help us prepare your migration plan" },
@@ -76,7 +76,7 @@ const MigrationOnboarding = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return !!data.websiteType;
+      case 0: return !!data.businessType;
       case 1: return !!data.currentPlatform;
       case 2: return !!data.monthlyCost;
       case 3: return !!data.websiteUrl && !!data.name && !!data.email;
@@ -113,18 +113,20 @@ const MigrationOnboarding = () => {
         return (
           <div className="grid gap-3">
             {[
-              { value: "business", label: "Business Website", desc: "Company site, portfolio", icon: <Briefcase className="h-5 w-5" /> },
-              { value: "ecommerce", label: "E-Commerce Store", desc: "Online shop, product catalog", icon: <ShoppingCart className="h-5 w-5" /> },
-              { value: "blog", label: "Blog / Content Site", desc: "Articles, media, news", icon: <FileText className="h-5 w-5" /> },
-              
+              { value: "real-estate", label: "Real Estate", desc: "Agencies, brokers, property mgmt", icon: <Home className="h-5 w-5" /> },
+              { value: "healthcare", label: "Healthcare", desc: "Clinics, practices, wellness", icon: <Stethoscope className="h-5 w-5" /> },
+              { value: "legal", label: "Legal", desc: "Law firms, legal services", icon: <Scale className="h-5 w-5" /> },
+              { value: "marketing", label: "Marketing / Agency", desc: "Digital agencies, consultancies", icon: <Megaphone className="h-5 w-5" /> },
+              { value: "retail", label: "Retail / E-Commerce", desc: "Online & physical stores", icon: <Store className="h-5 w-5" /> },
+              { value: "other", label: "Other", desc: "Any other industry", icon: <MoreHorizontal className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
                 label={opt.label}
                 description={opt.desc}
                 icon={opt.icon}
-                selected={data.websiteType === opt.value}
-                onClick={() => setData({ ...data, websiteType: opt.value })}
+                selected={data.businessType === opt.value}
+                onClick={() => setData({ ...data, businessType: opt.value })}
               />
             ))}
           </div>
