@@ -1,9 +1,12 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import MigrationOnboarding from "@/components/migration/MigrationOnboarding";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
 
 const Index = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
       <Header />
@@ -18,7 +21,7 @@ const Index = () => {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-10 text-center"
+          className="mb-6 text-center"
         >
           <div className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
@@ -28,6 +31,43 @@ const Index = () => {
             Save 4+ Hours Daily With an AI Employee
           </h1>
         </motion.div>
+
+        {/* Drawer toggle button */}
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          onClick={() => setDrawerOpen(!drawerOpen)}
+          className="mb-6 inline-flex items-center gap-2 rounded-full glass px-5 py-2 text-xs font-medium text-muted-foreground transition-all hover:text-foreground hover:border-primary/20"
+        >
+          What is an AI Employee?
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${drawerOpen ? "rotate-180" : ""}`} />
+        </motion.button>
+
+        {/* Expandable drawer */}
+        <AnimatePresence>
+          {drawerOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.35, ease: "easeInOut" }}
+              className="w-full max-w-lg overflow-hidden mb-6"
+            >
+              <div className="glass rounded-2xl px-6 py-5 text-xs leading-relaxed text-muted-foreground">
+                <p className="mb-3">
+                  Through <strong className="text-foreground">one chat interface</strong>, automate the <strong className="text-foreground">repetitive work</strong> that slows your business down by connecting directly to the <strong className="text-foreground">tools you already use</strong>, such as email, calendars, CRMs, and messaging apps.
+                </p>
+                <p className="mb-3">
+                  Instead of adding another platform, our system learns how your <strong className="text-foreground">company operates</strong> and turns everyday tasks into <strong className="text-foreground">automated workflows</strong> tailored to your needs.
+                </p>
+                <p>
+                  The result is less time spent on <strong className="text-foreground">admin</strong>, fewer <strong className="text-foreground">operational bottlenecks</strong>, and more capacity for your team to focus on <strong className="text-foreground">growth</strong> — all while feeling like you're talking to a <strong className="text-foreground">human</strong>.
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
