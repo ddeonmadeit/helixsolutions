@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket, Clock, MessageSquare, Calendar, Mail, FileText } from "lucide-react";
 import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface StepData {
+  timeSink: string;
   businessType: string;
   currentPlatform: string;
   monthlyCost: string;
@@ -18,6 +19,7 @@ interface StepData {
 }
 
 const initialData: StepData = {
+  timeSink: "",
   businessType: "",
   currentPlatform: "",
   monthlyCost: "",
@@ -27,10 +29,11 @@ const initialData: StepData = {
 };
 
 const steps = [
+  { title: "What currently takes up most of your time?", subtitle: "We'll find the best AI agent to handle it" },
   { title: "What type of business do you have?", subtitle: "This helps us tailor the right AI agent for you" },
   { title: "Where is your site currently hosted?", subtitle: "Select your current platform or provider" },
   { title: "How much do you pay monthly?", subtitle: "We'll show you how much you can save" },
-  { title: "Almost there! A few final details", subtitle: "Help us prepare your migration plan" },
+  { title: "Almost there! A few final details", subtitle: "Help us prepare your custom demo" },
 ];
 
 const slideVariants = {
@@ -76,10 +79,11 @@ const MigrationOnboarding = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return !!data.businessType;
-      case 1: return !!data.currentPlatform;
-      case 2: return !!data.monthlyCost;
-      case 3: return !!data.websiteUrl && !!data.name && !!data.email;
+      case 0: return !!data.timeSink;
+      case 1: return !!data.businessType;
+      case 2: return !!data.currentPlatform;
+      case 3: return !!data.monthlyCost;
+      case 4: return !!data.websiteUrl && !!data.name && !!data.email;
       default: return false;
     }
   };
@@ -113,6 +117,27 @@ const MigrationOnboarding = () => {
         return (
           <div className="grid gap-3">
             {[
+              { value: "customer-support", label: "Customer Support", desc: "Answering questions, tickets, chat", icon: <MessageSquare className="h-5 w-5" /> },
+              { value: "scheduling", label: "Scheduling & Bookings", desc: "Appointments, calendars, follow-ups", icon: <Calendar className="h-5 w-5" /> },
+              { value: "email-outreach", label: "Email & Outreach", desc: "Follow-ups, newsletters, responses", icon: <Mail className="h-5 w-5" /> },
+              { value: "admin-tasks", label: "Admin & Data Entry", desc: "Paperwork, CRM updates, reporting", icon: <FileText className="h-5 w-5" /> },
+              { value: "other", label: "Other", desc: "Something else entirely", icon: <MoreHorizontal className="h-5 w-5" /> },
+            ].map((opt) => (
+              <OptionCard
+                key={opt.value}
+                label={opt.label}
+                description={opt.desc}
+                icon={opt.icon}
+                selected={data.timeSink === opt.value}
+                onClick={() => setData({ ...data, timeSink: opt.value })}
+              />
+            ))}
+          </div>
+        );
+      case 1:
+        return (
+          <div className="grid gap-3">
+            {[
               { value: "real-estate", label: "Real Estate", desc: "Agencies, brokers, property mgmt", icon: <Home className="h-5 w-5" /> },
               { value: "healthcare", label: "Healthcare", desc: "Clinics, practices, wellness", icon: <Stethoscope className="h-5 w-5" /> },
               { value: "legal", label: "Legal", desc: "Law firms, legal services", icon: <Scale className="h-5 w-5" /> },
@@ -131,7 +156,7 @@ const MigrationOnboarding = () => {
             ))}
           </div>
         );
-      case 1:
+      case 2:
         return (
           <div className="space-y-4">
             <GlassSelect
@@ -144,13 +169,12 @@ const MigrationOnboarding = () => {
                 { value: "wix", label: "Wix" },
                 { value: "squarespace", label: "Squarespace" },
                 { value: "webflow", label: "Webflow" },
-                
                 { value: "other", label: "Other" },
               ]}
             />
           </div>
         );
-      case 2:
+      case 3:
         return (
           <div className="grid gap-3">
             {[
@@ -170,7 +194,7 @@ const MigrationOnboarding = () => {
             ))}
           </div>
         );
-      case 3:
+      case 4:
         return (
           <div className="space-y-5">
             <div className="space-y-2">
