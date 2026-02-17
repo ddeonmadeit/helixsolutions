@@ -12,18 +12,20 @@ interface StepData {
   timeSinks: string[];
   businessType: string;
   currentSoftware: string[];
-  websiteUrl: string;
   name: string;
+  phone: string;
   email: string;
+  businessName: string;
 }
 
 const initialData: StepData = {
   timeSinks: [],
   businessType: "",
   currentSoftware: [],
-  websiteUrl: "",
   name: "",
+  phone: "",
   email: "",
+  businessName: "",
 };
 
 const steps = [
@@ -79,7 +81,7 @@ const MigrationOnboarding = () => {
       case 0: return data.timeSinks.length > 0;
       case 1: return !!data.businessType;
       case 2: return data.currentSoftware.length > 0;
-      case 3: return !!data.websiteUrl && !!data.name && !!data.email;
+      case 3: return !!data.name && !!data.phone && !!data.businessName;
       default: return false;
     }
   };
@@ -185,7 +187,7 @@ const MigrationOnboarding = () => {
         return (
           <div className="space-y-5">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Your Name</label>
+              <label className="text-sm font-medium text-foreground">Your Name *</label>
               <Input
                 placeholder="John Smith"
                 value={data.name}
@@ -194,7 +196,17 @@ const MigrationOnboarding = () => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Email Address</label>
+              <label className="text-sm font-medium text-foreground">Phone Number *</label>
+              <Input
+                type="tel"
+                placeholder="0400 000 000"
+                value={data.phone}
+                onChange={(e) => setData({ ...data, phone: e.target.value })}
+                className="glass-hover h-12 rounded-xl border-0 text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground">Email Address <span className="text-muted-foreground text-xs">(optional)</span></label>
               <Input
                 type="email"
                 placeholder="john@example.com"
@@ -204,11 +216,11 @@ const MigrationOnboarding = () => {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Current Website URL</label>
+              <label className="text-sm font-medium text-foreground">Business Name *</label>
               <Input
-                placeholder="https://yourwebsite.com"
-                value={data.websiteUrl}
-                onChange={(e) => setData({ ...data, websiteUrl: e.target.value })}
+                placeholder="Acme Corp"
+                value={data.businessName}
+                onChange={(e) => setData({ ...data, businessName: e.target.value })}
                 className="glass-hover h-12 rounded-xl border-0 text-foreground placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-primary"
               />
             </div>
