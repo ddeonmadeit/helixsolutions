@@ -101,7 +101,7 @@ const MigrationOnboarding = () => {
         >
           <Rocket className="h-8 w-8 text-primary" />
         </motion.div>
-        <h2 className="mb-2 text-2xl font-bold text-foreground">You're almost there!</h2>
+        <h2 className="mb-2 text-2xl font-bold text-foreground">One last step!</h2>
         <p className="text-muted-foreground mb-6">
           Book your same-day demo to see your custom AI employee in action.
         </p>
