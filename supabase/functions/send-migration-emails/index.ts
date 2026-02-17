@@ -18,9 +18,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, phone, email, businessName, timeSinks, businessType, currentSoftware } = await req.json();
+    const { timeSinks, businessType, currentSoftware } = await req.json();
 
-    if (!name || !phone || !businessName) {
+    if (!timeSinks || !businessType || !currentSoftware) {
       throw new Error("Missing required fields");
     }
 
@@ -28,15 +28,11 @@ const handler = async (req: Request): Promise<Response> => {
     await resend.emails.send({
       from: "Helix Solutions <noreply@helixsolution.au>",
       to: [OWNER_EMAIL],
-      subject: `New Lead: ${name} — ${businessName}`,
+      subject: `New Lead Submission`,
       html: `
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: hsl(225, 30%, 6%); color: hsl(210, 20%, 92%); padding: 40px; border-radius: 16px; border: 1px solid hsl(220, 14%, 20%);">
           <h1 style="color: hsl(185, 70%, 50%); margin-bottom: 24px;">New Lead</h1>
           <table style="width: 100%; border-collapse: collapse;">
-            <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Name</td><td style="padding: 8px 0;">${name}</td></tr>
-            <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Phone</td><td style="padding: 8px 0;">${phone}</td></tr>
-            <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Email</td><td style="padding: 8px 0;">${email || "Not provided"}</td></tr>
-            <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Business</td><td style="padding: 8px 0;">${businessName}</td></tr>
             <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Time Sinks</td><td style="padding: 8px 0;">${(timeSinks || []).join(", ")}</td></tr>
             <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Business Type</td><td style="padding: 8px 0;">${businessType}</td></tr>
             <tr><td style="padding: 8px 0; color: hsl(215, 12%, 55%);">Current Software</td><td style="padding: 8px 0;">${(currentSoftware || []).join(", ")}</td></tr>
@@ -45,29 +41,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send thank-you email to user (only if email provided)
-    if (email) {
-      await resend.emails.send({
-        from: "Helix Solutions <hello@helixsolution.au>",
-        to: [email],
-        cc: ["info@helixsolution.au"],
-        replyTo: "info@helixsolution.au",
-        subject: "Thank you — your demo is almost booked!",
-        html: `
-          <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: hsl(225, 30%, 6%); color: hsl(210, 20%, 92%); padding: 40px; border-radius: 16px; border: 1px solid hsl(220, 14%, 20%);">
-            <h1 style="color: hsl(185, 70%, 50%); font-size: 28px; margin-bottom: 8px;">Thank you, ${name}!</h1>
-            <p style="color: hsl(215, 12%, 55%); font-size: 16px; margin-bottom: 32px;">We've received your details and can't wait to show you what your custom AI employee can do.</p>
-            
-            <div style="background: linear-gradient(135deg, hsla(185, 70%, 50%, 0.1), hsla(185, 70%, 50%, 0.05)); border: 1px solid hsla(185, 70%, 50%, 0.2); border-radius: 12px; padding: 24px; margin-bottom: 24px; text-align: center;">
-              <p style="color: hsl(215, 12%, 55%); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 12px 0;">Next Step</p>
-              <a href="https://cal.com/helix-solutions/demo" style="display: inline-block; background: hsl(185, 70%, 50%); color: hsl(225, 30%, 6%); padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px;">Book Your Same-Day Demo</a>
-            </div>
-
-            <p style="color: hsl(215, 12%, 55%); font-size: 13px; text-align: center; margin-top: 32px;">If you've already booked, we'll see you soon!</p>
-          </div>
-        `,
-      });
-    }
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
