@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket, Clock, MessageSquare, Calendar, Mail, FileText } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket, Clock, MessageSquare, Calendar, Mail, FileText, Briefcase, ShoppingBag, Wrench, User } from "lucide-react";
 import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
@@ -30,7 +30,7 @@ const initialData: StepData = {
 
 const steps = [
   { title: "What currently takes up most of your time?", subtitle: "We'll find the best AI agent to handle it" },
-  { title: "What type of business do you have?", subtitle: "This helps us tailor the right AI agent for you" },
+  { title: "What best describes your business?", subtitle: "This helps us tailor the right AI agent for you" },
   { title: "Where is your site currently hosted?", subtitle: "Select your current platform or provider" },
   { title: "How much do you pay monthly?", subtitle: "We'll show you how much you can save" },
   { title: "Almost there! A few final details", subtitle: "Help us prepare your custom demo" },
@@ -143,17 +143,15 @@ const MigrationOnboarding = () => {
         return (
           <div className="grid gap-3">
             {[
-              { value: "real-estate", label: "Real Estate", desc: "Agencies, brokers, property mgmt", icon: <Home className="h-5 w-5" /> },
-              { value: "healthcare", label: "Healthcare", desc: "Clinics, practices, wellness", icon: <Stethoscope className="h-5 w-5" /> },
-              { value: "legal", label: "Legal", desc: "Law firms, legal services", icon: <Scale className="h-5 w-5" /> },
-              { value: "marketing", label: "Marketing / Agency", desc: "Digital agencies, consultancies", icon: <Megaphone className="h-5 w-5" /> },
-              { value: "retail", label: "Retail / E-Commerce", desc: "Online & physical stores", icon: <Store className="h-5 w-5" /> },
-              { value: "other", label: "Other", desc: "Any other industry", icon: <MoreHorizontal className="h-5 w-5" /> },
+              { value: "agency", label: "Agency / Marketing / Creative", icon: <Megaphone className="h-5 w-5" /> },
+              { value: "ecommerce", label: "Ecommerce Brand", icon: <ShoppingBag className="h-5 w-5" /> },
+              { value: "service", label: "Service Business", icon: <Wrench className="h-5 w-5" /> },
+              { value: "consultant", label: "Consultant / Freelancer", icon: <User className="h-5 w-5" /> },
+              { value: "other", label: "Other", icon: <MoreHorizontal className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
                 label={opt.label}
-                description={opt.desc}
                 icon={opt.icon}
                 selected={data.businessType === opt.value}
                 onClick={() => setData({ ...data, businessType: opt.value })}
