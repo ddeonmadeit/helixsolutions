@@ -29,11 +29,11 @@ const initialData: StepData = {
 };
 
 const steps = [
-  { title: "What currently takes up most of your time?", subtitle: "We'll find the best AI agent to handle it" },
-  { title: "What best describes your business?", subtitle: "This helps us tailor the right AI agent for you" },
-  { title: "Where is your site currently hosted?", subtitle: "Select your current platform or provider" },
-  { title: "How much do you pay monthly?", subtitle: "We'll show you how much you can save" },
-  { title: "Almost there! A few final details", subtitle: "Help us prepare your custom demo" },
+  { title: "What currently takes up most of your time?" },
+  { title: "What best describes your business?" },
+  { title: "Where is your site currently hosted?" },
+  { title: "How much do you pay monthly?" },
+  { title: "Almost there! A few final details" },
 ];
 
 const slideVariants = {
@@ -256,7 +256,6 @@ const MigrationOnboarding = () => {
           >
             <div className="mb-6">
               <h2 className="text-xl font-bold text-foreground">{steps[step].title}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">{steps[step].subtitle}</p>
             </div>
             {renderStep()}
           </motion.div>
