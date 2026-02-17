@@ -11,7 +11,7 @@ import { toast } from "sonner";
 interface StepData {
   timeSinks: string[];
   businessType: string;
-  currentPlatform: string;
+  currentSoftware: string[];
   monthlyCost: string;
   websiteUrl: string;
   name: string;
@@ -21,7 +21,7 @@ interface StepData {
 const initialData: StepData = {
   timeSinks: [],
   businessType: "",
-  currentPlatform: "",
+  currentSoftware: [],
   monthlyCost: "",
   websiteUrl: "",
   name: "",
@@ -31,7 +31,7 @@ const initialData: StepData = {
 const steps = [
   { title: "What currently takes up most of your time?" },
   { title: "What best describes your business?" },
-  { title: "Where is your site currently hosted?" },
+  { title: "What software are you currently using?" },
   { title: "How much do you pay monthly?" },
   { title: "Almost there! A few final details" },
 ];
@@ -81,7 +81,7 @@ const MigrationOnboarding = () => {
     switch (step) {
       case 0: return data.timeSinks.length > 0;
       case 1: return !!data.businessType;
-      case 2: return !!data.currentPlatform;
+      case 2: return data.currentSoftware.length > 0;
       case 3: return !!data.monthlyCost;
       case 4: return !!data.websiteUrl && !!data.name && !!data.email;
       default: return false;
@@ -161,20 +161,32 @@ const MigrationOnboarding = () => {
         );
       case 2:
         return (
-          <div className="space-y-4">
-            <GlassSelect
-              placeholder="Select your current platform"
-              value={data.currentPlatform}
-              onValueChange={(v) => setData({ ...data, currentPlatform: v })}
-              options={[
-                { value: "wordpress", label: "WordPress" },
-                { value: "shopify", label: "Shopify" },
-                { value: "wix", label: "Wix" },
-                { value: "squarespace", label: "Squarespace" },
-                { value: "webflow", label: "Webflow" },
-                { value: "other", label: "Other" },
-              ]}
-            />
+          <div className="grid gap-3">
+            <p className="text-xs text-muted-foreground mb-1">Select all that apply</p>
+            {[
+              { value: "google-workspace", label: "Google Workspace" },
+              { value: "slack", label: "Slack" },
+              { value: "hubspot", label: "HubSpot" },
+              { value: "salesforce", label: "Salesforce" },
+              { value: "calendly", label: "Calendly" },
+              { value: "zoho", label: "Zoho" },
+              { value: "mailchimp", label: "Mailchimp" },
+              { value: "klaviyo", label: "Klaviyo" },
+              { value: "myob", label: "MYOB" },
+              { value: "other", label: "Other" },
+            ].map((opt) => (
+              <OptionCard
+                key={opt.value}
+                label={opt.label}
+                selected={data.currentSoftware.includes(opt.value)}
+                onClick={() => {
+                  const currentSoftware = data.currentSoftware.includes(opt.value)
+                    ? data.currentSoftware.filter((v) => v !== opt.value)
+                    : [...data.currentSoftware, opt.value];
+                  setData({ ...data, currentSoftware });
+                }}
+              />
+            ))}
           </div>
         );
       case 3:
