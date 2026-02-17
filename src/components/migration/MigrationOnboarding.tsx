@@ -101,10 +101,23 @@ const MigrationOnboarding = () => {
         >
           <Rocket className="h-8 w-8 text-primary" />
         </motion.div>
-        <h2 className="mb-2 text-2xl font-bold text-foreground">Migration Request Submitted!</h2>
-        <p className="text-muted-foreground">
-          Our team will review your details and reach out within 24 hours with a custom migration plan.
+        <h2 className="mb-2 text-2xl font-bold text-foreground">You're almost there!</h2>
+        <p className="text-muted-foreground mb-6">
+          Book your same-day demo to see your custom AI employee in action.
         </p>
+        <motion.a
+          href="https://cal.com/helix-solutions/demo"
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all"
+          style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
+        >
+          <Calendar className="h-4 w-4" />
+          Book Your Demo
+          <ArrowRight className="h-4 w-4" />
+        </motion.a>
       </motion.div>
     );
   }
