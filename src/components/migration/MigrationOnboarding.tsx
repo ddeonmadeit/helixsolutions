@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface StepData {
-  timeSink: string;
+  timeSinks: string[];
   businessType: string;
   currentPlatform: string;
   monthlyCost: string;
@@ -19,7 +19,7 @@ interface StepData {
 }
 
 const initialData: StepData = {
-  timeSink: "",
+  timeSinks: [],
   businessType: "",
   currentPlatform: "",
   monthlyCost: "",
@@ -79,7 +79,7 @@ const MigrationOnboarding = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return !!data.timeSink;
+      case 0: return data.timeSinks.length > 0;
       case 1: return !!data.businessType;
       case 2: return !!data.currentPlatform;
       case 3: return !!data.monthlyCost;
@@ -116,20 +116,25 @@ const MigrationOnboarding = () => {
       case 0:
         return (
           <div className="grid gap-3">
+            <p className="text-xs text-muted-foreground mb-1">Select all that apply</p>
             {[
-              { value: "customer-support", label: "Customer Support", desc: "Answering questions, tickets, chat", icon: <MessageSquare className="h-5 w-5" /> },
-              { value: "scheduling", label: "Scheduling & Bookings", desc: "Appointments, calendars, follow-ups", icon: <Calendar className="h-5 w-5" /> },
-              { value: "email-outreach", label: "Email & Outreach", desc: "Follow-ups, newsletters, responses", icon: <Mail className="h-5 w-5" /> },
-              { value: "admin-tasks", label: "Admin & Data Entry", desc: "Paperwork, CRM updates, reporting", icon: <FileText className="h-5 w-5" /> },
-              { value: "other", label: "Other", desc: "Something else entirely", icon: <MoreHorizontal className="h-5 w-5" /> },
+              { value: "emails-messages", label: "Managing Emails & Messages", icon: <Mail className="h-5 w-5" /> },
+              { value: "follow-ups", label: "Following Up Leads/Customers", icon: <MessageSquare className="h-5 w-5" /> },
+              { value: "admin-ops", label: "Admin & Operational Tasks", icon: <FileText className="h-5 w-5" /> },
+              { value: "team-coordination", label: "Team Coordination", icon: <Calendar className="h-5 w-5" /> },
+              { value: "overworked", label: "I'm Working Too Many Hours", icon: <Clock className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
                 label={opt.label}
-                description={opt.desc}
                 icon={opt.icon}
-                selected={data.timeSink === opt.value}
-                onClick={() => setData({ ...data, timeSink: opt.value })}
+                selected={data.timeSinks.includes(opt.value)}
+                onClick={() => {
+                  const timeSinks = data.timeSinks.includes(opt.value)
+                    ? data.timeSinks.filter((v) => v !== opt.value)
+                    : [...data.timeSinks, opt.value];
+                  setData({ ...data, timeSinks });
+                }}
               />
             ))}
           </div>
