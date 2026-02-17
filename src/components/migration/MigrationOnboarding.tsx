@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, DollarSign, Rocket, Clock, MessageSquare, Calendar, Mail, FileText, Briefcase, ShoppingBag, Wrench, User } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2, Stethoscope, Scale, Megaphone, Store, Home, MoreHorizontal, Rocket, Clock, MessageSquare, Calendar, Mail, FileText, Briefcase, ShoppingBag, Wrench, User } from "lucide-react";
 import StepProgress from "./StepProgress";
 import OptionCard from "./OptionCard";
 import GlassSelect from "./GlassSelect";
@@ -12,7 +12,6 @@ interface StepData {
   timeSinks: string[];
   businessType: string;
   currentSoftware: string[];
-  monthlyCost: string;
   websiteUrl: string;
   name: string;
   email: string;
@@ -22,7 +21,6 @@ const initialData: StepData = {
   timeSinks: [],
   businessType: "",
   currentSoftware: [],
-  monthlyCost: "",
   websiteUrl: "",
   name: "",
   email: "",
@@ -32,7 +30,6 @@ const steps = [
   { title: "What currently takes up most of your time?" },
   { title: "What best describes your business?" },
   { title: "What software are you currently using?" },
-  { title: "How much do you pay monthly?" },
   { title: "Almost there! A few final details" },
 ];
 
@@ -82,8 +79,7 @@ const MigrationOnboarding = () => {
       case 0: return data.timeSinks.length > 0;
       case 1: return !!data.businessType;
       case 2: return data.currentSoftware.length > 0;
-      case 3: return !!data.monthlyCost;
-      case 4: return !!data.websiteUrl && !!data.name && !!data.email;
+      case 3: return !!data.websiteUrl && !!data.name && !!data.email;
       default: return false;
     }
   };
@@ -186,26 +182,6 @@ const MigrationOnboarding = () => {
           </div>
         );
       case 3:
-        return (
-          <div className="grid gap-3">
-            {[
-              { value: "0-50", label: "$0 – $50/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "50-100", label: "$50 – $100/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "100-200", label: "$100 – $200/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "200-400", label: "$200 – $400/mo", icon: <DollarSign className="h-5 w-5" /> },
-              { value: "400+", label: "$400+/mo", icon: <DollarSign className="h-5 w-5" /> },
-            ].map((opt) => (
-              <OptionCard
-                key={opt.value}
-                label={opt.label}
-                icon={opt.icon}
-                selected={data.monthlyCost === opt.value}
-                onClick={() => setData({ ...data, monthlyCost: opt.value })}
-              />
-            ))}
-          </div>
-        );
-      case 4:
         return (
           <div className="space-y-5">
             <div className="space-y-2">
