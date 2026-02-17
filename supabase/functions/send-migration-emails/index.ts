@@ -9,7 +9,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-const OWNER_EMAIL = "helixsolved@gmail.com";
+const OWNER_EMAIL = "info@helixsolution.au";
 
 
 const handler = async (req: Request): Promise<Response> => {
@@ -50,8 +50,8 @@ const handler = async (req: Request): Promise<Response> => {
       await resend.emails.send({
         from: "Helix Solutions <hello@helixsolution.au>",
         to: [email],
-        cc: ["helixsolved@gmail.com"],
-        replyTo: "helixsolved@gmail.com",
+        cc: ["info@helixsolution.au"],
+        replyTo: "info@helixsolution.au",
         subject: "Thank you — your demo is almost booked!",
         html: `
           <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: hsl(225, 30%, 6%); color: hsl(210, 20%, 92%); padding: 40px; border-radius: 16px; border: 1px solid hsl(220, 14%, 20%);">
