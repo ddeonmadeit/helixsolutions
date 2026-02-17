@@ -77,6 +77,15 @@ const MigrationOnboarding = () => {
     }
   };
 
+  const buildCalUrl = () => {
+    const base = "https://cal.com/helix-solutions/demo";
+    const params = new URLSearchParams();
+    if (data.timeSinks.length > 0) params.set("metadata[timeSinks]", data.timeSinks.join(", "));
+    if (data.businessType) params.set("metadata[businessType]", data.businessType);
+    if (data.currentSoftware.length > 0) params.set("metadata[currentSoftware]", data.currentSoftware.join(", "));
+    return `${base}?${params.toString()}`;
+  };
+
   if (submitted) {
     return (
       <motion.div
@@ -97,7 +106,7 @@ const MigrationOnboarding = () => {
           Book your same-day demo to see your custom AI employee in action.
         </p>
         <motion.a
-          href="https://cal.com/helix-solutions/demo"
+          href={buildCalUrl()}
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.02 }}
