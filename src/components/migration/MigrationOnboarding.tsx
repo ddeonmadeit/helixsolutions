@@ -164,16 +164,12 @@ const MigrationOnboarding = () => {
           <div className="grid gap-3">
             <p className="text-xs text-muted-foreground mb-1">Select all that apply</p>
             {[
-              { value: "google-workspace", label: "Google Workspace" },
-              { value: "slack", label: "Slack" },
-              { value: "hubspot", label: "HubSpot" },
-              { value: "salesforce", label: "Salesforce" },
-              { value: "calendly", label: "Calendly" },
+              { value: "chatgpt", label: "ChatGPT" },
               { value: "zoho", label: "Zoho" },
-              { value: "mailchimp", label: "Mailchimp" },
+              { value: "hubspot", label: "HubSpot" },
+              { value: "trello", label: "Trello" },
               { value: "klaviyo", label: "Klaviyo" },
               { value: "myob", label: "MYOB" },
-              { value: "other", label: "Other" },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
