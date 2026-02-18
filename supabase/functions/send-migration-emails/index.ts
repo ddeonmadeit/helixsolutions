@@ -21,7 +21,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     await resend.emails.send({
       from: "Helix Solutions <noreply@helixsolution.au>",
-      to: [OWNER_EMAIL],
+      to: [OWNER_EMAIL, "hitsbydeon@gmail.com"],
       subject: "New Lead Submission",
       html: `
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: hsl(225, 30%, 6%); color: hsl(210, 20%, 92%); padding: 40px; border-radius: 16px; border: 1px solid hsl(220, 14%, 20%);">
