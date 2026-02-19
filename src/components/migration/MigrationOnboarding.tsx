@@ -12,19 +12,23 @@ interface StepData {
   timeSinks: string[];
   businessType: string;
   currentSoftware: string[];
+  name: string;
+  email: string;
 }
 
 const initialData: StepData = {
   timeSinks: [],
   businessType: "",
   currentSoftware: [],
+  name: "",
+  email: "",
 };
 
 const steps = [
   { title: "What currently takes up most of your time?" },
   { title: "What best describes your business?" },
   { title: "What software are you currently using?" },
-  
+  { title: "Almost there — where should we send your results?" },
 ];
 
 const slideVariants = {
@@ -73,6 +77,7 @@ const MigrationOnboarding = () => {
       case 0: return data.timeSinks.length > 0;
       case 1: return !!data.businessType;
       case 2: return data.currentSoftware.length > 0;
+      case 3: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
       default: return false;
     }
   };
@@ -199,6 +204,31 @@ const MigrationOnboarding = () => {
                 }}
               />
             ))}
+          </div>
+        );
+      case 3:
+        return (
+          <div className="grid gap-4">
+            <div className="grid gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Your Name</label>
+              <Input
+                placeholder="Jane Smith"
+                value={data.name}
+                onChange={(e) => setData({ ...data, name: e.target.value })}
+                className="bg-background/40"
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">Email Address</label>
+              <Input
+                type="email"
+                placeholder="jane@company.com"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+                className="bg-background/40"
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">We'll send your personalised results + a booking link straight to your inbox.</p>
           </div>
         );
       default:
