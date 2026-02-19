@@ -28,7 +28,7 @@ const steps = [
   { title: "What currently takes up most of your time?" },
   { title: "What best describes your business?" },
   { title: "What software are you currently using?" },
-  { title: "Almost there — where should we send your results?" },
+  { title: "Find out how many hours you could save per week:" },
 ];
 
 const slideVariants = {
