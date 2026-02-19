@@ -228,7 +228,7 @@ const MigrationOnboarding = () => {
                 className="bg-background/40"
               />
             </div>
-            <p className="text-xs text-muted-foreground">We'll send your personalised results + a booking link straight to your inbox.</p>
+            <p className="text-xs text-muted-foreground">See how many hours you could be saving:</p>
           </div>
         );
       default:
