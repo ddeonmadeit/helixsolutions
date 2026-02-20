@@ -7,10 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// $500 AUD/month setup deposit (first month higher, recurring monthly subscription)
-const DEPOSIT_PRICE_ID = "price_1T2oYb6JRSjqUM0WzIBTAgJU";
-// $100 AUD/month subscription
-const SUBSCRIPTION_PRICE_ID = "price_1T2oZ36JRSjqUM0WW7oW30Jv";
+// $400 AUD one-time setup fee
+const SETUP_PRICE_ID = "price_1T2oDw6JRSjqUM0WlpHHLneP";
+// $100 AUD/month monthly maintenance subscription
+const MAINTENANCE_PRICE_ID = "price_1T2oDy6JRSjqUM0WnJdBW2Au";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -52,13 +52,15 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://helixsolutions.lovable.app";
 
-    // Combined checkout: $500 setup deposit + $100/month subscription in one session
+    // Combined checkout: $400 one-time setup fee (add_invoice_items) + $100/month maintenance subscription
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: [
-        { price: DEPOSIT_PRICE_ID, quantity: 1 },
-        { price: SUBSCRIPTION_PRICE_ID, quantity: 1 },
+        { price: MAINTENANCE_PRICE_ID, quantity: 1 },
+      ],
+      add_invoice_items: [
+        { price: SETUP_PRICE_ID, quantity: 1 },
       ],
       mode: "subscription",
       success_url: `${origin}/tier1?status=success`,
