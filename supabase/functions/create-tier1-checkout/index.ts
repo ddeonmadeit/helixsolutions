@@ -7,10 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// $500 AUD one-time setup deposit (as a subscription add-on)
-const DEPOSIT_PRICE_ID = "price_1T2mC58bakE6VUDmWT9oJeMj";
+// $500 AUD/month setup deposit (first month higher, recurring monthly subscription)
+const DEPOSIT_PRICE_ID = "price_1T2oYb6JRSjqUM0WzIBTAgJU";
 // $100 AUD/month subscription
-const SUBSCRIPTION_PRICE_ID = "price_1T2mDW8bakE6VUDmFhWlMIiu";
+const SUBSCRIPTION_PRICE_ID = "price_1T2oZ36JRSjqUM0WW7oW30Jv";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
