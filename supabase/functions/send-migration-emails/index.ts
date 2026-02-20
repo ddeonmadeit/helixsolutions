@@ -219,7 +219,7 @@ const handler = async (req: Request): Promise<Response> => {
         html: ownerHtml,
       }),
       email ? resend.emails.send({
-        from: "Helix Solutions <noreply@helixsolution.au>",
+        from: "Helix Solutions <hello@helixsolution.au>",
         to: [email],
         subject: `You could save ${hoursSaved} hours a week — Book your free demo`,
         html: leadHtml,
