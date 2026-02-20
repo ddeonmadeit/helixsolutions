@@ -7,11 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Hardcoded price IDs (created in Stripe dashboard)
-// $500 AUD one-time deposit
-const DEPOSIT_PRICE_ID = "price_deposit_placeholder";
+// $500 AUD one-time setup deposit
+const DEPOSIT_PRICE_ID = "price_1T2mC58bakE6VUDmWT9oJeMj";
 // $100 AUD/month subscription
-const SUBSCRIPTION_PRICE_ID = "price_subscription_placeholder";
+const SUBSCRIPTION_PRICE_ID = "price_1T2mDW8bakE6VUDmFhWlMIiu";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
