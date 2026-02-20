@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, FileText, PenLine, CreditCard, Loader2, ChevronDown, Lock } from "lucide-react";
+import { CheckCircle, FileText, PenLine, CreditCard, Loader2, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
@@ -26,7 +26,6 @@ const Tier1 = () => {
   const [signature, setSignature] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [pdfExpanded, setPdfExpanded] = useState(true);
   const contractRef = useRef<HTMLDivElement>(null);
 
   const handleContractScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -152,60 +151,14 @@ const Tier1 = () => {
                   Read the full agreement below before proceeding. Scroll to the bottom to continue.
                 </p>
 
-                {/* PDF viewer / placeholder */}
-                <div className="mb-4">
-                  <button
-                    onClick={() => setPdfExpanded(!pdfExpanded)}
-                    className="flex w-full items-center justify-between rounded-xl glass px-4 py-3 text-sm font-medium text-foreground mb-2"
-                  >
-                    <span className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-primary" />
-                      Helix Solutions — Service Agreement
-                    </span>
-                    <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${pdfExpanded ? "rotate-180" : ""}`} />
-                  </button>
-
-                  <AnimatePresence>
-                    {pdfExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
-                      >
-                        {CONTRACT_PDF_URL ? (
-                          <div className="rounded-xl border border-border/50 overflow-hidden" style={{ height: "500px" }}>
-                            <iframe
-                              src={CONTRACT_PDF_URL}
-                              title="Helix Solutions Service Agreement"
-                              className="w-full h-full"
-                              onLoad={() => setContractScrolled(true)}
-                            />
-                          </div>
-                        ) : (
-                          <div
-                            ref={contractRef}
-                            onScroll={handleContractScroll}
-                            className="rounded-xl border border-border/50 bg-black/20 overflow-y-auto p-5 text-xs text-muted-foreground leading-relaxed space-y-3"
-                            style={{ height: "420px" }}
-                          >
-                            <p className="text-foreground font-semibold text-sm">SERVICE AGREEMENT — HELIX SOLUTIONS</p>
-                            <p><strong className="text-foreground">1. Parties.</strong> This Agreement is between Helix Solutions ("Provider") and the client ("Client") who signs below.</p>
-                            <p><strong className="text-foreground">2. Services.</strong> Provider will deliver AI workflow automation and integration services as discussed and agreed in the onboarding consultation ("Services").</p>
-                            <p><strong className="text-foreground">3. Fees.</strong> Client agrees to pay a one-time setup deposit of AUD $500 and a monthly subscription fee of AUD $100 per month, commencing from the date of this Agreement.</p>
-                            <p><strong className="text-foreground">4. Term.</strong> This Agreement commences on the date of signature and continues on a month-to-month basis until terminated by either party with 30 days written notice.</p>
-                            <p><strong className="text-foreground">5. Deliverables.</strong> Provider will deliver agreed automations, integrations, and support within timeframes specified during onboarding. Delays caused by Client will not be the responsibility of Provider.</p>
-                            <p><strong className="text-foreground">6. Intellectual Property.</strong> All custom workflows, automations, and configurations created by Provider remain the property of Provider until all outstanding fees are paid in full.</p>
-                            <p><strong className="text-foreground">7. Confidentiality.</strong> Both parties agree to keep the terms of this Agreement and any shared business information confidential.</p>
-                            <p><strong className="text-foreground">8. Limitation of Liability.</strong> Provider's total liability is limited to the fees paid in the most recent 30-day period. Provider is not liable for indirect, incidental, or consequential damages.</p>
-                            <p><strong className="text-foreground">9. Governing Law.</strong> This Agreement is governed by the laws of Australia.</p>
-                            <p><strong className="text-foreground">10. Entire Agreement.</strong> This document constitutes the entire agreement between the parties and supersedes all prior discussions or agreements.</p>
-                            <p className="pt-4 text-muted-foreground/60 italic">— End of Agreement —</p>
-                          </div>
-                        )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                {/* PDF viewer */}
+                <div className="mb-4 rounded-xl border border-border/50 overflow-hidden" style={{ height: "500px" }}>
+                  <iframe
+                    src={CONTRACT_PDF_URL}
+                    title="Helix Solutions Service Agreement"
+                    className="w-full h-full"
+                    onLoad={() => setContractScrolled(true)}
+                  />
                 </div>
 
                 {/* Acknowledge checkbox */}
