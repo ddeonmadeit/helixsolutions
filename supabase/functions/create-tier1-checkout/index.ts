@@ -52,15 +52,13 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://helixsolutions.lovable.app";
 
-    // Combined checkout: $400 one-time setup fee (add_invoice_items) + $100/month maintenance subscription
+    // Combined checkout: $400 one-time setup fee + $100/month maintenance subscription
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
       line_items: [
-        { price: MAINTENANCE_PRICE_ID, quantity: 1 },
-      ],
-      add_invoice_items: [
         { price: SETUP_PRICE_ID, quantity: 1 },
+        { price: MAINTENANCE_PRICE_ID, quantity: 1 },
       ],
       mode: "subscription",
       success_url: `${origin}/tier1?status=success`,
