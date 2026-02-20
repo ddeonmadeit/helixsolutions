@@ -35,6 +35,12 @@ const Admin = () => {
   const [tySending, setTySending] = useState(false);
   const [tySent, setTySent] = useState(false);
 
+  // Follow-up email state
+  const [fuEmail, setFuEmail] = useState("");
+  const [fuSending, setFuSending] = useState(false);
+  const [fuSent, setFuSent] = useState(false);
+  const [fuResolved, setFuResolved] = useState<{ name: string; calUrl: string } | null>(null);
+
   const handleSendThankYou = async () => {
     if (!tyName.trim() || !tyEmail.trim().includes("@")) return;
     setTySending(true);
@@ -52,6 +58,27 @@ const Admin = () => {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
     } finally {
       setTySending(false);
+    }
+  };
+
+  const handleSendFollowUp = async () => {
+    if (!fuEmail.trim().includes("@")) return;
+    setFuSending(true);
+    setFuSent(false);
+    setFuResolved(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-followup-email", {
+        body: { email: fuEmail.trim() },
+      });
+      if (error) throw error;
+      setFuSent(true);
+      setFuResolved({ name: data.name, calUrl: data.calUrl });
+      setFuEmail("");
+      toast({ title: "Follow-up sent!", description: `Reminder email sent to ${data.name}` });
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message, variant: "destructive" });
+    } finally {
+      setFuSending(false);
     }
   };
 
@@ -158,6 +185,50 @@ const Admin = () => {
               {tySending ? "Sending…" : tySent ? "Sent!" : "Send Email"}
             </button>
           </div>
+        </div>
+
+        {/* Follow-Up / Booking Reminder Email */}
+        <div className="glass rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Mail className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Send Booking Reminder</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5">
+            Enter a client's email — we'll automatically pull their quiz data and send a personalised follow-up with their booking link.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              type="email"
+              placeholder="Client email address"
+              value={fuEmail}
+              onChange={(e) => { setFuEmail(e.target.value); setFuSent(false); setFuResolved(null); }}
+              className="bg-background/40 flex-1"
+            />
+            <button
+              onClick={handleSendFollowUp}
+              disabled={fuSending || !fuEmail.trim().includes("@")}
+              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {fuSending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : fuSent ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <Mail className="h-4 w-4" />
+              )}
+              {fuSending ? "Sending…" : fuSent ? "Sent!" : "Send Reminder"}
+            </button>
+          </div>
+          {fuResolved && (
+            <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground space-y-1">
+              <p><span className="text-foreground font-medium">Sent to:</span> {fuResolved.name}</p>
+              <p className="break-all"><span className="text-foreground font-medium">Cal link:</span>{" "}
+                <a href={fuResolved.calUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                  {fuResolved.calUrl}
+                </a>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Table */}
