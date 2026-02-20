@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Loader2, Users, Mail, Building2, Clock, Search } from "lucide-react";
+import { Loader2, Users, Mail, Send, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_PASSWORD = "helix2024";
 
@@ -21,11 +22,38 @@ const formatLabel = (val: string) =>
   val.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
 const Admin = () => {
+  const { toast } = useToast();
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Thank you email state
+  const [tyName, setTyName] = useState("");
+  const [tyEmail, setTyEmail] = useState("");
+  const [tySending, setTySending] = useState(false);
+  const [tySent, setTySent] = useState(false);
+
+  const handleSendThankYou = async () => {
+    if (!tyName.trim() || !tyEmail.trim().includes("@")) return;
+    setTySending(true);
+    setTySent(false);
+    try {
+      const { error } = await supabase.functions.invoke("send-thankyou-email", {
+        body: { name: tyName.trim(), email: tyEmail.trim() },
+      });
+      if (error) throw error;
+      setTySent(true);
+      setTyName("");
+      setTyEmail("");
+      toast({ title: "Email sent!", description: `Thank you email sent to ${tyEmail.trim()}` });
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message, variant: "destructive" });
+    } finally {
+      setTySending(false);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,6 +117,46 @@ const Admin = () => {
               <p className="text-2xl font-bold text-primary">{leads.length}</p>
               <p className="text-xs text-muted-foreground">Total Leads</p>
             </div>
+          </div>
+        </div>
+
+        {/* Send Thank You Email */}
+        <div className="glass rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Send className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Send Thank You Email</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5">
+            Send a personalised thank-you email with the onboarding link to any client on demand.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              placeholder="Client full name"
+              value={tyName}
+              onChange={(e) => setTyName(e.target.value)}
+              className="bg-background/40 flex-1"
+            />
+            <Input
+              type="email"
+              placeholder="Client email address"
+              value={tyEmail}
+              onChange={(e) => setTyEmail(e.target.value)}
+              className="bg-background/40 flex-1"
+            />
+            <button
+              onClick={handleSendThankYou}
+              disabled={tySending || !tyName.trim() || !tyEmail.trim().includes("@")}
+              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {tySending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : tySent ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+              {tySending ? "Sending…" : tySent ? "Sent!" : "Send Email"}
+            </button>
           </div>
         </div>
 
