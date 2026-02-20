@@ -38,11 +38,11 @@ const Tier1 = () => {
   const canProceedFromStep1 = contractScrolled && acknowledged;
   const canProceedFromStep2 = signature.trim().length >= 2 && email.trim().includes("@");
 
-  const handleCheckout = async (type: "deposit" | "subscription") => {
+  const handleCheckout = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-tier1-checkout", {
-        body: { type, email },
+        body: { email },
       });
       if (error || !data?.url) throw new Error(error?.message || "Failed to create checkout session");
       window.open(data.url, "_blank");
@@ -58,10 +58,8 @@ const Tier1 = () => {
   };
 
   const successMessage =
-    status === "deposit_success"
-      ? "✅ Deposit received! We'll be in touch shortly."
-      : status === "subscription_success"
-      ? "✅ Subscription activated! Welcome aboard."
+    status === "success"
+      ? "✅ Payment received! Your deposit and subscription are confirmed. We'll be in touch shortly."
       : null;
 
   return (
@@ -336,45 +334,32 @@ const Tier1 = () => {
                   Signed as <span className="text-foreground font-medium">{signature}</span> · {email}
                 </p>
 
-                <div className="space-y-4 mb-6">
-                  {/* Deposit card */}
-                  <div className="glass rounded-xl p-5 border border-border/50">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <p className="text-sm font-semibold">Setup Deposit</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">One-time payment to begin onboarding</p>
-                      </div>
-                      <p className="text-lg font-bold text-primary">$500 <span className="text-xs font-normal text-muted-foreground">AUD</span></p>
-                    </div>
-                    <button
-                      onClick={() => handleCheckout("deposit")}
-                      disabled={loading}
-                      className="mt-3 w-full flex items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-                      Pay Deposit — $500 AUD
-                    </button>
+                {/* Summary */}
+                <div className="glass rounded-xl p-5 border border-border/50 mb-6 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Setup Deposit <span className="text-[10px]">(one-time)</span></span>
+                    <span className="font-semibold text-foreground">$500 AUD</span>
                   </div>
-
-                  {/* Subscription card */}
-                  <div className="glass rounded-xl p-5 border border-border/50">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <p className="text-sm font-semibold">Monthly Subscription</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">Ongoing access · cancel anytime with 30 days notice</p>
-                      </div>
-                      <p className="text-lg font-bold text-primary">$100<span className="text-xs font-normal text-muted-foreground">/mo AUD</span></p>
-                    </div>
-                    <button
-                      onClick={() => handleCheckout("subscription")}
-                      disabled={loading}
-                      className="mt-3 w-full flex items-center justify-center gap-2 rounded-lg border border-primary/40 py-2.5 text-sm font-semibold text-primary hover:bg-primary/10 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
-                      Subscribe — $100 AUD/month
-                    </button>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Monthly Subscription</span>
+                    <span className="font-semibold text-foreground">$100 AUD/mo</span>
                   </div>
+                  <div className="h-px bg-border/50" />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Due today</span>
+                    <span className="font-bold text-primary">$600 AUD</span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground/60">Then $100 AUD/month · cancel anytime with 30 days notice</p>
                 </div>
+
+                <button
+                  onClick={() => handleCheckout()}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed mb-6"
+                >
+                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CreditCard className="h-4 w-4" />}
+                  Pay $600 AUD &amp; Start Subscription →
+                </button>
 
                 <button
                   onClick={() => setStep(2)}

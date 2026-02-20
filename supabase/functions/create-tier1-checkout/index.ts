@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// $500 AUD one-time setup deposit
+// $500 AUD one-time setup deposit (as a subscription add-on)
 const DEPOSIT_PRICE_ID = "price_1T2mC58bakE6VUDmWT9oJeMj";
 // $100 AUD/month subscription
 const SUBSCRIPTION_PRICE_ID = "price_1T2mDW8bakE6VUDmFhWlMIiu";
@@ -18,7 +18,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, email: guestEmail } = await req.json();
+    const { email: guestEmail } = await req.json();
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -52,39 +52,23 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://helixsolutions.lovable.app";
 
-    if (type === "deposit") {
-      // One-time $500 AUD deposit
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        customer_email: customerId ? undefined : userEmail,
-        line_items: [{ price: DEPOSIT_PRICE_ID, quantity: 1 }],
-        mode: "payment",
-        success_url: `${origin}/tier1?status=deposit_success`,
-        cancel_url: `${origin}/tier1?status=cancelled`,
-        currency: "aud",
-      });
-      return new Response(JSON.stringify({ url: session.url }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    } else if (type === "subscription") {
-      // $100 AUD/month subscription
-      const session = await stripe.checkout.sessions.create({
-        customer: customerId,
-        customer_email: customerId ? undefined : userEmail,
-        line_items: [{ price: SUBSCRIPTION_PRICE_ID, quantity: 1 }],
-        mode: "subscription",
-        success_url: `${origin}/tier1?status=subscription_success`,
-        cancel_url: `${origin}/tier1?status=cancelled`,
-        currency: "aud",
-      });
-      return new Response(JSON.stringify({ url: session.url }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
-      });
-    } else {
-      throw new Error("Invalid checkout type. Use 'deposit' or 'subscription'.");
-    }
+    // Combined checkout: $500 setup deposit + $100/month subscription in one session
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : userEmail,
+      line_items: [
+        { price: DEPOSIT_PRICE_ID, quantity: 1 },
+        { price: SUBSCRIPTION_PRICE_ID, quantity: 1 },
+      ],
+      mode: "subscription",
+      success_url: `${origin}/tier1?status=success`,
+      cancel_url: `${origin}/tier1?status=cancelled`,
+    });
+
+    return new Response(JSON.stringify({ url: session.url }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: message }), {
