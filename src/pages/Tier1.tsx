@@ -252,7 +252,16 @@ const Tier1 = () => {
                   </button>
                   <button
                     disabled={!canProceedFromStep2}
-                    onClick={() => setStep(3)}
+                    onClick={async () => {
+                      await supabase.from("signatures" as any).insert({
+                        full_name: signature.trim(),
+                        email: email.trim(),
+                        user_agent: navigator.userAgent,
+                        agreed_to_terms: true,
+                        contract_version: "v1",
+                      });
+                      setStep(3);
+                    }}
                     className={`flex-[2] rounded-xl py-3 text-sm font-semibold transition-all duration-200 ${
                       canProceedFromStep2
                         ? "bg-primary text-primary-foreground hover:brightness-110"

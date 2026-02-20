@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Loader2, Users, Mail, Send, CheckCircle } from "lucide-react";
+import { Loader2, Users, Mail, Send, CheckCircle, PenLine } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_PASSWORD = "helix2024";
@@ -18,6 +18,17 @@ interface Lead {
   created_at: string;
 }
 
+interface Signature {
+  id: string;
+  full_name: string;
+  email: string;
+  signed_at: string;
+  ip_address: string | null;
+  user_agent: string | null;
+  agreed_to_terms: boolean;
+  contract_version: string;
+}
+
 const formatLabel = (val: string) =>
   val.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -26,6 +37,7 @@ const Admin = () => {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [signatures, setSignatures] = useState<Signature[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -94,12 +106,15 @@ const Admin = () => {
   useEffect(() => {
     if (!authed) return;
     setLoading(true);
-    supabase.functions
-      .invoke("get-leads")
-      .then(({ data, error }) => {
-        if (error) throw error;
-        setLeads(data?.leads ?? []);
-      })
+    Promise.all([
+      supabase.functions.invoke("get-leads"),
+      supabase.functions.invoke("get-signatures"),
+    ]).then(([leadsRes, sigsRes]) => {
+      if (leadsRes.error) throw leadsRes.error;
+      if (sigsRes.error) throw sigsRes.error;
+      setLeads(leadsRes.data?.leads ?? []);
+      setSignatures(sigsRes.data?.signatures ?? []);
+    })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [authed]);
@@ -140,6 +155,10 @@ const Admin = () => {
             <p className="text-muted-foreground mt-1">All quiz submissions</p>
           </div>
           <div className="flex gap-4">
+            <div className="glass rounded-xl px-5 py-3 text-center">
+              <p className="text-2xl font-bold text-primary">{signatures.length}</p>
+              <p className="text-xs text-muted-foreground">Signatures</p>
+            </div>
             <div className="glass rounded-xl px-5 py-3 text-center">
               <p className="text-2xl font-bold text-primary">{leads.length}</p>
               <p className="text-xs text-muted-foreground">Total Leads</p>
@@ -231,8 +250,66 @@ const Admin = () => {
           )}
         </div>
 
-        {/* Table */}
+        {/* Signatures Table */}
         <div className="glass rounded-2xl overflow-hidden">
+          <div className="flex items-center gap-2 px-6 py-4 border-b border-border/50">
+            <PenLine className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Signed Agreements</h2>
+            <span className="ml-auto text-xs text-muted-foreground">{signatures.length} signature{signatures.length !== 1 ? "s" : ""}</span>
+          </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          ) : signatures.length === 0 ? (
+            <p className="text-muted-foreground text-center py-10 text-sm">No signatures yet.</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="border-border">
+                  <TableHead>Full Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Contract</TableHead>
+                  <TableHead>Agreed</TableHead>
+                  <TableHead>Signed At</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {signatures.map((sig) => (
+                  <TableRow key={sig.id} className="border-border">
+                    <TableCell className="font-medium text-foreground italic font-serif">{sig.full_name}</TableCell>
+                    <TableCell>
+                      <a href={`mailto:${sig.email}`} className="text-primary hover:underline">{sig.email}</a>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary">{sig.contract_version}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      {sig.agreed_to_terms ? (
+                        <CheckCircle className="h-4 w-4 text-primary" />
+                      ) : (
+                        <span className="text-destructive text-xs">No</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                      {new Date(sig.signed_at).toLocaleString("en-AU", {
+                        day: "2-digit", month: "short", year: "numeric",
+                        hour: "2-digit", minute: "2-digit",
+                      })}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </div>
+
+        {/* Leads Table */}
+        <div className="glass rounded-2xl overflow-hidden">
+          <div className="flex items-center gap-2 px-6 py-4 border-b border-border/50">
+            <Users className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Leads</h2>
+          </div>
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />

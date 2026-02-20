@@ -44,6 +44,39 @@ export type Database = {
         }
         Relationships: []
       }
+      signatures: {
+        Row: {
+          agreed_to_terms: boolean
+          contract_version: string
+          email: string
+          full_name: string
+          id: string
+          ip_address: string | null
+          signed_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          agreed_to_terms?: boolean
+          contract_version?: string
+          email: string
+          full_name: string
+          id?: string
+          ip_address?: string | null
+          signed_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          agreed_to_terms?: boolean
+          contract_version?: string
+          email?: string
+          full_name?: string
+          id?: string
+          ip_address?: string | null
+          signed_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
