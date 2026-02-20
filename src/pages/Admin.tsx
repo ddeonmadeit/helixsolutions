@@ -53,6 +53,7 @@ const Admin = () => {
 
   // Follow-up email state
   const [fuEmail, setFuEmail] = useState("");
+  const [fuJoinUrl, setFuJoinUrl] = useState("");
   const [fuSending, setFuSending] = useState(false);
   const [fuSent, setFuSent] = useState(false);
   const [fuResolved, setFuResolved] = useState<{ name: string; calUrl: string } | null>(null);
@@ -90,12 +91,13 @@ const Admin = () => {
     setFuResolved(null);
     try {
       const { data, error } = await supabase.functions.invoke("send-followup-email", {
-        body: { email: fuEmail.trim() },
+        body: { email: fuEmail.trim(), joinUrl: fuJoinUrl.trim() || undefined },
       });
       if (error) throw error;
       setFuSent(true);
       setFuResolved({ name: data.name, calUrl: data.calUrl });
       setFuEmail("");
+      setFuJoinUrl("");
       toast({ title: "Follow-up sent!", description: `Reminder email sent to ${data.name}` });
     } catch (err: any) {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
@@ -250,33 +252,47 @@ const Admin = () => {
           <p className="text-sm text-muted-foreground mb-5">
             Enter a client's email — we'll automatically pull their quiz data and send a personalised follow-up with their booking link.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Input
-              type="email"
-              placeholder="Client email address"
-              value={fuEmail}
-              onChange={(e) => { setFuEmail(e.target.value); setFuSent(false); setFuResolved(null); }}
-              className="bg-background/40 flex-1"
-            />
-            <button
-              onClick={handleSendFollowUp}
-              disabled={fuSending || !fuEmail.trim().includes("@")}
-              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-            >
-              {fuSending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : fuSent ? (
-                <CheckCircle className="h-4 w-4" />
-              ) : (
-                <Mail className="h-4 w-4" />
-              )}
-              {fuSending ? "Sending…" : fuSent ? "Sent!" : "Send Reminder"}
-            </button>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                type="email"
+                placeholder="Client email address"
+                value={fuEmail}
+                onChange={(e) => { setFuEmail(e.target.value); setFuSent(false); setFuResolved(null); }}
+                className="bg-background/40 flex-1"
+              />
+              <button
+                onClick={handleSendFollowUp}
+                disabled={fuSending || !fuEmail.trim().includes("@")}
+                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {fuSending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : fuSent ? (
+                  <CheckCircle className="h-4 w-4" />
+                ) : (
+                  <Mail className="h-4 w-4" />
+                )}
+                {fuSending ? "Sending…" : fuSent ? "Sent!" : "Send Reminder"}
+              </button>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-muted-foreground">
+                Meeting Join Link <span className="text-muted-foreground/60">(optional — paste from Cal.com booking confirmation)</span>
+              </label>
+              <Input
+                type="url"
+                placeholder="https://cal.com/video/... or Zoom/Meet link"
+                value={fuJoinUrl}
+                onChange={(e) => setFuJoinUrl(e.target.value)}
+                className="bg-background/40"
+              />
+            </div>
           </div>
           {fuResolved && (
             <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground space-y-1">
               <p><span className="text-foreground font-medium">Sent to:</span> {fuResolved.name}</p>
-              <p className="break-all"><span className="text-foreground font-medium">Cal link:</span>{" "}
+              <p className="break-all"><span className="text-foreground font-medium">Booking link:</span>{" "}
                 <a href={fuResolved.calUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
                   {fuResolved.calUrl}
                 </a>

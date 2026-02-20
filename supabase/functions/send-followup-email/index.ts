@@ -31,7 +31,7 @@ const forcedDarkStyles = `
   [data-ogsc] .text-teal { color: #36b8c8 !important; }
 `;
 
-const buildEmail = (name: string, calUrl: string) => {
+const buildEmail = (name: string, calUrl: string, joinUrl?: string) => {
   const firstName = name.split(" ")[0];
   return `
 <!DOCTYPE html>
@@ -89,9 +89,9 @@ const buildEmail = (name: string, calUrl: string) => {
                   </td>
                 </tr>
 
-                <!-- CTA Button -->
+                <!-- Primary CTA: View Booking -->
                 <tr>
-                  <td align="center" style="padding-bottom:28px;">
+                  <td align="center" style="padding-bottom:${joinUrl ? "16px" : "28px"};">
                     <table cellpadding="0" cellspacing="0" border="0">
                       <tr>
                         <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
@@ -107,6 +107,26 @@ const buildEmail = (name: string, calUrl: string) => {
                     </table>
                   </td>
                 </tr>
+
+                ${joinUrl ? `
+                <!-- Secondary CTA: Join Meeting -->
+                <tr>
+                  <td align="center" style="padding-bottom:28px;">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="background-color:#1a2433;border:1px solid #36b8c8;border-radius:12px;padding:0;">
+                          <a
+                            href="${joinUrl}"
+                            style="display:inline-block;padding:13px 36px;font-size:15px;font-weight:700;color:#36b8c8;text-decoration:none;letter-spacing:0.01em;"
+                          >
+                            🎥 Join Meeting Link →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                ` : ""}
 
                 <!-- Divider -->
                 <tr>
@@ -161,7 +181,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email } = await req.json();
+    const { email, joinUrl } = await req.json();
     if (!email) throw new Error("email is required");
 
     // Look up lead by email to get their name and quiz data
@@ -184,7 +204,7 @@ serve(async (req) => {
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email.trim()],
       subject: `Reminder: Your meeting with Helix Solutions`,
-      html: buildEmail(name, calUrl),
+      html: buildEmail(name, calUrl, joinUrl || undefined),
     });
 
     return new Response(JSON.stringify({ success: true, name, calUrl }), {
