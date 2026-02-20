@@ -13,7 +13,7 @@ const STEPS = [
 ];
 
 // Contract PDF public URL — update after uploading to backend storage
-const CONTRACT_PDF_URL = ""; // Set after PDF is uploaded
+const CONTRACT_PDF_URL = "/contract.pdf";
 
 const Tier1 = () => {
   const { toast } = useToast();
