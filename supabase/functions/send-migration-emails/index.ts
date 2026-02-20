@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { timeSinks, businessType, currentSoftware, name, email } = await req.json();
 
     const calUrl = `https://cal.com/helix-solutions/demo?metadata[timeSinks]=${encodeURIComponent((timeSinks || []).join(", "))}&metadata[businessType]=${encodeURIComponent(businessType || "")}&metadata[currentSoftware]=${encodeURIComponent((currentSoftware || []).join(", "))}`;
-    const hoursSaved = (timeSinks || []).length * 2;
+    const hoursSaved = (timeSinks || []).length * 2 * 7;
     const firstName = name ? name.split(" ")[0] : "there";
 
     // ─── Owner notification email ───────────────────────────────────────────
@@ -49,7 +49,8 @@ const handler = async (req: Request): Promise<Response> => {
       <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;box-shadow:0 0 60px rgba(32,178,170,0.12);">
         <!-- Header -->
         <tr>
-          <td bgcolor="#111827" style="background-color:#111827;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
+          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
+            <img src="https://helixsolutions.lovable.app/favicon.jpeg" alt="Helix Solutions" width="48" height="48" style="display:block;margin:0 auto 16px;border-radius:12px;" />
             <p style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8;">HELIX SOLUTIONS</p>
             <h1 style="margin:10px 0 0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:26px;font-weight:800;color:#e8edf2;">New Lead Submission</h1>
           </td>
@@ -108,6 +109,7 @@ const handler = async (req: Request): Promise<Response> => {
         <!-- Header -->
         <tr>
           <td align="center" bgcolor="#111827" style="background-color:#111827;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
+            <img src="https://helixsolutions.lovable.app/favicon.jpeg" alt="Helix Solutions" width="48" height="48" style="display:block;margin:0 auto 16px;border-radius:12px;" />
             <p style="margin:0 0 14px;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8;">HELIX SOLUTIONS</p>
             <h1 style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:28px;font-weight:800;color:#e8edf2;line-height:1.3;">Hey ${firstName} 👋</h1>
             <p style="margin:12px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:15px;color:#8a9bb0;line-height:1.6;">Based on your answers, here's what an AI Employee could save your business every week:</p>
@@ -123,6 +125,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <p style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:88px;font-weight:900;color:#36b8c8;line-height:1;letter-spacing:-3px;">${hoursSaved}</p>
                   <p style="margin:8px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:700;color:#e8edf2;letter-spacing:1px;text-transform:uppercase;">HOURS EVERY WEEK</p>
                   <p style="margin:10px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:14px;color:#6b7a8d;">That's ${hoursSaved * 52}+ hours saved every year</p>
+
                 </td>
               </tr>
             </table>
