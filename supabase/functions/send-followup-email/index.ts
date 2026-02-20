@@ -89,35 +89,17 @@ const buildEmail = (name: string, calUrl: string, joinUrl?: string) => {
                   </td>
                 </tr>
 
-                <!-- Primary CTA: View Booking -->
-                <tr>
-                  <td align="center" style="padding-bottom:${joinUrl ? "16px" : "28px"};">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                      <tr>
-                        <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
-                          <a
-                            href="${calUrl}"
-                            style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
-                            class="text-white"
-                          >
-                            View My Booking →
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-
                 ${joinUrl ? `
-                <!-- Secondary CTA: Join Meeting -->
+                <!-- CTA: Join Meeting -->
                 <tr>
                   <td align="center" style="padding-bottom:28px;">
                     <table cellpadding="0" cellspacing="0" border="0">
                       <tr>
-                        <td style="background-color:#1a2433;border:1px solid #36b8c8;border-radius:12px;padding:0;">
+                        <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
                           <a
                             href="${joinUrl}"
-                            style="display:inline-block;padding:13px 36px;font-size:15px;font-weight:700;color:#36b8c8;text-decoration:none;letter-spacing:0.01em;"
+                            style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
+                            class="text-white"
                           >
                             🎥 Join Meeting Link →
                           </a>
