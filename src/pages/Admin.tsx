@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Loader2, Users, Mail, Send, CheckCircle, PenLine } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader2, Users, Mail, Send, CheckCircle, PenLine, FileText, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_PASSWORD = "helix2024";
@@ -32,9 +33,12 @@ interface Signature {
 const formatLabel = (val: string) =>
   val.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
+const CONTRACT_PDF_URL = "/contract.pdf";
+
 const Admin = () => {
   const { toast } = useToast();
   const [authed, setAuthed] = useState(false);
+  const [viewingSig, setViewingSig] = useState<Signature | null>(null);
   const [password, setPassword] = useState("");
   const [leads, setLeads] = useState<Lead[]>([]);
   const [signatures, setSignatures] = useState<Signature[]>([]);
@@ -268,16 +272,26 @@ const Admin = () => {
               <TableHeader>
                 <TableRow className="border-border">
                   <TableHead>Full Name</TableHead>
+                  <TableHead>Signature</TableHead>
                   <TableHead>Email</TableHead>
                   <TableHead>Contract</TableHead>
                   <TableHead>Agreed</TableHead>
                   <TableHead>Signed At</TableHead>
+                  <TableHead>Document</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {signatures.map((sig) => (
                   <TableRow key={sig.id} className="border-border">
-                    <TableCell className="font-medium text-foreground italic font-serif">{sig.full_name}</TableCell>
+                    <TableCell className="font-medium text-foreground">{sig.full_name}</TableCell>
+                    <TableCell>
+                      <span
+                        style={{ fontFamily: "'Dancing Script', 'Brush Script MT', cursive", fontSize: "1.2rem" }}
+                        className="text-primary"
+                      >
+                        {sig.full_name}
+                      </span>
+                    </TableCell>
                     <TableCell>
                       <a href={`mailto:${sig.email}`} className="text-primary hover:underline">{sig.email}</a>
                     </TableCell>
@@ -297,12 +311,57 @@ const Admin = () => {
                         hour: "2-digit", minute: "2-digit",
                       })}
                     </TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() => setViewingSig(sig)}
+                        className="flex items-center gap-1.5 rounded-lg border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+                      >
+                        <Eye className="h-3.5 w-3.5" />
+                        View
+                      </button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+
           )}
         </div>
+
+        {/* Contract viewer modal */}
+        <Dialog open={!!viewingSig} onOpenChange={(open) => !open && setViewingSig(null)}>
+          <DialogContent className="max-w-4xl w-full h-[90vh] flex flex-col gap-0 p-0 overflow-hidden">
+            <DialogHeader className="px-6 py-4 border-b border-border flex-shrink-0">
+              <DialogTitle className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" />
+                Signed Agreement — {viewingSig?.full_name}
+              </DialogTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {viewingSig?.email} · Signed{" "}
+                {viewingSig && new Date(viewingSig.signed_at).toLocaleString("en-AU", {
+                  day: "2-digit", month: "short", year: "numeric",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              </p>
+              <div className="mt-3 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3">
+                <PenLine className="h-4 w-4 text-primary flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Client Signature</p>
+                  <p style={{ fontFamily: "'Dancing Script', 'Brush Script MT', cursive", fontSize: "1.4rem" }} className="text-foreground leading-tight">
+                    {viewingSig?.full_name}
+                  </p>
+                </div>
+              </div>
+            </DialogHeader>
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={CONTRACT_PDF_URL}
+                className="w-full h-full"
+                title="Contract PDF"
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Leads Table */}
         <div className="glass rounded-2xl overflow-hidden">
