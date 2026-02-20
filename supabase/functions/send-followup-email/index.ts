@@ -41,7 +41,7 @@ const buildEmail = (name: string, calUrl: string) => {
   <meta name="color-scheme" content="dark" />
   <meta name="supported-color-schemes" content="dark" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Demo Booking — Helix Solutions</title>
+  <title>Your Meeting — Helix Solutions</title>
   <style>${forcedDarkStyles}</style>
 </head>
 <body style="margin:0;padding:0;background-color:#0b0f1a;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;" bgcolor="#0b0f1a" class="email-bg">
@@ -66,33 +66,32 @@ const buildEmail = (name: string, calUrl: string) => {
                 </tr>
               </table>
 
-              <!-- Heading -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
                   <td style="padding-bottom:12px;">
                     <p style="margin:0;font-size:13px;color:#6b7a8d;letter-spacing:0.08em;text-transform:uppercase;" class="text-muted">
-                      Friendly reminder
+                      Meeting Reminder
                     </p>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom:16px;">
                     <h1 style="margin:0;font-size:26px;font-weight:700;color:#e8edf2;line-height:1.25;" class="text-white">
-                      Hey ${firstName}, don't forget to book your demo.
+                      Just a reminder, ${firstName} — you have a meeting with us.
                     </h1>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom:28px;">
                     <p style="margin:0;font-size:15px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      We had a great chat and we'd love to show you exactly how Helix Solutions can save your business hours every week. Your personalised demo slot is just one click away.
+                      This is a friendly reminder that you have a demo call booked with Helix Solutions. You can view your booking details and manage your appointment using the link below.
                     </p>
                   </td>
                 </tr>
 
                 <!-- CTA Button -->
                 <tr>
-                  <td align="center" style="padding-bottom:32px;">
+                  <td align="center" style="padding-bottom:28px;">
                     <table cellpadding="0" cellspacing="0" border="0">
                       <tr>
                         <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
@@ -101,7 +100,7 @@ const buildEmail = (name: string, calUrl: string) => {
                             style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
                             class="text-white"
                           >
-                            Book Your Free Demo →
+                            View My Booking →
                           </a>
                         </td>
                       </tr>
@@ -120,57 +119,18 @@ const buildEmail = (name: string, calUrl: string) => {
                   </td>
                 </tr>
 
-                <!-- What to expect -->
-                <tr>
-                  <td style="padding-bottom:10px;">
-                    <p style="margin:0;font-size:13px;font-weight:600;color:#e8edf2;text-transform:uppercase;letter-spacing:0.06em;" class="text-white">
-                      What we'll cover in your demo
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom:24px;">
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #1e2a3a;border-radius:12px;overflow:hidden;">
-                      <tr>
-                        <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
-                          <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
-                            <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">✦</span>
-                            A walkthrough of your custom AI automation plan
-                          </p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
-                          <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
-                            <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">✦</span>
-                            Live demo of real time savings in your workflow
-                          </p>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td style="padding:16px 20px;">
-                          <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
-                            <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">✦</span>
-                            Q&amp;A — ask us anything, zero pressure
-                          </p>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-
                 <!-- Sign-off -->
                 <tr>
                   <td style="padding-bottom:4px;">
                     <p style="margin:0;font-size:14px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      If now isn't the right time, no worries at all — just reply to this email and we'll find a time that suits you.
+                      Need to reschedule or have any questions? Simply reply to this email and we'll sort it out.
                     </p>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-top:20px;">
                     <p style="margin:0;font-size:14px;color:#8a9bb0;" class="text-muted">
-                      Warm regards,<br/>
+                      See you soon,<br/>
                       <span style="color:#e8edf2;font-weight:600;" class="text-white">The Helix Solutions Team</span>
                     </p>
                   </td>
@@ -223,7 +183,7 @@ serve(async (req) => {
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email.trim()],
-      subject: `Hey ${name.split(" ")[0]}, your free demo is one click away`,
+      subject: `Reminder: Your meeting with Helix Solutions`,
       html: buildEmail(name, calUrl),
     });
 
