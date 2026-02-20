@@ -35,7 +35,7 @@ const Tier1 = () => {
     if (atBottom) setContractScrolled(true);
   };
 
-  const canProceedFromStep1 = contractScrolled && acknowledged;
+  const canProceedFromStep1 = acknowledged;
   const canProceedFromStep2 = signature.trim().length >= 2 && email.trim().includes("@");
 
   const handleCheckout = async () => {
@@ -174,21 +174,22 @@ const Tier1 = () => {
                         className="overflow-hidden"
                       >
                         {CONTRACT_PDF_URL ? (
-                          <div
-                            ref={contractRef}
-                            onScroll={handleContractScroll}
-                            className="rounded-xl overflow-auto border border-border/50 bg-black/20"
-                            style={{ height: "420px" }}
-                          >
-                            <iframe
-                              src={`${CONTRACT_PDF_URL}#toolbar=0`}
-                              className="w-full h-full"
-                              title="Service Agreement"
-                              onLoad={() => {
-                                // Mark as scrolled if PDF is short
-                                setTimeout(() => setContractScrolled(true), 3000);
-                              }}
-                            />
+                          <div className="rounded-xl border border-border/50 bg-black/20 p-6 flex flex-col items-center justify-center gap-4" style={{ minHeight: "180px" }}>
+                            <FileText className="h-10 w-10 text-primary/60" />
+                            <div className="text-center">
+                              <p className="text-sm font-medium text-foreground mb-1">Helix Solutions — Service Agreement</p>
+                              <p className="text-xs text-muted-foreground mb-4">Open the PDF to read the full agreement, then check the box below to confirm you've read it.</p>
+                              <a
+                                href={CONTRACT_PDF_URL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setTimeout(() => setContractScrolled(true), 1000)}
+                                className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all"
+                              >
+                                <FileText className="h-4 w-4" />
+                                Open Contract PDF ↗
+                              </a>
+                            </div>
                           </div>
                         ) : (
                           <div
@@ -244,7 +245,7 @@ const Tier1 = () => {
                       : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}
                 >
-                  {!contractScrolled ? "Scroll to read contract" : !acknowledged ? "Please acknowledge above" : "Continue to Sign →"}
+                  {!acknowledged ? "Please acknowledge above" : "Continue to Sign →"}
                 </button>
               </motion.div>
             )}
