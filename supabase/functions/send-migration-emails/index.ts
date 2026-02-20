@@ -17,6 +17,45 @@ const corsHeaders = {
 
 const OWNER_EMAIL = "info@helixsolution.au";
 
+// Shared forced-dark CSS — overrides iOS Mail light mode, Gmail, Outlook dark mode
+const forcedDarkStyles = `
+  /* Force dark regardless of system colour scheme */
+  :root { color-scheme: dark !important; }
+
+  /* iOS Mail / Apple Mail light-mode override */
+  @media (prefers-color-scheme: light) {
+    body, .email-bg { background-color: #0b0f1a !important; color: #e8edf2 !important; }
+    .card { background-color: #111827 !important; }
+    .card-inner { background-color: #111827 !important; }
+    .accent-box { background-color: #0d1f24 !important; }
+    .text-muted { color: #6b7a8d !important; }
+    .text-sub { color: #8a9bb0 !important; }
+    .text-white { color: #e8edf2 !important; }
+    .text-teal { color: #36b8c8 !important; }
+    .text-dim { color: #3d4d5c !important; }
+    .text-dimmer { color: #2a3a4a !important; }
+    .border-dark { border-color: #1e2a3a !important; }
+  }
+
+  /* Outlook dark-mode overrides (data-ogsc) */
+  [data-ogsc] body, [data-ogsc] .email-bg { background-color: #0b0f1a !important; }
+  [data-ogsc] .card { background-color: #111827 !important; }
+  [data-ogsc] .card-inner { background-color: #111827 !important; }
+  [data-ogsc] .accent-box { background-color: #0d1f24 !important; }
+  [data-ogsc] .text-muted { color: #6b7a8d !important; }
+  [data-ogsc] .text-sub { color: #8a9bb0 !important; }
+  [data-ogsc] .text-white { color: #e8edf2 !important; }
+  [data-ogsc] .text-teal { color: #36b8c8 !important; }
+  [data-ogsc] .text-dim { color: #3d4d5c !important; }
+  [data-ogsc] .text-dimmer { color: #2a3a4a !important; }
+  [data-ogsc] .btn-teal { background-color: #36b8c8 !important; }
+  [data-ogsc] .btn-teal a { color: #0b0f1a !important; background-color: #36b8c8 !important; }
+
+  /* Base resets */
+  body { margin: 0; padding: 0; background-color: #0b0f1a !important; -webkit-text-size-adjust: 100%; }
+  * { box-sizing: border-box; }
+`;
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -31,33 +70,32 @@ const handler = async (req: Request): Promise<Response> => {
 
     // ─── Owner notification email ───────────────────────────────────────────
     const ownerHtml = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="supported-color-schemes" content="dark">
-<style>
-  :root { color-scheme: dark; }
-  body { margin: 0; padding: 0; background-color: #0b0f1a !important; }
-  * { box-sizing: border-box; }
-</style>
+<meta name="x-apple-disable-message-reformatting">
+<!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+<style>${forcedDarkStyles}</style>
 </head>
-<body bgcolor="#0b0f1a" style="margin:0;padding:0;background-color:#0b0f1a;">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0f1a" style="background-color:#0b0f1a;padding:40px 16px;">
+<body bgcolor="#0b0f1a" class="email-bg" style="margin:0;padding:0;background-color:#0b0f1a !important;">
+<table class="email-bg" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0f1a" style="background-color:#0b0f1a !important;padding:40px 16px;">
   <tr>
-    <td align="center" bgcolor="#0b0f1a" style="background-color:#0b0f1a;">
-      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;box-shadow:0 0 60px rgba(32,178,170,0.12);">
+    <td align="center" bgcolor="#0b0f1a" class="email-bg" style="background-color:#0b0f1a !important;">
+      <table class="card" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827 !important;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;">
         <!-- Header -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
             <img src="https://helixsolutions.lovable.app/favicon.jpeg" alt="Helix Solutions" width="48" height="48" style="display:block;margin:0 auto 16px;border-radius:12px;" />
-            <p style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8;">HELIX SOLUTIONS</p>
-            <h1 style="margin:10px 0 0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:26px;font-weight:800;color:#e8edf2;">New Lead Submission</h1>
+            <p class="text-teal" style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8 !important;">HELIX SOLUTIONS</p>
+            <h1 class="text-white" style="margin:10px 0 0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:26px;font-weight:800;color:#e8edf2 !important;">New Lead Submission</h1>
           </td>
         </tr>
         <!-- Body -->
         <tr>
-          <td bgcolor="#111827" style="background-color:#111827;padding:32px 40px;">
+          <td bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:32px 40px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               ${[
                 ["Name", name || "—"],
@@ -68,16 +106,16 @@ const handler = async (req: Request): Promise<Response> => {
                 ["Hours Saved / week", `${hoursSaved}h`],
               ].map(([label, value]) => `
               <tr>
-                <td bgcolor="#111827" style="background-color:#111827;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#6b7a8d;width:160px;vertical-align:top;">${label}</td>
-                <td bgcolor="#111827" style="background-color:#111827;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:14px;color:#e8edf2;font-weight:500;">${value}</td>
+                <td bgcolor="#111827" class="card-inner text-muted" style="background-color:#111827 !important;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#6b7a8d !important;width:160px;vertical-align:top;">${label}</td>
+                <td bgcolor="#111827" class="card-inner text-white" style="background-color:#111827 !important;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:14px;color:#e8edf2 !important;font-weight:500;">${value}</td>
               </tr>`).join("")}
             </table>
           </td>
         </tr>
         <!-- Footer -->
         <tr>
-          <td bgcolor="#111827" style="background-color:#111827;padding:20px 40px 32px;border-top:1px solid #1e2a3a;">
-            <p style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#3d4d5c;">Helix Solutions · helixsolution.au</p>
+          <td bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:20px 40px 32px;border-top:1px solid #1e2a3a;">
+            <p class="text-dim" style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#3d4d5c !important;">Helix Solutions · helixsolution.au</p>
           </td>
         </tr>
       </table>
@@ -89,43 +127,41 @@ const handler = async (req: Request): Promise<Response> => {
 
     // ─── Lead thank-you email ────────────────────────────────────────────────
     const leadHtml = `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="supported-color-schemes" content="dark">
-<style>
-  :root { color-scheme: dark; }
-  body { margin: 0; padding: 0; background-color: #0b0f1a !important; }
-  * { box-sizing: border-box; }
-</style>
+<meta name="x-apple-disable-message-reformatting">
+<!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+<style>${forcedDarkStyles}</style>
 </head>
-<body bgcolor="#0b0f1a" style="margin:0;padding:0;background-color:#0b0f1a;">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0f1a" style="background-color:#0b0f1a;padding:40px 16px;">
+<body bgcolor="#0b0f1a" class="email-bg" style="margin:0;padding:0;background-color:#0b0f1a !important;">
+<table class="email-bg" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0f1a" style="background-color:#0b0f1a !important;padding:40px 16px;">
   <tr>
-    <td align="center" bgcolor="#0b0f1a" style="background-color:#0b0f1a;">
-      <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;box-shadow:0 0 80px rgba(32,178,170,0.15);">
+    <td align="center" bgcolor="#0b0f1a" class="email-bg" style="background-color:#0b0f1a !important;">
+      <table class="card" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827 !important;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;">
 
         <!-- Header -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
             <img src="https://helixsolutions.lovable.app/favicon.jpeg" alt="Helix Solutions" width="48" height="48" style="display:block;margin:0 auto 16px;border-radius:12px;" />
-            <p style="margin:0 0 14px;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8;">HELIX SOLUTIONS</p>
-            <h1 style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:28px;font-weight:800;color:#e8edf2;line-height:1.3;">Hey ${firstName} 👋</h1>
-            <p style="margin:12px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:15px;color:#8a9bb0;line-height:1.6;">Based on your answers, here's what an AI Employee could save your business every week:</p>
+            <p class="text-teal" style="margin:0 0 14px;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8 !important;">HELIX SOLUTIONS</p>
+            <h1 class="text-white" style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:28px;font-weight:800;color:#e8edf2 !important;line-height:1.3;">Hey ${firstName} 👋</h1>
+            <p class="text-sub" style="margin:12px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:15px;color:#8a9bb0 !important;line-height:1.6;">Based on your answers, here's what an AI Employee could save your business every week:</p>
           </td>
         </tr>
 
         <!-- Hours saved hero -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:40px 40px 32px;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0d1f24;border:2px solid rgba(54,184,200,0.4);border-radius:16px;">
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:40px 40px 32px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0d1f24 !important;border:2px solid rgba(54,184,200,0.4);border-radius:16px;">
               <tr>
-                <td align="center" bgcolor="#0d1f24" style="background-color:#0d1f24;padding:36px 24px;border-radius:16px;">
-                  <p style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:88px;font-weight:900;color:#36b8c8;line-height:1;letter-spacing:-3px;">${hoursSaved}</p>
-                  <p style="margin:8px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:700;color:#e8edf2;letter-spacing:1px;text-transform:uppercase;">HOURS EVERY WEEK</p>
-                  <p style="margin:10px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:14px;color:#6b7a8d;">That's ${hoursSaved * 52}+ hours saved every year</p>
-
+                <td align="center" bgcolor="#0d1f24" class="accent-box" style="background-color:#0d1f24 !important;padding:36px 24px;border-radius:16px;">
+                  <p class="text-teal" style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:88px;font-weight:900;color:#36b8c8 !important;line-height:1;letter-spacing:-3px;">${hoursSaved}</p>
+                  <p class="text-white" style="margin:8px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:700;color:#e8edf2 !important;letter-spacing:1px;text-transform:uppercase;">HOURS EVERY WEEK</p>
+                  <p class="text-muted" style="margin:10px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:14px;color:#6b7a8d !important;">That's ${hoursSaved * 52}+ hours saved every year</p>
                 </td>
               </tr>
             </table>
@@ -134,30 +170,30 @@ const handler = async (req: Request): Promise<Response> => {
 
         <!-- Body copy -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:0 40px 32px;">
-            <p style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:16px;color:#8a9bb0;line-height:1.7;">Book your <strong style="color:#e8edf2;">same-day demo</strong> and we'll show you exactly how an AI Employee works for your specific business.</p>
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:0 40px 32px;">
+            <p class="text-sub" style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:16px;color:#8a9bb0 !important;line-height:1.7;">Book your <strong class="text-white" style="color:#e8edf2 !important;">same-day demo</strong> and we'll show you exactly how an AI Employee works for your specific business.</p>
           </td>
         </tr>
 
-        <!-- CTA Button (dominant element) -->
+        <!-- CTA Button -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:0 40px 52px;">
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:0 40px 52px;">
             <table cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td align="center" bgcolor="#36b8c8" style="background-color:#36b8c8;border-radius:16px;box-shadow:0 0 48px rgba(54,184,200,0.5);">
-                  <a href="${calUrl}" target="_blank" style="display:block;background-color:#36b8c8;color:#0b0f1a;text-decoration:none;padding:24px 60px;border-radius:16px;font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:900;letter-spacing:0.3px;white-space:nowrap;">Book Your Free Demo →</a>
+                <td align="center" bgcolor="#36b8c8" class="btn-teal" style="background-color:#36b8c8 !important;border-radius:16px;">
+                  <a href="${calUrl}" target="_blank" style="display:block;background-color:#36b8c8 !important;color:#0b0f1a !important;text-decoration:none;padding:24px 60px;border-radius:16px;font-family:Inter,-apple-system,sans-serif;font-size:20px;font-weight:900;letter-spacing:0.3px;white-space:nowrap;">Book Your Free Demo →</a>
                 </td>
               </tr>
             </table>
-            <p style="margin:16px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#3d4d5c;">Same-day availability · No obligation · No credit card</p>
+            <p class="text-dim" style="margin:16px 0 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#3d4d5c !important;">Same-day availability · No obligation · No credit card</p>
           </td>
         </tr>
 
         <!-- Footer -->
         <tr>
-          <td align="center" bgcolor="#111827" style="background-color:#111827;padding:24px 40px;border-top:1px solid #1e2a3a;">
-            <p style="margin:0 0 4px;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#3d4d5c;">Questions? Reply to this email — we'll get back to you straight away.</p>
-            <p style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#2a3a4a;">Helix Solutions · helixsolution.au</p>
+          <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:24px 40px;border-top:1px solid #1e2a3a;">
+            <p class="text-dim" style="margin:0 0 4px;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#3d4d5c !important;">Questions? Reply to this email — we'll get back to you straight away.</p>
+            <p class="text-dimmer" style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#2a3a4a !important;">Helix Solutions · helixsolution.au</p>
           </td>
         </tr>
 
