@@ -57,6 +57,12 @@ const Admin = () => {
   const [fuSent, setFuSent] = useState(false);
   const [fuResolved, setFuResolved] = useState<{ name: string; calUrl: string } | null>(null);
 
+  // Payment received email state
+  const [prName, setPrName] = useState("");
+  const [prEmail, setPrEmail] = useState("");
+  const [prSending, setPrSending] = useState(false);
+  const [prSent, setPrSent] = useState(false);
+
   const handleSendThankYou = async () => {
     if (!tyName.trim() || !tyEmail.trim().includes("@")) return;
     setTySending(true);
@@ -95,6 +101,31 @@ const Admin = () => {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
     } finally {
       setFuSending(false);
+    }
+  };
+
+  const handleSendPaymentReceived = async () => {
+    if (!prName.trim() || !prEmail.trim().includes("@")) return;
+    setPrSending(true);
+    setPrSent(false);
+    try {
+      const { error } = await supabase.functions.invoke("send-simple-email", {
+        body: {
+          to: prEmail.trim(),
+          subject: "Payment Received — Helix Solutions",
+          name: prName.trim(),
+          body: "We have received your payment and are working on setting up OpenClaw.",
+        },
+      });
+      if (error) throw error;
+      setPrSent(true);
+      setPrName("");
+      setPrEmail("");
+      toast({ title: "Email sent!", description: `Payment confirmation sent to ${prEmail.trim()}` });
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message, variant: "destructive" });
+    } finally {
+      setPrSending(false);
     }
   };
 
@@ -252,6 +283,46 @@ const Admin = () => {
               </p>
             </div>
           )}
+        </div>
+
+        {/* Payment Received Email */}
+        <div className="glass rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <CheckCircle className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Send Payment Confirmation</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5">
+            Notify a client that their payment has been received and OpenClaw setup is underway.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Input
+              placeholder="Client full name"
+              value={prName}
+              onChange={(e) => { setPrName(e.target.value); setPrSent(false); }}
+              className="bg-background/40 flex-1"
+            />
+            <Input
+              type="email"
+              placeholder="Client email address"
+              value={prEmail}
+              onChange={(e) => { setPrEmail(e.target.value); setPrSent(false); }}
+              className="bg-background/40 flex-1"
+            />
+            <button
+              onClick={handleSendPaymentReceived}
+              disabled={prSending || !prName.trim() || !prEmail.trim().includes("@")}
+              className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+            >
+              {prSending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : prSent ? (
+                <CheckCircle className="h-4 w-4" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+              {prSending ? "Sending…" : prSent ? "Sent!" : "Send Confirmation"}
+            </button>
+          </div>
         </div>
 
         {/* Signatures Table */}
