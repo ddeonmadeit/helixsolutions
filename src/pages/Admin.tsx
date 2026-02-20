@@ -64,6 +64,12 @@ const Admin = () => {
   const [prSending, setPrSending] = useState(false);
   const [prSent, setPrSent] = useState(false);
 
+  // Missed call email state
+  const [mcEmail, setMcEmail] = useState("");
+  const [mcSending, setMcSending] = useState(false);
+  const [mcSent, setMcSent] = useState(false);
+  const [mcResolved, setMcResolved] = useState<{ name: string; calUrl: string } | null>(null);
+
   const handleSendThankYou = async () => {
     if (!tyName.trim() || !tyEmail.trim().includes("@")) return;
     setTySending(true);
@@ -128,6 +134,27 @@ const Admin = () => {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
     } finally {
       setPrSending(false);
+    }
+  };
+
+  const handleSendMissedCall = async () => {
+    if (!mcEmail.trim().includes("@")) return;
+    setMcSending(true);
+    setMcSent(false);
+    setMcResolved(null);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-missedcall-email", {
+        body: { email: mcEmail.trim() },
+      });
+      if (error) throw error;
+      setMcSent(true);
+      setMcResolved({ name: data.name, calUrl: data.calUrl });
+      setMcEmail("");
+      toast({ title: "Email sent!", description: `Missed call email sent to ${data.name}` });
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message, variant: "destructive" });
+    } finally {
+      setMcSending(false);
     }
   };
 
@@ -339,6 +366,52 @@ const Admin = () => {
               {prSending ? "Sending…" : prSent ? "Sent!" : "Send Confirmation"}
             </button>
           </div>
+        </div>
+
+        {/* Missed Call Email */}
+        <div className="glass rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Mail className="h-4 w-4 text-primary" />
+            <h2 className="text-lg font-semibold text-foreground">Send Missed Call Email</h2>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5">
+            Enter a client's email — we'll send them a "we missed you" note with their personalised reschedule link.
+          </p>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Input
+                type="email"
+                placeholder="Client email address"
+                value={mcEmail}
+                onChange={(e) => { setMcEmail(e.target.value); setMcSent(false); setMcResolved(null); }}
+                className="bg-background/40 flex-1"
+              />
+              <button
+                onClick={handleSendMissedCall}
+                disabled={mcSending || !mcEmail.trim().includes("@")}
+                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                {mcSending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : mcSent ? (
+                  <CheckCircle className="h-4 w-4" />
+                ) : (
+                  <Mail className="h-4 w-4" />
+                )}
+                {mcSending ? "Sending…" : mcSent ? "Sent!" : "Send Email"}
+              </button>
+            </div>
+          </div>
+          {mcResolved && (
+            <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-xs text-muted-foreground space-y-1">
+              <p><span className="text-foreground font-medium">Sent to:</span> {mcResolved.name}</p>
+              <p className="break-all"><span className="text-foreground font-medium">Reschedule link:</span>{" "}
+                <a href={mcResolved.calUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                  {mcResolved.calUrl}
+                </a>
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Signatures Table */}
