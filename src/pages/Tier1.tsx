@@ -35,7 +35,8 @@ const Tier1 = () => {
   };
 
   const canProceedFromStep1 = acknowledged;
-  const canProceedFromStep2 = signature.trim().length >= 2 && email.trim().includes("@");
+  const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  const canProceedFromStep2 = signature.trim().length >= 2 && isValidEmail;
 
   const handleCheckout = async () => {
     setLoading(true);
