@@ -15,7 +15,7 @@ const Header = () => {
     <header className="absolute top-0 left-0 right-0 z-50 px-6 py-6">
       <div className="flex items-center justify-center">
         <motion.div
-          className="flex items-center"
+          className="flex items-center gap-3"
           layout
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
@@ -29,7 +29,7 @@ const Header = () => {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="relative flex flex-col items-center justify-center gap-[5px] w-4 h-14 ml-0 focus:outline-none"
+            className="relative flex flex-col items-center justify-center gap-[5px] focus:outline-none"
             aria-label="Toggle menu"
           >
             {[0, 1, 2].map((i) => (
@@ -49,7 +49,7 @@ const Header = () => {
           <AnimatePresence>
             {menuOpen && (
               <motion.nav
-                className="flex items-center gap-1"
+                className="flex items-center gap-3"
                 initial={{ opacity: 0, width: 0 }}
                 animate={{ opacity: 1, width: "auto" }}
                 exit={{ opacity: 0, width: 0 }}
