@@ -145,7 +145,7 @@ const MigrationOnboarding = () => {
               { value: "follow-ups", label: "Follow Up My Leads & Customers", icon: <MessageSquare className="h-5 w-5" /> },
               { value: "admin-ops", label: "Handle Admin & Operations", icon: <FileText className="h-5 w-5" /> },
               { value: "team-coordination", label: "Coordinate My Team", icon: <Calendar className="h-5 w-5" /> },
-              { value: "overworked", label: "Take Work Off My Plate", icon: <Clock className="h-5 w-5" /> },
+              { value: "overworked", label: "Book & Manage My Calendar", icon: <Clock className="h-5 w-5" /> },
               { value: "other", label: "Other", icon: <MoreHorizontal className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
