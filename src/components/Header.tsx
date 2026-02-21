@@ -15,16 +15,35 @@ const Header = () => {
     <header className="absolute top-0 left-0 right-0 z-50 px-6 py-6">
       <div className="flex items-center justify-center">
         <motion.div
-          className="flex items-center gap-2"
+          className="flex items-center"
           layout
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
-          <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
+          <a href="/">
             <img
               src={helixLogo}
               alt="Helix Solutions logo"
-              className="h-14 w-14 cursor-pointer"
+              className="h-14 w-14"
             />
+          </a>
+
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="relative flex flex-col items-center justify-center gap-[5px] w-4 h-14 ml-0 focus:outline-none"
+            aria-label="Toggle menu"
+          >
+            {[0, 1, 2].map((i) => (
+              <motion.span
+                key={i}
+                className="block bg-foreground rounded-full"
+                animate={{
+                  width: menuOpen ? 16 : 3,
+                  height: menuOpen ? 2 : 3,
+                  borderRadius: menuOpen ? 2 : 9999,
+                }}
+                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+              />
+            ))}
           </button>
 
           <AnimatePresence>
