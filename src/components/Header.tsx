@@ -15,7 +15,7 @@ const Header = () => {
     <header className="absolute top-0 left-0 right-0 z-50 px-6 py-6">
       <div className="flex items-center justify-center">
         <motion.div
-          className="flex items-center gap-4"
+          className="flex items-center gap-2"
           layout
           transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
         >
