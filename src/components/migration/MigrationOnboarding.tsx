@@ -12,6 +12,7 @@ interface StepData {
   timeSinks: string[];
   timeSinksOther: string;
   businessType: string;
+  businessTypeOther: string;
   currentSoftware: string[];
   name: string;
   email: string;
@@ -21,6 +22,7 @@ const initialData: StepData = {
   timeSinks: [],
   timeSinksOther: "",
   businessType: "",
+  businessTypeOther: "",
   currentSoftware: [],
   name: "",
   email: "",
@@ -77,7 +79,7 @@ const MigrationOnboarding = () => {
   const canProceed = () => {
     switch (step) {
       case 0: return data.timeSinks.length > 0 && (!data.timeSinks.includes("other") || data.timeSinksOther.trim().length > 0);
-      case 1: return !!data.businessType;
+      case 1: return !!data.businessType && (data.businessType !== "other" || data.businessTypeOther.trim().length > 0);
       case 2: return data.currentSoftware.length > 0;
       case 3: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
       default: return false;
@@ -198,6 +200,23 @@ const MigrationOnboarding = () => {
                 onClick={() => setData({ ...data, businessType: opt.value })}
               />
             ))}
+            <AnimatePresence>
+              {data.businessType === "other" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Input
+                    placeholder=""
+                    value={data.businessTypeOther}
+                    onChange={(e) => setData({ ...data, businessTypeOther: e.target.value })}
+                    className="bg-background/40 mt-1"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       case 2:
