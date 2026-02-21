@@ -31,7 +31,7 @@ const Header = () => {
           {/* Menu toggle button - 3 dots / 3 lines */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="relative flex flex-col items-center justify-center gap-[5px] w-8 h-8 focus:outline-none"
+            className="relative flex flex-col items-center justify-center gap-[5px] w-5 h-8 -ml-1 focus:outline-none"
             aria-label="Toggle menu"
           >
             {[0, 1, 2].map((i) => (
