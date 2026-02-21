@@ -23,12 +23,6 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-6 text-center"
         >
-          <a
-            href="/about"
-            className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-foreground hover:border-primary/30 transition-colors"
-          >
-            ABOUT US
-          </a>
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
             Save 4+ Hours Daily With an AI Employee
           </h1>
