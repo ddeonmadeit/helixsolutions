@@ -25,9 +25,8 @@ const Index = () => {
         >
           <a
             href="/about"
-            className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-primary hover:border-primary/30 transition-colors"
+            className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-foreground hover:border-primary/30 transition-colors"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             ABOUT US
           </a>
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
