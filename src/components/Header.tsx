@@ -68,7 +68,7 @@ const Header = () => {
                       delay: i * 0.06,
                       ease: "easeOut",
                     }}
-                    className="whitespace-nowrap rounded-full glass px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-foreground hover:border-primary/30 transition-colors"
+                    className="whitespace-nowrap rounded-full glass px-2.5 py-1 text-[10px] sm:px-4 sm:py-1.5 sm:text-xs font-medium uppercase tracking-wider text-foreground hover:border-primary/30 transition-colors"
                   >
                     {item.label}
                   </motion.a>
