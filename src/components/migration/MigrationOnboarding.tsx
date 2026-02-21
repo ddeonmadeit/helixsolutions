@@ -31,7 +31,6 @@ const initialData: StepData = {
 const steps = [
   { title: "If you had an assistant, what would they do for you?" },
   { title: "What best describes your business?" },
-  { title: "What software are you currently using?" },
   { title: "Find out how many hours you could save per week:" },
 ];
 
@@ -80,8 +79,7 @@ const MigrationOnboarding = () => {
     switch (step) {
       case 0: return data.timeSinks.length > 0 && (!data.timeSinks.includes("other") || data.timeSinksOther.trim().length > 0);
       case 1: return !!data.businessType && (data.businessType !== "other" || data.businessTypeOther.trim().length > 0);
-      case 2: return data.currentSoftware.length > 0;
-      case 3: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
+      case 2: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
       default: return false;
     }
   };
@@ -220,32 +218,6 @@ const MigrationOnboarding = () => {
           </div>
         );
       case 2:
-        return (
-          <div className="grid gap-3">
-            <p className="text-xs text-muted-foreground mb-1">Select all that apply</p>
-            {[
-              { value: "chatgpt", label: "ChatGPT" },
-              { value: "zoho", label: "Zoho" },
-              { value: "hubspot", label: "HubSpot" },
-              { value: "trello", label: "Trello" },
-              { value: "klaviyo", label: "Klaviyo" },
-              { value: "myob", label: "MYOB" },
-            ].map((opt) => (
-              <OptionCard
-                key={opt.value}
-                label={opt.label}
-                selected={data.currentSoftware.includes(opt.value)}
-                onClick={() => {
-                  const currentSoftware = data.currentSoftware.includes(opt.value)
-                    ? data.currentSoftware.filter((v) => v !== opt.value)
-                    : [...data.currentSoftware, opt.value];
-                  setData({ ...data, currentSoftware });
-                }}
-              />
-            ))}
-          </div>
-        );
-      case 3:
         return (
           <div className="grid gap-4">
             <div className="grid gap-1.5">
