@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 interface StepData {
   timeSinks: string[];
+  timeSinksOther: string;
   businessType: string;
   currentSoftware: string[];
   name: string;
@@ -18,6 +19,7 @@ interface StepData {
 
 const initialData: StepData = {
   timeSinks: [],
+  timeSinksOther: "",
   businessType: "",
   currentSoftware: [],
   name: "",
@@ -25,7 +27,7 @@ const initialData: StepData = {
 };
 
 const steps = [
-  { title: "What currently takes up most of your time?" },
+  { title: "If you had an assistant, what would they do for you?" },
   { title: "What best describes your business?" },
   { title: "What software are you currently using?" },
   { title: "Find out how many hours you could save per week:" },
@@ -74,7 +76,7 @@ const MigrationOnboarding = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 0: return data.timeSinks.length > 0;
+      case 0: return data.timeSinks.length > 0 && (!data.timeSinks.includes("other") || data.timeSinksOther.trim().length > 0);
       case 1: return !!data.businessType;
       case 2: return data.currentSoftware.length > 0;
       case 3: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
@@ -144,6 +146,7 @@ const MigrationOnboarding = () => {
               { value: "admin-ops", label: "Admin & Operational Tasks", icon: <FileText className="h-5 w-5" /> },
               { value: "team-coordination", label: "Team Coordination", icon: <Calendar className="h-5 w-5" /> },
               { value: "overworked", label: "I'm Working Too Many Hours", icon: <Clock className="h-5 w-5" /> },
+              { value: "other", label: "Other", icon: <MoreHorizontal className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
                 key={opt.value}
@@ -158,6 +161,23 @@ const MigrationOnboarding = () => {
                 }}
               />
             ))}
+            <AnimatePresence>
+              {data.timeSinks.includes("other") && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Input
+                    placeholder="Tell us what you need help with..."
+                    value={data.timeSinksOther}
+                    onChange={(e) => setData({ ...data, timeSinksOther: e.target.value })}
+                    className="bg-background/40 mt-1"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       case 1:
