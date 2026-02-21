@@ -141,11 +141,11 @@ const MigrationOnboarding = () => {
           <div className="grid gap-3">
             <p className="text-xs text-muted-foreground mb-1">Select all that apply</p>
             {[
-              { value: "emails-messages", label: "Managing Emails & Messages", icon: <Mail className="h-5 w-5" /> },
-              { value: "follow-ups", label: "Following Up Leads/Customers", icon: <MessageSquare className="h-5 w-5" /> },
-              { value: "admin-ops", label: "Admin & Operational Tasks", icon: <FileText className="h-5 w-5" /> },
-              { value: "team-coordination", label: "Team Coordination", icon: <Calendar className="h-5 w-5" /> },
-              { value: "overworked", label: "I'm Working Too Many Hours", icon: <Clock className="h-5 w-5" /> },
+              { value: "emails-messages", label: "Manage My Emails & Messages", icon: <Mail className="h-5 w-5" /> },
+              { value: "follow-ups", label: "Follow Up My Leads & Customers", icon: <MessageSquare className="h-5 w-5" /> },
+              { value: "admin-ops", label: "Handle Admin & Operations", icon: <FileText className="h-5 w-5" /> },
+              { value: "team-coordination", label: "Coordinate My Team", icon: <Calendar className="h-5 w-5" /> },
+              { value: "overworked", label: "Take Work Off My Plate", icon: <Clock className="h-5 w-5" /> },
               { value: "other", label: "Other", icon: <MoreHorizontal className="h-5 w-5" /> },
             ].map((opt) => (
               <OptionCard
@@ -170,7 +170,7 @@ const MigrationOnboarding = () => {
                   transition={{ duration: 0.2 }}
                 >
                   <Input
-                    placeholder="Tell us what you need help with..."
+                    placeholder=""
                     value={data.timeSinksOther}
                     onChange={(e) => setData({ ...data, timeSinksOther: e.target.value })}
                     className="bg-background/40 mt-1"
