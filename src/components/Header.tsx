@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import helixLogo from "@/assets/helix-logo.png";
 
 const menuItems = [
-  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Tier 1", href: "/tier1" },
+  { label: "Testimonials", href: "/testimonials" },
+  { label: "Policies", href: "/policies" },
 ];
 
 const Header = () => {
