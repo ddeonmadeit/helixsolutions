@@ -55,10 +55,10 @@ const Index = () => {
                   Through one chat interface, <strong className="text-foreground">automate</strong> the <strong className="text-foreground">repetitive work</strong> that slows your business down by connecting directly to the tools you already use, such as email, calendars, CRMs, and messaging apps.
                 </p>
                 <p className="mb-3">
-                  Instead of adding another platform, our system <strong className="text-foreground">learns how your company operates</strong> and turns everyday tasks into automated workflows tailored to your needs.
+                  Instead of adding another platform, our system <strong className="text-foreground">learns how your company operates</strong> and turns everyday tasks into automated workflows tailored to your needs, <strong className="text-foreground">using artificial intelligence technology</strong>.
                 </p>
                 <p>
-                  The result is less time spent on admin, fewer operational bottlenecks, and more capacity for your team to focus on growth — all <strong className="text-foreground">while</strong> <strong className="text-foreground">feeling like you're talking to a human</strong>, using artificial intelligence technology.
+                  The result is less time spent on admin, fewer operational bottlenecks, and more capacity for your team to focus on growth — all <strong className="text-foreground">while</strong> <strong className="text-foreground">feeling like you're talking to a human</strong>.
                 </p>
               </div>
             </motion.div>
