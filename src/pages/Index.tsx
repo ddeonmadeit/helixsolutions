@@ -24,7 +24,7 @@ const Index = () => {
           className="mb-6 text-center"
         >
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
-            Save 4+ Hours Daily With an AI Employee
+            Save 4+ Hours Daily With a Digital Operator
           </h1>
         </motion.div>
 
@@ -36,7 +36,7 @@ const Index = () => {
           onClick={() => setDrawerOpen(!drawerOpen)}
           className="mb-6 inline-flex items-center gap-2 rounded-full glass px-5 py-2 text-xs font-medium text-muted-foreground transition-all hover:text-foreground hover:border-primary/20"
         >
-          What is an AI Employee?
+          What is a Digital Operator?
           <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${drawerOpen ? "rotate-180" : ""}`} />
         </motion.button>
 
