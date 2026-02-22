@@ -64,7 +64,7 @@ const Testimonials = () => {
             TESTIMONIALS
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-gradient sm:text-4xl mb-5">
-            Trusted by 2,000+ Businesses
+            Built on Results, Not Promises
           </h1>
           <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl mb-10">
             Don't just take our word for it — hear from the businesses that transformed their operations with an AI employee.
