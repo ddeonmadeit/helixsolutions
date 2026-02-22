@@ -117,7 +117,7 @@ const About = () => {
             TESTIMONIALS
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground mb-8">
-            Trusted by 2,000+ Businesses
+            Built on Results, Not Promises
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2">
