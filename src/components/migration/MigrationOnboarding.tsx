@@ -14,8 +14,6 @@ interface StepData {
   businessType: string;
   businessTypeOther: string;
   currentSoftware: string[];
-  name: string;
-  email: string;
 }
 
 const initialData: StepData = {
@@ -24,14 +22,11 @@ const initialData: StepData = {
   businessType: "",
   businessTypeOther: "",
   currentSoftware: [],
-  name: "",
-  email: "",
 };
 
 const steps = [
   { title: "If you had an assistant, what would they do for you?" },
   { title: "What best describes your business?" },
-  { title: "Find out how many hours you could save per week:" },
 ];
 
 const slideVariants = {
@@ -79,7 +74,6 @@ const MigrationOnboarding = () => {
     switch (step) {
       case 0: return data.timeSinks.length > 0 && (!data.timeSinks.includes("other") || data.timeSinksOther.trim().length > 0);
       case 1: return !!data.businessType && (data.businessType !== "other" || data.businessTypeOther.trim().length > 0);
-      case 2: return !!data.name.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
       default: return false;
     }
   };
@@ -215,31 +209,6 @@ const MigrationOnboarding = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
-        );
-      case 2:
-        return (
-          <div className="grid gap-4">
-            <div className="grid gap-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Your Name</label>
-              <Input
-                placeholder="Jane Smith"
-                value={data.name}
-                onChange={(e) => setData({ ...data, name: e.target.value })}
-                className="bg-background/40"
-              />
-            </div>
-            <div className="grid gap-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Email Address</label>
-              <Input
-                type="email"
-                placeholder="jane@company.com"
-                value={data.email}
-                onChange={(e) => setData({ ...data, email: e.target.value })}
-                className="bg-background/40"
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">See how many hours you could be saving:</p>
           </div>
         );
       default:

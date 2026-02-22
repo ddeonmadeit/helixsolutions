@@ -168,33 +168,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { email } = await req.json();
+    const { name, email } = await req.json();
     if (!email) throw new Error("email is required");
+    if (!name) throw new Error("name is required");
 
-    // Look up lead by email to get their name and quiz data
-    const { data: leads } = await supabaseAdmin
-      .from("leads")
-      .select("name, email, time_sinks, business_type, current_software")
-      .eq("email", email.trim().toLowerCase())
-      .order("created_at", { ascending: false })
-      .limit(1);
-
-    const lead = leads?.[0];
-    const name = lead?.name || email.split("@")[0];
-
-    // Build personalised Cal URL with their quiz metadata if available
-    const calUrl = lead
-      ? `https://cal.com/helix-solutions/demo?metadata[timeSinks]=${encodeURIComponent((lead.time_sinks || []).join(", "))}&metadata[businessType]=${encodeURIComponent(lead.business_type || "")}&metadata[currentSoftware]=${encodeURIComponent((lead.current_software || []).join(", "))}`
-      : "https://cal.com/helix-solutions/demo";
+    const calUrl = "https://cal.com/helix-solutions/demo";
 
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email.trim()],
-      subject: `We missed you, ${name.split(" ")[0]} — let's find a new time`,
-      html: buildEmail(name, calUrl),
+      subject: `We missed you, ${name.trim().split(" ")[0]} — let's find a new time`,
+      html: buildEmail(name.trim(), calUrl),
     });
 
-    return new Response(JSON.stringify({ success: true, name, calUrl }), {
+    return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err: any) {
