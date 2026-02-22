@@ -7,7 +7,7 @@ const testimonials = [
     name: "Sarah Mitchell",
     role: "Operations Manager, Apex Realty",
     quote:
-      "We cut our admin time by 5 hours a day. The AI employee handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
+      "We cut our admin time by 5 hours a day. The digital operator handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
     stars: 5,
   },
   {
@@ -67,7 +67,8 @@ const Testimonials = () => {
             Built on Results, Not Promises
           </h1>
           <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl mb-10">
-            Don't just take our word for it — hear from the businesses that transformed their operations with an AI employee.
+            Don't just take our word for it.
+            Hear from the businesses that transformed their operations with a digital operator.
           </p>
         </motion.div>
 
