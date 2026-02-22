@@ -23,7 +23,7 @@ const Index = () => {
           transition={{ duration: 0.6 }}
           className="mb-6 text-center"
         >
-          <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
+          <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl relative z-50 pb-1">
             Save 4+ Hours Daily With
             <br className="hidden sm:block" />
             {" "}a Digital Operator
