@@ -7,7 +7,7 @@ const testimonials = [
   name: "Sarah Mitchell",
   role: "Operations Manager, Apex Realty",
   quote:
-  "We cut our admin time by 5 hours a day. The AI employee handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
+  "We cut our admin time by 5 hours a day. The digital operator handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
   stars: 5
 },
 {
@@ -82,7 +82,7 @@ const About = () => {
             ABOUT US
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-gradient sm:text-4xl mb-5">
-            We Build AI Employees That Actually Work
+            We Build Digital Operators That Actually Work
           </h1>
           <div className="text-sm leading-relaxed text-muted-foreground max-w-2xl space-y-4">
             <p>Helix Solutions was founded on a simple idea: businesses shouldn't waste hours on repetitive tasks that machines can do better. We connect directly to the tools you already use and turn everyday busywork into automated workflows — so your team can focus on what actually grows the business.</p>
@@ -96,7 +96,7 @@ const About = () => {
                 </div>
               ))}
             </div>
-            <p>Your AI employee works 24/7, responds in seconds, and scales with your business — without increasing your headcount.</p>
+            <p>Your digital operator works 24/7, responds in seconds, and scales with your business — without increasing your headcount.</p>
             <p>Helix Solutions replaces repetitive manual work with intelligent automation, so you can grow revenue without growing expenses.</p>
           </div>
         </motion.div>

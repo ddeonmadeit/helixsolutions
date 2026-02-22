@@ -110,7 +110,7 @@ const MigrationOnboarding = () => {
         </motion.div>
         <h2 className="mb-2 text-2xl font-bold text-foreground">One last step!</h2>
         <p className="text-muted-foreground mb-6">
-          Book your same-day demo to see your custom AI employee in action.
+          Book your same-day demo to see your custom digital operator in action.
         </p>
         <motion.a
           href={buildCalUrl()}
