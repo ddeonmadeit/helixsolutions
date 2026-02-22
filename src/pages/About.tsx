@@ -32,6 +32,18 @@ const testimonials = [
   stars: 5
 }];
 
+const aboutPoints = [
+  "No more sick days",
+  "No annual leave",
+  "No payroll tax or super",
+  "No training time",
+  "No onboarding delays",
+  "No human error from fatigue",
+  "No salary increases",
+  "Reduced overheads",
+  "Faster execution",
+  "Lower operating costs",
+];
 
 const About = () => {
   return (
@@ -52,7 +64,6 @@ const About = () => {
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-10 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
-
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to home
         </motion.a>
@@ -71,41 +82,21 @@ const About = () => {
           <h1 className="text-3xl font-bold tracking-tight text-gradient sm:text-4xl mb-5">
             We Build AI Employees That Actually Work
           </h1>
-          <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl">Helix Solutions was founded on a simple idea: businesses shouldn’t waste hours on repetitive tasks that machines can do better. We connect directly to the tools you already use and turn everyday busywork into automated workflows — so your team can focus on what actually grows the business.
-
-
-
-Instead of hiring more staff to handle admin, follow-ups, data entry, scheduling, and customer replies, we deploy AI systems that work instantly and consistently.
-
-
-
-What this means for you:
-
-No more sick days
-
-No annual leave
-
-No payroll tax or super
-
-No training time
-
-No onboarding delays
-
-No human error from fatigue
-
-No salary increases
-
-Reduced overheads.
-Faster execution.
-Lower operating costs.
-
-
-
-Your AI employee works 24/7, responds in seconds, and scales with your business — without increasing your headcount.
-
-
-
-Helix Solutions replaces repetitive manual work with intelligent automation, so you can grow revenue without growing expenses.</p>
+          <div className="text-sm leading-relaxed text-muted-foreground max-w-2xl space-y-4">
+            <p>Helix Solutions was founded on a simple idea: businesses shouldn't waste hours on repetitive tasks that machines can do better. We connect directly to the tools you already use and turn everyday busywork into automated workflows — so your team can focus on what actually grows the business.</p>
+            <p>Instead of hiring more staff to handle admin, follow-ups, data entry, scheduling, and customer replies, we deploy AI systems that work instantly and consistently.</p>
+            <p className="text-foreground font-semibold">What this means for you:</p>
+            <div className="grid grid-cols-3 gap-x-6 gap-y-2">
+              {aboutPoints.map((point, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                  <span>{point}</span>
+                </div>
+              ))}
+            </div>
+            <p>Your AI employee works 24/7, responds in seconds, and scales with your business — without increasing your headcount.</p>
+            <p>Helix Solutions replaces repetitive manual work with intelligent automation, so you can grow revenue without growing expenses.</p>
+          </div>
         </motion.div>
 
         {/* Values */}
