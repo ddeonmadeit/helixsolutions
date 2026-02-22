@@ -40,6 +40,8 @@ const aboutPoints = [
   "No onboarding delays",
   "No human error from fatigue",
   "No salary increases",
+  "No complaints",
+  "Unlimited memory",
   "Reduced overheads",
   "Faster execution",
   "Lower operating costs",
