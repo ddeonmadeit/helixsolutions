@@ -76,15 +76,6 @@ const Index = () => {
           <MigrationOnboarding />
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-12 flex items-center gap-1 text-xs text-muted-foreground"
-        >
-          Trusted by 2,000+ businesses
-          <ArrowRight className="h-3 w-3" />
-        </motion.p>
       </div>
     </div>
   );
