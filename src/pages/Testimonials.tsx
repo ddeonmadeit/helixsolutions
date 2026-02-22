@@ -4,10 +4,10 @@ import Header from "@/components/Header";
 
 const testimonials = [
   {
-    name: "Sarah Mitchell",
-    role: "Operations Manager, Apex Realty",
+    name: "Stephen Danielian",
+    role: "Founder, SDL Creations",
     quote:
-      "We cut our admin time by 5 hours a day. The digital operator handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
+      "I used to be on-site all day and still stuck answering calls and messages at night. Since bringing on the digital operator, I don't have to anymore. I can focus on the important work that keeps the business evolving.",
     stars: 5,
   },
   {
