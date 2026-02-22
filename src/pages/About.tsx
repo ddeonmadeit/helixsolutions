@@ -3,35 +3,35 @@ import { ArrowLeft, Quote, Star } from "lucide-react";
 import Header from "@/components/Header";
 
 const testimonials = [
-  {
-    name: "Sarah Mitchell",
-    role: "Operations Manager, Apex Realty",
-    quote:
-      "We cut our admin time by 5 hours a day. The AI employee handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
-    stars: 5,
-  },
-  {
-    name: "James Thornton",
-    role: "Founder, Thornton Legal",
-    quote:
-      "I was sceptical about AI, but this genuinely feels like hiring a new team member. It learned our processes in days and now runs them better than we did.",
-    stars: 5,
-  },
-  {
-    name: "Priya Kapoor",
-    role: "CEO, BrightPath Education",
-    quote:
-      "Our response time to enquiries dropped from 4 hours to under 2 minutes. We've doubled our enrolment pipeline without adding headcount.",
-    stars: 5,
-  },
-  {
-    name: "David Chen",
-    role: "Managing Director, Chen & Associates",
-    quote:
-      "The onboarding was seamless. Within a week it was drafting client emails, managing calendars, and flagging tasks — all through one chat interface.",
-    stars: 5,
-  },
-];
+{
+  name: "Sarah Mitchell",
+  role: "Operations Manager, Apex Realty",
+  quote:
+  "We cut our admin time by 5 hours a day. The AI employee handles follow-ups, scheduling, and CRM updates — things that used to eat our mornings alive.",
+  stars: 5
+},
+{
+  name: "James Thornton",
+  role: "Founder, Thornton Legal",
+  quote:
+  "I was sceptical about AI, but this genuinely feels like hiring a new team member. It learned our processes in days and now runs them better than we did.",
+  stars: 5
+},
+{
+  name: "Priya Kapoor",
+  role: "CEO, BrightPath Education",
+  quote:
+  "Our response time to enquiries dropped from 4 hours to under 2 minutes. We've doubled our enrolment pipeline without adding headcount.",
+  stars: 5
+},
+{
+  name: "David Chen",
+  role: "Managing Director, Chen & Associates",
+  quote:
+  "The onboarding was seamless. Within a week it was drafting client emails, managing calendars, and flagging tasks — all through one chat interface.",
+  stars: 5
+}];
+
 
 const About = () => {
   return (
@@ -51,8 +51,8 @@ const About = () => {
           href="/"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-10 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
+          className="mb-10 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors">
+
           <ArrowLeft className="h-3.5 w-3.5" />
           Back to home
         </motion.a>
@@ -62,8 +62,8 @@ const About = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-16"
-        >
+          className="mb-16">
+
           <div className="mb-4 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             ABOUT US
@@ -71,48 +71,54 @@ const About = () => {
           <h1 className="text-3xl font-bold tracking-tight text-gradient sm:text-4xl mb-5">
             We Build AI Employees That Actually Work
           </h1>
-          <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl">
-            Helix Solutions was founded on a simple idea: businesses shouldn't waste
-            hours on repetitive tasks that machines can do better. We connect directly
-            to the tools you already use and turn everyday busywork into automated
-            workflows — so your team can focus on what matters.
-          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl">Helix Solutions was founded on a simple idea: businesses shouldn’t waste hours on repetitive tasks that machines can do better. We connect directly to the tools you already use and turn everyday busywork into automated workflows — so your team can focus on what actually grows the business.
+
+
+
+Instead of hiring more staff to handle admin, follow-ups, data entry, scheduling, and customer replies, we deploy AI systems that work instantly and consistently.
+
+
+
+What this means for you:
+
+No more sick days
+
+No annual leave
+
+No payroll tax or super
+
+No training time
+
+No onboarding delays
+
+No human error from fatigue
+
+No salary increases
+
+Reduced overheads.
+Faster execution.
+Lower operating costs.
+
+
+
+Your AI employee works 24/7, responds in seconds, and scales with your business — without increasing your headcount.
+
+
+
+Helix Solutions replaces repetitive manual work with intelligent automation, so you can grow revenue without growing expenses.</p>
         </motion.div>
 
         {/* Values */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="mb-16 grid gap-4 sm:grid-cols-3"
-        >
-          {[
-            {
-              title: "Same-Day Demos",
-              desc: "See results before you commit. We move fast so you can too.",
-            },
-            {
-              title: "Your Tools, Connected",
-              desc: "Email, CRM, calendar, messaging — we plug into what you already have.",
-            },
-            {
-              title: "Human-Like Experience",
-              desc: "One chat interface that feels natural. No new platforms to learn.",
-            },
-          ].map((v, i) => (
-            <div key={i} className="glass rounded-2xl p-5">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="mb-16 grid gap-4 sm:grid-cols-3">
+          {[{ title: "Same-Day Demos", desc: "See results before you commit. We move fast so you can too." }, { title: "Your Tools, Connected", desc: "Email, CRM, calendar, messaging — we plug into what you already have." }, { title: "Human-Like Experience", desc: "One chat interface that feels natural. No new platforms to learn." }].map((v, i) => <div key={i} className="glass rounded-2xl p-5">
               <h3 className="text-sm font-semibold text-foreground mb-1.5">{v.title}</h3>
               <p className="text-xs leading-relaxed text-muted-foreground">{v.desc}</p>
-            </div>
-          ))}
+            </div>)}
         </motion.div>
 
         {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
+
           <div className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-primary">
             <Quote className="h-3 w-3" />
             TESTIMONIALS
@@ -122,18 +128,12 @@ const About = () => {
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            {testimonials.map((t, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.35 + i * 0.1 }}
-                className="glass-hover rounded-2xl p-6 flex flex-col"
-              >
+            {testimonials.map((t, i) => <motion.div key={i} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.35 + i * 0.1 }} className="glass-hover rounded-2xl p-6 flex flex-col">
+
                 <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: t.stars }).map((_, j) => (
-                    <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
-                  ))}
+                  {Array.from({ length: t.stars }).map((_, j) =>
+                  <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
+                  )}
                 </div>
                 <p className="text-xs leading-relaxed text-muted-foreground mb-4 flex-1">
                   "{t.quote}"
@@ -143,7 +143,7 @@ const About = () => {
                   <p className="text-xs text-muted-foreground">{t.role}</p>
                 </div>
               </motion.div>
-            ))}
+            )}
           </div>
         </motion.div>
 
@@ -152,18 +152,18 @@ const About = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="mt-16 text-center"
-        >
+          className="mt-16 text-center">
+
           <a
             href="/"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 glow-primary"
-          >
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 glow-primary">
+
             Book Your Same-Day Demo
           </a>
         </motion.div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default About;
