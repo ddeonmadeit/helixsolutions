@@ -24,7 +24,9 @@ const Index = () => {
           className="mb-6 text-center"
         >
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
-            Save 4+ Hours Daily With a Digital Operator
+            Save 4+ Hours Daily With
+            <br className="hidden sm:block" />
+            {" "}a Digital Operator
           </h1>
         </motion.div>
 
