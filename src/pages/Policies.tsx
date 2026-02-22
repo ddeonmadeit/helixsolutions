@@ -19,6 +19,38 @@ const sections = [
     title: "Cookie Policy",
     content: `Our website uses essential cookies to ensure proper functionality and analytics cookies to help us understand how visitors interact with the site. You can manage your cookie preferences through your browser settings. We do not use cookies for third-party advertising.`,
   },
+  {
+    title: "Refund & Billing Policy — Overview",
+    content: `Due to the customised and digital nature of our AI Agent services, all purchases and subscriptions are subject to the terms outlined below. By purchasing our AI Agent setup or subscribing to our monthly service, you agree to this Refund & Billing Policy in full.`,
+  },
+  {
+    title: "One-Time Setup Fee (Non-Refundable)",
+    content: `The one-time setup fee covers custom AI configuration, infrastructure deployment (VPS, hosting, integrations), strategy, prompt engineering, system optimisation, and technical implementation and labour. Because this work begins immediately upon purchase and involves irreversible allocation of resources, all setup fees are strictly non-refundable once payment is processed. No exceptions will be made for change of mind, business model changes, lack of usage, misunderstanding of functionality, or performance expectations not explicitly guaranteed in writing. If onboarding has not yet commenced and a cancellation request is made within 24 hours of purchase, we may review the request at our sole discretion.`,
+  },
+  {
+    title: "Monthly Subscription Fees",
+    content: `Monthly subscriptions are billed in advance and grant access to the AI Agent infrastructure, maintenance, and management services. You may cancel at any time before the next billing cycle to prevent future charges. However, we do not provide refunds for partially used billing periods, we do not prorate unused time, and no refunds will be issued for failure to cancel prior to renewal. Once a billing cycle begins, that month is considered delivered.`,
+  },
+  {
+    title: "AI Token Usage (Usage-Based Billing)",
+    content: `AI processing requires token consumption through third-party model providers. Unless explicitly stated otherwise in writing: token usage is billed separately from the base subscription, token charges are usage-dependent and calculated based on actual consumption, usage is measured automatically by system logs, and charges are invoiced at the end of each billing cycle. Token usage fees are non-refundable once consumed. Clients are responsible for monitoring their usage and understanding that higher conversation volume, longer responses, file processing, and advanced reasoning increase token consumption. We reserve the right to apply usage caps if necessary, require a minimum balance, or suspend service for unpaid usage charges.`,
+  },
+  {
+    title: "Performance & Results Disclaimer",
+    content: `We do not guarantee revenue outcomes, lead generation volume, conversion rates, business growth, or financial results. AI Agents are operational tools whose effectiveness depends on market conditions, offer strength, implementation quality, and user strategy. Results will vary.`,
+  },
+  {
+    title: "Technical Issues",
+    content: `If a verified technical fault directly caused by our system prevents the AI Agent from operating for more than 72 consecutive hours, we will repair the issue promptly and extend subscription time proportionally if appropriate. Refunds will not be issued for temporary outages, third-party API disruptions, hosting provider downtime, user misconfiguration, or external platform limitations.`,
+  },
+  {
+    title: "Chargebacks & Payment Disputes",
+    content: `By purchasing our services, you agree to contact support before initiating a chargeback or payment dispute. Disputes for delivered digital services will be formally contested using service access logs, usage records, IP data, communication history, and agreement confirmation. Access may be suspended immediately upon dispute initiation.`,
+  },
+  {
+    title: "Exceptional Circumstances",
+    content: `Refund requests outside the scope of this policy may be reviewed at our sole discretion but are not guaranteed. All decisions are final.`,
+  },
 ];
 
 const Policies = () => {
