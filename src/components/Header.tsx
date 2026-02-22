@@ -5,7 +5,6 @@ import helixLogo from "@/assets/helix-logo.png";
 const allNavItems = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  { label: "Testimonials", href: "/testimonials" },
   { label: "Policies", href: "/policies" },
 ];
 

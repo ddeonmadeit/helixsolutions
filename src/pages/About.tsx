@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Quote, Star } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
-import { testimonials } from "@/data/testimonials";
 
 const aboutPoints = [
   "No more sick days",
@@ -80,36 +79,7 @@ const About = () => {
             </div>)}
         </motion.div>
 
-        {/* Testimonials */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
-
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-primary">
-            <Quote className="h-3 w-3" />
-            TESTIMONIALS
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight text-foreground mb-8">
-            Built on Results, Not Promises
-          </h2>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {testimonials.map((t, i) => <motion.div key={i} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.35 + i * 0.1 }} className="glass-hover rounded-2xl p-6 flex flex-col">
-
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: t.stars }).map((_, j) =>
-                  <Star key={j} className="h-3.5 w-3.5 fill-primary text-primary" />
-                  )}
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground mb-4 flex-1">
-                  "{t.quote}"
-                </p>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </motion.div>
+        {/* Testimonials section hidden — collecting more testimonials */}
 
         {/* CTA */}
         <motion.div
