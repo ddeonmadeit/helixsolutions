@@ -9,6 +9,7 @@ import Tier1 from "./pages/Tier1";
 import About from "./pages/About";
 // import Testimonials from "./pages/Testimonials"; // temporarily hidden
 import Policies from "./pages/Policies";
+import Peter from "./pages/Peter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           {/* <Route path="/testimonials" element={<Testimonials />} /> temporarily hidden */}
           <Route path="/policies" element={<Policies />} />
           <Route path="/tier1" element={<Tier1 />} />
+          <Route path="/peter" element={<Peter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
