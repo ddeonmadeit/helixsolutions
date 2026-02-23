@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import MigrationOnboarding from "@/components/migration/MigrationOnboarding";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -77,6 +78,7 @@ const Index = () => {
         </motion.div>
 
       </div>
+      <Footer />
     </div>
   );
 };

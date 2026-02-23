@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const aboutPoints = [
   "No more sick days",
@@ -96,8 +97,9 @@ const About = () => {
           </a>
         </motion.div>
       </div>
-    </div>);
-
+      <Footer />
+    </div>
+  );
 };
 
 export default About;
