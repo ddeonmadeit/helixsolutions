@@ -26,7 +26,7 @@ const Index = () => {
           <h1 className="text-4xl font-bold tracking-tight text-gradient sm:text-5xl relative z-50 pb-1">
             Save 4+ Hours Daily With
             <br className="hidden sm:block" />
-            {" "}a Digital Operator
+            {" "}an AI Assistant
           </h1>
         </motion.div>
 
@@ -38,7 +38,7 @@ const Index = () => {
           onClick={() => setDrawerOpen(!drawerOpen)}
           className="mb-6 inline-flex items-center gap-2 rounded-full glass px-5 py-2 text-xs font-medium text-muted-foreground transition-all hover:text-foreground hover:border-primary/20"
         >
-          What is a Digital Operator?
+          What is an AI Assistant?
           <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${drawerOpen ? "rotate-180" : ""}`} />
         </motion.button>
 

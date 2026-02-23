@@ -39,7 +39,7 @@ const Testimonials = () => {
           <p className="text-sm leading-relaxed text-muted-foreground max-w-2xl mb-10">
             Don't just take our word for it.
             <br />
-            Hear from the businesses that transformed their operations with a digital operator.
+            Hear from the businesses that transformed their operations with an AI assistant.
           </p>
         </motion.div>
 

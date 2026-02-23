@@ -3,7 +3,7 @@ export const testimonials = [
     name: "Stephen Danielian",
     role: "Founder, SDL Creations",
     quote:
-      "I used to be on-site all day and still stuck answering calls and messages at night. Since bringing on the digital operator, I don't have to anymore. I can focus on the important work that keeps the business evolving.",
+      "I used to be on-site all day and still stuck answering calls and messages at night. Since bringing on the AI assistant, I don't have to anymore. I can focus on the important work that keeps the business evolving.",
     stars: 5,
   },
   {
