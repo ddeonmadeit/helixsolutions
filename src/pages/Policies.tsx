@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Shield } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const sections = [
   {
@@ -111,6 +112,7 @@ const Policies = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

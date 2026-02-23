@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Quote, Star } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { testimonials } from "@/data/testimonials";
 
 const Testimonials = () => {
@@ -82,6 +83,7 @@ const Testimonials = () => {
           </a>
         </motion.div>
       </div>
+      <Footer />
     </div>
   );
 };
