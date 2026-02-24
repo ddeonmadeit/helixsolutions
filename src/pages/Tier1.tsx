@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCircle, FileText, PenLine, CreditCard, Loader2, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,9 @@ const STEPS = [
 ];
 
 // Contract PDF public URL — update after uploading to backend storage
-const CONTRACT_PDF_URL = "/contract.pdf#toolbar=0&navpanes=0&scrollbar=0";
+const CONTRACT_PDF_URL = "/contract.pdf";
+
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 const Tier1 = () => {
   const { toast } = useToast();
@@ -152,32 +154,23 @@ const Tier1 = () => {
                   Read the full agreement below before proceeding. Scroll to the bottom to continue.
                 </p>
 
-                {/* PDF viewer — object tag with iframe fallback for iOS */}
+                {/* PDF viewer */}
                 <div className="mb-4 rounded-xl border border-border/50 overflow-hidden" style={{ height: "500px" }}>
-                  <object
-                    data={CONTRACT_PDF_URL}
-                    type="application/pdf"
-                    className="w-full h-full"
-                    onLoad={() => setContractScrolled(true)}
-                  >
-                    {/* Fallback for iOS/browsers that can't embed PDFs */}
-                    <div className="flex flex-col items-center justify-center h-full gap-4 p-6 text-center">
-                      <FileText className="h-12 w-12 text-muted-foreground" />
-                      <p className="text-sm text-muted-foreground">
-                        Your browser cannot display the PDF inline.
-                      </p>
-                      <a
-                        href="/contract.pdf"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground"
-                        onClick={() => setContractScrolled(true)}
-                      >
-                        <FileText className="h-4 w-4" />
-                        View Contract PDF
-                      </a>
-                    </div>
-                  </object>
+                  {isIOS() ? (
+                    <iframe
+                      src={`https://docs.google.com/gview?url=${window.location.origin}${CONTRACT_PDF_URL}&embedded=true`}
+                      title="Helix Solutions Service Agreement"
+                      className="w-full h-full"
+                      onLoad={() => setContractScrolled(true)}
+                    />
+                  ) : (
+                    <iframe
+                      src={`${CONTRACT_PDF_URL}#toolbar=0&navpanes=0&scrollbar=0`}
+                      title="Helix Solutions Service Agreement"
+                      className="w-full h-full"
+                      onLoad={() => setContractScrolled(true)}
+                    />
+                  )}
                 </div>
 
                 {/* Acknowledge checkbox */}
