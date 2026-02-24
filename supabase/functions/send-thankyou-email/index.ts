@@ -25,7 +25,9 @@ const forcedDarkStyles = `
   [data-ogsc] .text-teal { color: #36b8c8 !important; }
 `;
 
-const buildEmail = (name: string) => `
+const buildEmail = (name: string, calUrl: string) => {
+  const firstName = name.split(" ")[0];
+  return `
 <!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
@@ -40,8 +42,6 @@ const buildEmail = (name: string) => `
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0b0f1a" class="email-bg">
     <tr>
       <td align="center" style="padding:40px 16px;">
-
-        <!-- Card -->
         <table width="100%" style="max-width:560px;" cellpadding="0" cellspacing="0" border="0">
           <tr>
             <td style="background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;padding:40px 40px 32px;" class="card">
@@ -72,21 +72,14 @@ const buildEmail = (name: string) => `
                 <tr>
                   <td style="padding-bottom:16px;">
                     <h1 style="margin:0;font-size:26px;font-weight:700;color:#e8edf2;line-height:1.25;" class="text-white">
-                      Thank you for your time, ${name.split(" ")[0]}.
+                      Thank you for your interest, ${firstName}.
                     </h1>
                   </td>
                 </tr>
                 <tr>
                   <td style="padding-bottom:28px;">
                     <p style="margin:0;font-size:15px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      It was great connecting with you. We genuinely appreciate you taking the time to explore how Helix Solutions can support your business.
-                    </p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom:28px;">
-                    <p style="margin:0;font-size:15px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      As discussed, the next step is to review and complete your onboarding agreement. You can do so securely at the link below — it only takes a few minutes.
+                      We're excited to show you what your custom AI assistant can do. Book your free demo below and we'll walk you through everything — same day.
                     </p>
                   </td>
                 </tr>
@@ -98,11 +91,11 @@ const buildEmail = (name: string) => `
                       <tr>
                         <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
                           <a
-                            href="https://helixsolution.au/tier1"
+                            href="${calUrl}"
                             style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
                             class="text-white"
                           >
-                            Review &amp; Sign Agreement →
+                            Book Your Demo &rarr;
                           </a>
                         </td>
                       </tr>
@@ -121,7 +114,7 @@ const buildEmail = (name: string) => `
                   </td>
                 </tr>
 
-                <!-- What to expect -->
+                <!-- What happens next -->
                 <tr>
                   <td style="padding-bottom:10px;">
                     <p style="margin:0;font-size:13px;font-weight:600;color:#e8edf2;text-transform:uppercase;letter-spacing:0.06em;" class="text-white">
@@ -136,7 +129,7 @@ const buildEmail = (name: string) => `
                         <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
                           <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
                             <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">01</span>
-                            Review and sign the service agreement
+                            Book your free demo call
                           </p>
                         </td>
                       </tr>
@@ -144,7 +137,7 @@ const buildEmail = (name: string) => `
                         <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
                           <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
                             <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">02</span>
-                            Complete the setup deposit &amp; first month
+                            See your custom AI assistant in action
                           </p>
                         </td>
                       </tr>
@@ -152,7 +145,7 @@ const buildEmail = (name: string) => `
                         <td style="padding:16px 20px;">
                           <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
                             <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">03</span>
-                            We begin building your automations
+                            Get set up same day
                           </p>
                         </td>
                       </tr>
@@ -164,8 +157,8 @@ const buildEmail = (name: string) => `
                 <tr>
                   <td style="padding-bottom:4px;">
                     <p style="margin:0;font-size:14px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      If you have any questions before signing, feel free to reply to this email or reach out at
-                      <a href="mailto:hello@helixsolution.au" style="color:#36b8c8;text-decoration:none;" class="text-teal">hello@helixsolution.au</a>.
+                      If you have any questions, feel free to reply to this email or reach out at
+                      <a href="mailto:info@helixsolution.au" style="color:#36b8c8;text-decoration:none;" class="text-teal">info@helixsolution.au</a>.
                     </p>
                   </td>
                 </tr>
@@ -186,32 +179,35 @@ const buildEmail = (name: string) => `
           <tr>
             <td align="center" style="padding-top:24px;">
               <p style="margin:0;font-size:11px;color:#3d4d5c;">
-                © 2025 Helix Solutions · 
+                &copy; 2025 Helix Solutions &middot;
                 <a href="https://helixsolution.au" style="color:#3d4d5c;text-decoration:none;">helixsolution.au</a>
               </p>
             </td>
           </tr>
         </table>
-
       </td>
     </tr>
   </table>
 </body>
 </html>
 `;
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { name, email } = await req.json();
+    const { name, email, calUrl } = await req.json();
     if (!email || !name) throw new Error("name and email are required");
+
+    const firstName = name.split(" ")[0];
+    const bookingUrl = calUrl || "https://cal.com/helix-solutions/demo";
 
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email],
-      subject: `Thank you for your time, ${name.split(" ")[0]} — Next Steps`,
-      html: buildEmail(name),
+      subject: `Thank you, ${firstName} — Book Your Demo`,
+      html: buildEmail(name, bookingUrl),
     });
 
     return new Response(JSON.stringify({ success: true }), {

@@ -14,6 +14,8 @@ interface StepData {
   businessType: string;
   businessTypeOther: string;
   currentSoftware: string[];
+  name: string;
+  email: string;
 }
 
 const initialData: StepData = {
@@ -22,11 +24,14 @@ const initialData: StepData = {
   businessType: "",
   businessTypeOther: "",
   currentSoftware: [],
+  name: "",
+  email: "",
 };
 
 const steps = [
   { title: "If you had an assistant, what would they do for you?" },
   { title: "What best describes your business?" },
+  { title: "Where should we send your demo details?" },
 ];
 
 const slideVariants = {
@@ -49,10 +54,19 @@ const MigrationOnboarding = () => {
     } else {
       setSubmitting(true);
       try {
-        const { error } = await supabase.functions.invoke("send-migration-emails", {
+        // Send quiz data
+        const { error: migError } = await supabase.functions.invoke("send-migration-emails", {
           body: data,
         });
-        if (error) throw error;
+        if (migError) throw migError;
+
+        // Send thank-you email with booking link
+        const calUrl = buildCalUrl();
+        const { error: tyError } = await supabase.functions.invoke("send-thankyou-email", {
+          body: { name: data.name, email: data.email, calUrl },
+        });
+        if (tyError) throw tyError;
+
         setSubmitted(true);
       } catch (err: any) {
         console.error("Submission error:", err);
@@ -74,6 +88,7 @@ const MigrationOnboarding = () => {
     switch (step) {
       case 0: return data.timeSinks.length > 0 && (!data.timeSinks.includes("other") || data.timeSinksOther.trim().length > 0);
       case 1: return !!data.businessType && (data.businessType !== "other" || data.businessTypeOther.trim().length > 0);
+      case 2: return data.name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
       default: return false;
     }
   };
@@ -209,6 +224,30 @@ const MigrationOnboarding = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+          </div>
+        );
+      case 2:
+        return (
+          <div className="grid gap-4">
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">Full Name</label>
+              <Input
+                placeholder="John Smith"
+                value={data.name}
+                onChange={(e) => setData({ ...data, name: e.target.value })}
+                className="bg-background/40"
+              />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground mb-1.5 block">Email</label>
+              <Input
+                type="email"
+                placeholder="john@example.com"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+                className="bg-background/40"
+              />
+            </div>
           </div>
         );
       default:
