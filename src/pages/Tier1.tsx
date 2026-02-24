@@ -155,23 +155,33 @@ const Tier1 = () => {
                 </p>
 
                 {/* PDF viewer */}
-                <div className="mb-4 rounded-xl border border-border/50 overflow-hidden" style={{ height: "500px" }}>
-                  {isIOS() ? (
-                    <iframe
-                      src={`https://docs.google.com/gview?url=${window.location.origin}${CONTRACT_PDF_URL}&embedded=true`}
-                      title="Helix Solutions Service Agreement"
-                      className="w-full h-full"
-                      onLoad={() => setContractScrolled(true)}
-                    />
-                  ) : (
+                {isIOS() ? (
+                  <div className="mb-4 rounded-xl border border-border/50 p-8 flex flex-col items-center justify-center gap-4 text-center">
+                    <FileText className="h-12 w-12 text-primary" />
+                    <p className="text-sm text-muted-foreground">
+                      Tap below to review the full contract (3 pages).
+                    </p>
+                    <a
+                      href={CONTRACT_PDF_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground"
+                      onClick={() => setContractScrolled(true)}
+                    >
+                      <FileText className="h-4 w-4" />
+                      Open Contract PDF
+                    </a>
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-xl border border-border/50 overflow-hidden" style={{ height: "500px" }}>
                     <iframe
                       src={`${CONTRACT_PDF_URL}#toolbar=0&navpanes=0&scrollbar=0`}
                       title="Helix Solutions Service Agreement"
                       className="w-full h-full"
                       onLoad={() => setContractScrolled(true)}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Acknowledge checkbox */}
                 <label className="flex items-start gap-3 cursor-pointer group mb-6">
