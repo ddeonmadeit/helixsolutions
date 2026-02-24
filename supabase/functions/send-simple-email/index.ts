@@ -30,14 +30,14 @@ serve(async (req) => {
           <tr>
             <td style="background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;padding:40px 40px 32px;">
               <p style="margin:0 0 20px;font-size:22px;font-weight:700;color:#e8edf2;">
-                Thank you so much, ${name}.
+                Thank you for your time, ${name}.
               </p>
               <p style="margin:0 0 28px;font-size:15px;color:#8a9bb0;line-height:1.7;">
                 ${body}
               </p>
               <p style="margin:0;font-size:14px;color:#8a9bb0;line-height:1.7;">
                 Kind Regards,<br/>
-                <span style="color:#e8edf2;font-weight:600;">Helix Team</span>
+                <span style="color:#e8edf2;font-weight:600;">Deon & Juna</span>
               </p>
             </td>
           </tr>
