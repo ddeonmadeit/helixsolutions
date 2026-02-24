@@ -37,7 +37,7 @@ serve(async (req) => {
               </p>
               <p style="margin:0;font-size:14px;color:#8a9bb0;line-height:1.7;">
                 Kind Regards,<br/>
-                <span style="color:#e8edf2;font-weight:600;">Deon & Juna</span>
+                <span style="color:#e8edf2;font-weight:600;">Helix Team</span>
               </p>
             </td>
           </tr>
