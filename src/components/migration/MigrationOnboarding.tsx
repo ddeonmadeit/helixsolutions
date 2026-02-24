@@ -232,7 +232,7 @@ const MigrationOnboarding = () => {
             <div>
               <label className="text-sm text-muted-foreground mb-1.5 block">Full Name</label>
               <Input
-                placeholder="John Smith"
+                placeholder=""
                 value={data.name}
                 onChange={(e) => setData({ ...data, name: e.target.value })}
                 className="bg-background/40"
@@ -242,7 +242,7 @@ const MigrationOnboarding = () => {
               <label className="text-sm text-muted-foreground mb-1.5 block">Email</label>
               <Input
                 type="email"
-                placeholder="john@example.com"
+                placeholder=""
                 value={data.email}
                 onChange={(e) => setData({ ...data, email: e.target.value })}
                 className="bg-background/40"
