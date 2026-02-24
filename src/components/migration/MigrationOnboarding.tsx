@@ -274,9 +274,11 @@ const MigrationOnboarding = () => {
             exit="exit"
             transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <div className="mb-6">
-              <h2 className="text-xl font-bold text-foreground">{steps[step].title}</h2>
-            </div>
+            {step < 2 && (
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-foreground">{steps[step].title}</h2>
+              </div>
+            )}
             {renderStep()}
           </motion.div>
         </AnimatePresence>
