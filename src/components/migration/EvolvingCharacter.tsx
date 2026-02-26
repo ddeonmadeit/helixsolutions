@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 // All stages share one viewBox. Each stage is wrapped in a <g> that
 // centers it horizontally and bottom-aligns its feet within the box.
-const UNIFORM_VIEWBOX = "0 0 380 500";
+const UNIFORM_VIEWBOX = "0 -30 380 500";
 
 // Stage 0: original 200.65 × 264.67 → tx=89.68, ty=235.33
 const Stage0 = ({ color }: { color: string }) => (
