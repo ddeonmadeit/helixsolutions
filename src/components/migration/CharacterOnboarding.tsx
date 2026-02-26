@@ -191,30 +191,28 @@ const CharacterOnboarding = () => {
       {/* Steps 0 & 1: Character + Orbit */}
       {step < 2 ? (
         <div className="relative flex items-center justify-center w-full overflow-visible" style={{ height: orbitRadius * 2 + 80 }}>
-          {/* Character with blur transition */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`char-${step}`}
-              className="absolute z-10 flex items-center justify-center overflow-visible"
-              initial={{ filter: "blur(8px)", opacity: 0.5 }}
-              animate={{ filter: "blur(0px)", opacity: 1 }}
-              exit={{ filter: "blur(8px)", opacity: 0.5 }}
-              transition={{ duration: 0.4 }}
-            >
-              <EvolvingCharacter
-                selectionCount={selectedFunctions.length}
-                color={characterColor}
-              />
-            </motion.div>
-          </AnimatePresence>
+          {/* Character — fades out, then unblurs back in sync with bubbles */}
+          <motion.div
+            key={`char-${step}`}
+            className="absolute z-10 flex items-center justify-center overflow-visible"
+            initial={{ filter: "blur(12px)", opacity: 0 }}
+            animate={{ filter: "blur(0px)", opacity: 1 }}
+            exit={{ filter: "blur(12px)", opacity: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+          >
+            <EvolvingCharacter
+              selectionCount={selectedFunctions.length}
+              color={characterColor}
+            />
+          </motion.div>
 
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.4 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
               className="absolute inset-0 flex items-center justify-center"
             >
               {currentOptions.map((opt, i) => {
@@ -238,10 +236,10 @@ const CharacterOnboarding = () => {
                         ? { boxShadow: `0 0 24px hsl(${step === 1 ? (PERSONALITY_OPTIONS.find(p => p.value === opt.value)?.color || "185 70% 50%") : "185 70% 50%"} / 0.3)` }
                         : {}),
                     }}
-                    initial={{ x: 0, y: 0, opacity: 0 }}
-                    animate={{ x: pos.x + drift.x, y: pos.y + drift.y, opacity: 1 }}
+                    initial={{ x: 0, y: 0, opacity: 0, scale: 0.8 }}
+                    animate={{ x: pos.x + drift.x, y: pos.y + drift.y, opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ delay: i * 0.06, duration: 0.5, ease: "easeOut" }}
+                    transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: "easeOut" }}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() =>
