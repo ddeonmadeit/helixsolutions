@@ -4,6 +4,7 @@ import { ArrowRight, Calendar, Rocket } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import EvolvingCharacter from "./EvolvingCharacter";
 
 const FUNCTION_OPTIONS = [
   { value: "emails", label: "Send Emails" },
@@ -21,9 +22,7 @@ const PERSONALITY_OPTIONS = [
   { value: "calm", label: "Calm", color: "175 55% 45%" },
 ];
 
-const BASE_HEIGHT = 40;
-const HEIGHT_PER_SELECTION = 8;
-const MAX_HEIGHT = 80;
+// Character height constants removed - now using EvolvingCharacter stages
 
 // Orbit positions for 5 items around center
 const getOrbitPositions = (count: number, radius: number) => {
@@ -40,7 +39,6 @@ const CharacterOnboarding = () => {
   const [step, setStep] = useState(0);
   const [selectedFunctions, setSelectedFunctions] = useState<string[]>([]);
   const [selectedPersonality, setSelectedPersonality] = useState<string | null>(null);
-  const [characterHeight, setCharacterHeight] = useState(BASE_HEIGHT);
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -59,12 +57,9 @@ const CharacterOnboarding = () => {
   }, []);
 
   const handleFunctionSelect = (value: string) => {
-    setSelectedFunctions((prev) => {
-      const next = prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value];
-      const newHeight = Math.min(BASE_HEIGHT + next.length * HEIGHT_PER_SELECTION, MAX_HEIGHT);
-      setCharacterHeight(newHeight);
-      return next;
-    });
+    setSelectedFunctions((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
   };
 
   const handlePersonalitySelect = (value: string) => {
@@ -196,102 +191,12 @@ const CharacterOnboarding = () => {
       {step < 2 ? (
         <div className="relative flex items-center justify-center w-full" style={{ height: orbitRadius * 2 + 80 }}>
           {/* Character */}
-          <motion.div
-            className="absolute z-10 flex flex-col items-center"
-          >
-            {/* Star Head */}
-            <svg viewBox="0 0 60 60" style={{ width: 40, height: 40 }}>
-              <polygon
-                points={(() => {
-                  const cx = 30, cy = 30, spikes = 8, outerR = 28, innerR = 14;
-                  return Array.from({ length: spikes * 2 }, (_, i) => {
-                    const r = i % 2 === 0 ? outerR : innerR;
-                    const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
-                    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
-                  }).join(" ");
-                })()}
-                fill={`hsl(${characterColor})`}
-                style={{ transition: "fill 0.5s ease" }}
-              />
-            </svg>
-            {/* Body with Arms */}
-            <div className="relative flex items-start justify-center -mt-1">
-              {/* Left Arm - angled outward */}
-              <motion.div
-                style={{
-                  width: 8,
-                  backgroundColor: `hsl(${characterColor})`,
-                  borderRadius: 4,
-                  marginTop: 2,
-                  marginRight: -3,
-                  transformOrigin: "top center",
-                  rotate: 12,
-                  transition: "background-color 0.5s ease",
-                }}
-                animate={{ height: Math.max(characterHeight * 0.45, 16) }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-              {/* Torso */}
-              <motion.div
-                className="rounded-b-2xl rounded-t-lg"
-                style={{
-                  width: 24,
-                  backgroundColor: `hsl(${characterColor})`,
-                  boxShadow: `0 0 30px hsl(${characterColor} / 0.2)`,
-                  transition: "background-color 0.5s ease",
-                }}
-                animate={{ height: characterHeight }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-              {/* Right Arm - angled outward */}
-              <motion.div
-                style={{
-                  width: 8,
-                  backgroundColor: `hsl(${characterColor})`,
-                  borderRadius: 4,
-                  marginTop: 2,
-                  marginLeft: -3,
-                  transformOrigin: "top center",
-                  rotate: -12,
-                  transition: "background-color 0.5s ease",
-                }}
-                animate={{ height: Math.max(characterHeight * 0.45, 16) }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-            </div>
-            {/* Legs */}
-            <div className="flex gap-1.5 -mt-0.5">
-              <motion.div
-                className="rounded-b-lg"
-                style={{
-                  width: 8,
-                  backgroundColor: `hsl(${characterColor})`,
-                }}
-                animate={{ height: Math.max(characterHeight * 0.35, 12) }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-              <motion.div
-                className="rounded-b-lg"
-                style={{
-                  width: 8,
-                  backgroundColor: `hsl(${characterColor})`,
-                }}
-                animate={{ height: Math.max(characterHeight * 0.35, 12) }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-            </div>
-            {/* Glow underneath */}
-            <motion.div
-              className="absolute -bottom-4 rounded-full blur-xl"
-              style={{
-                width: 60,
-                height: 12,
-                backgroundColor: `hsl(${characterColor} / 0.15)`,
-              }}
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 3, repeat: Infinity }}
+          <div className="absolute z-10">
+            <EvolvingCharacter
+              selectionCount={selectedFunctions.length}
+              color={characterColor}
             />
-          </motion.div>
+          </div>
 
           {/* Orbiting Options */}
           <AnimatePresence mode="wait">
@@ -364,30 +269,11 @@ const CharacterOnboarding = () => {
         >
           {/* Show the character small above the form */}
           <div className="flex justify-center mb-6">
-            <div className="flex flex-col items-center">
-              <svg viewBox="0 0 60 60" style={{ width: 28, height: 28 }}>
-                <polygon
-                  points={(() => {
-                    const cx = 30, cy = 30, spikes = 8, outerR = 28, innerR = 14;
-                    return Array.from({ length: spikes * 2 }, (_, i) => {
-                      const r = i % 2 === 0 ? outerR : innerR;
-                      const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
-                      return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
-                    }).join(" ");
-                  })()}
-                  fill={`hsl(${characterColor})`}
-                />
-              </svg>
-              <div className="relative flex items-start justify-center -mt-0.5">
-                <div className="rounded-full" style={{ width: 5, height: 20, backgroundColor: `hsl(${characterColor})`, marginTop: 2, marginRight: -1, borderRadius: 3 }} />
-                <div className="rounded-b-xl rounded-t-md" style={{ width: 16, height: 44, backgroundColor: `hsl(${characterColor})` }} />
-                <div className="rounded-full" style={{ width: 5, height: 20, backgroundColor: `hsl(${characterColor})`, marginTop: 2, marginLeft: -1, borderRadius: 3 }} />
-              </div>
-              <div className="flex gap-1 -mt-0.5">
-                <div className="rounded-b-md" style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }} />
-                <div className="rounded-b-md" style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }} />
-              </div>
-            </div>
+            <EvolvingCharacter
+              selectionCount={selectedFunctions.length}
+              color={characterColor}
+              scale={0.8}
+            />
           </div>
 
           <div>
