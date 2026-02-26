@@ -39,7 +39,7 @@ const CharacterOnboarding = () => {
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [assistantName, setAssistantName] = useState("");
+  
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [phone, setPhone] = useState("");
@@ -70,8 +70,7 @@ const CharacterOnboarding = () => {
   const canProceed = () => {
     if (step === 0) return selectedFunctions.length > 0;
     if (step === 1) return !!selectedPersonality;
-    if (step === 2) return assistantName.trim().length > 0;
-    if (step === 3) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && website.trim().length > 0;
+    if (step === 2) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && website.trim().length > 0;
     return false;
   };
 
@@ -84,7 +83,7 @@ const CharacterOnboarding = () => {
   };
 
   const handleNext = async () => {
-    if (step < 3) {
+    if (step < 2) {
       setStep(step + 1);
     } else {
       setSubmitting(true);
@@ -165,14 +164,13 @@ const CharacterOnboarding = () => {
   const stepTitles = [
     { title: "What do you want it to do?", subtitle: "Choose the main functions of your assistant." },
     { title: "What is its personality?", subtitle: "Choose how it should behave." },
-    { title: "What do you want to name him?", subtitle: "Give your assistant an identity." },
     { title: "Almost there!", subtitle: "How should we communicate with you during setup?" },
   ];
 
   return (
     <div className="flex flex-col items-center w-full">
       {/* Title — shown above for steps 0-2, moved below character for step 3 */}
-      {step < 3 && (
+      {step < 2 && (
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -256,43 +254,14 @@ const CharacterOnboarding = () => {
             </motion.div>
           </AnimatePresence>
         </div>
-      ) : step === 2 ? (
-        /* Step 2: Name the assistant */
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center w-full max-w-sm"
-        >
-          <Input
-            value={assistantName}
-            onChange={(e) => setAssistantName(e.target.value)}
-            className="bg-background/40 text-center text-lg mb-8 max-w-[200px]"
-            autoFocus
-          />
-
-          <EvolvingCharacter
-            selectionCount={selectedFunctions.length}
-            color={characterColor}
-          />
-        </motion.div>
       ) : (
-        /* Step 3: Contact form with gamertag */
+        /* Step 2: Contact form */
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm space-y-4 mb-4"
         >
           <div className="flex flex-col items-center mb-2">
-            {/* Gamertag — plain colored text */}
-            <motion.div
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-1"
-            >
-              <span className="text-base font-bold tracking-wide" style={{ color: `hsl(${characterColor})` }}>
-                {assistantName}
-              </span>
-            </motion.div>
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
@@ -308,9 +277,9 @@ const CharacterOnboarding = () => {
             className="text-center pb-2"
           >
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-              {stepTitles[3].title}
+              {stepTitles[2].title}
             </h2>
-            <p className="text-sm text-muted-foreground">{stepTitles[3].subtitle}</p>
+            <p className="text-sm text-muted-foreground">{stepTitles[2].subtitle}</p>
           </motion.div>
 
           <div>
@@ -367,7 +336,7 @@ const CharacterOnboarding = () => {
             className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40"
             style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
           >
-            {submitting ? "Submitting…" : step === 3 ? "Create Assistant" : "Next"}
+            {submitting ? "Submitting…" : step === 2 ? "Create Assistant" : "Next"}
             {!submitting && <ArrowRight className="h-4 w-4" />}
           </motion.button>
         )}
