@@ -199,12 +199,11 @@ const CharacterOnboarding = () => {
           <motion.div
             className="absolute z-10 flex flex-col items-center"
             animate={{
-              scale: [1, 1.04, 1],
+              scale: 1,
             }}
             transition={{
               duration: 0.5,
-              ease: "easeInOut",
-              times: [0, 0.5, 1],
+              ease: "easeOut",
             }}
             key={`char-${characterHeight}-${characterColor}`}
           >
@@ -240,7 +239,7 @@ const CharacterOnboarding = () => {
                   marginRight: -2,
                 }}
                 animate={{ height: Math.max(characterHeight * 0.45, 16) }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
               {/* Torso */}
               <motion.div
@@ -251,7 +250,7 @@ const CharacterOnboarding = () => {
                   boxShadow: `0 0 30px hsl(${characterColor} / 0.2)`,
                 }}
                 animate={{ height: characterHeight }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
               {/* Right Arm */}
               <motion.div
@@ -264,7 +263,7 @@ const CharacterOnboarding = () => {
                   marginLeft: -2,
                 }}
                 animate={{ height: Math.max(characterHeight * 0.45, 16) }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </div>
             {/* Legs */}
@@ -276,7 +275,7 @@ const CharacterOnboarding = () => {
                   backgroundColor: `hsl(${characterColor})`,
                 }}
                 animate={{ height: Math.max(characterHeight * 0.35, 12) }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
               <motion.div
                 className="rounded-b-lg"
@@ -285,7 +284,7 @@ const CharacterOnboarding = () => {
                   backgroundColor: `hsl(${characterColor})`,
                 }}
                 animate={{ height: Math.max(characterHeight * 0.35, 12) }}
-                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
               />
             </div>
             {/* Glow underneath */}
