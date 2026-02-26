@@ -93,7 +93,7 @@ const About = () => {
             href="/"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 glow-primary">
 
-            Book Your Same-Day Demo
+            Build an Assistant
           </a>
         </motion.div>
       </div>
