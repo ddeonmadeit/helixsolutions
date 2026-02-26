@@ -238,7 +238,7 @@ const CharacterOnboarding = () => {
                     initial={{ x: 0, y: 0, opacity: 0, scale: 0.8 }}
                     animate={{ x: pos.x + drift.x, y: pos.y + drift.y, opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{ delay: 0.3 + i * 0.08, duration: 0.5, ease: "easeOut" }}
+                    transition={{ delay: 0.1 + i * 0.05, duration: 0.35, ease: "easeOut" }}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() =>
