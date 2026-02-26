@@ -58,11 +58,11 @@ function buildOpenClawPrompt(data: {
   phone: string;
 }): string {
   const functionLabels: Record<string, string> = {
-    emails: "Send & manage emails on behalf of the owner",
-    meetings: "Book and manage calendar meetings",
-    crm: "Manage CRM entries, contacts, and deal pipelines",
-    support: "Handle customer support tickets and inquiries",
-    automate: "Automate repetitive operational tasks",
+    "email-management": "Manage and respond to emails on behalf of the owner",
+    "customer-support": "Handle customer support inquiries and tickets",
+    "team-management": "Coordinate and manage team tasks and communication",
+    "scheduling": "Schedule meetings, appointments, and coordinate calendars",
+    "admin": "Handle administrative tasks and operations",
   };
 
   const personalityDescriptions: Record<string, string> = {
