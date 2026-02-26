@@ -198,23 +198,10 @@ const CharacterOnboarding = () => {
           {/* Character */}
           <motion.div
             className="absolute z-10 flex flex-col items-center"
-            animate={{
-              scale: 1,
-            }}
-            transition={{
-              duration: 0.5,
-              ease: "easeOut",
-            }}
-            key={`char-${characterHeight}-${characterColor}`}
           >
             {/* Star Head */}
-            <motion.svg
-              viewBox="0 0 60 60"
-              style={{ width: 40, height: 40 }}
-              layout
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            >
-              <motion.polygon
+            <svg viewBox="0 0 60 60" style={{ width: 40, height: 40 }}>
+              <polygon
                 points={(() => {
                   const cx = 30, cy = 30, spikes = 8, outerR = 28, innerR = 14;
                   return Array.from({ length: spikes * 2 }, (_, i) => {
@@ -224,19 +211,22 @@ const CharacterOnboarding = () => {
                   }).join(" ");
                 })()}
                 fill={`hsl(${characterColor})`}
+                style={{ transition: "fill 0.5s ease" }}
               />
-            </motion.svg>
+            </svg>
             {/* Body with Arms */}
             <div className="relative flex items-start justify-center -mt-1">
-              {/* Left Arm */}
+              {/* Left Arm - angled outward */}
               <motion.div
-                className="rounded-full"
                 style={{
                   width: 8,
                   backgroundColor: `hsl(${characterColor})`,
                   borderRadius: 4,
-                  marginTop: 4,
-                  marginRight: -2,
+                  marginTop: 2,
+                  marginRight: -3,
+                  transformOrigin: "top center",
+                  rotate: 12,
+                  transition: "background-color 0.5s ease",
                 }}
                 animate={{ height: Math.max(characterHeight * 0.45, 16) }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
@@ -248,19 +238,22 @@ const CharacterOnboarding = () => {
                   width: 24,
                   backgroundColor: `hsl(${characterColor})`,
                   boxShadow: `0 0 30px hsl(${characterColor} / 0.2)`,
+                  transition: "background-color 0.5s ease",
                 }}
                 animate={{ height: characterHeight }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
               />
-              {/* Right Arm */}
+              {/* Right Arm - angled outward */}
               <motion.div
-                className="rounded-full"
                 style={{
                   width: 8,
                   backgroundColor: `hsl(${characterColor})`,
                   borderRadius: 4,
-                  marginTop: 4,
-                  marginLeft: -2,
+                  marginTop: 2,
+                  marginLeft: -3,
+                  transformOrigin: "top center",
+                  rotate: -12,
+                  transition: "background-color 0.5s ease",
                 }}
                 animate={{ height: Math.max(characterHeight * 0.45, 16) }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
