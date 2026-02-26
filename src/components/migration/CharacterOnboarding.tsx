@@ -287,7 +287,7 @@ const CharacterOnboarding = () => {
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-1 px-4 py-1.5 rounded-lg bg-primary/5"
+              className="px-4 py-1.5 rounded-lg bg-primary/5"
               style={{
                 border: `1px solid hsl(${characterColor} / 0.4)`,
                 boxShadow: `0 0 16px hsl(${characterColor} / 0.15)`,
@@ -297,11 +297,13 @@ const CharacterOnboarding = () => {
                 {assistantName}
               </span>
             </motion.div>
-            <EvolvingCharacter
+            <div className="-mt-3">
+              <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
               scale={0.8}
             />
+            </div>
           </div>
 
           {/* Title below character, above form */}
