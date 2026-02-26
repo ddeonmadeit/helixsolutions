@@ -233,8 +233,9 @@ const CharacterOnboarding = () => {
                     ? selectedFunctions.includes(opt.value)
                     : selectedPersonality === opt.value;
 
-                // Per-bubble manual nudge
-                const nudge = step === 0 && opt.value === "email-management" ? { x: 15, y: 0 } : { x: 0, y: 0 };
+                // Per-bubble manual nudge (smaller on mobile)
+                const isMobile = orbitRadius < 140;
+                const nudge = step === 0 && opt.value === "email-management" ? { x: isMobile ? 8 : 15, y: 0 } : { x: 0, y: 0 };
 
                 return (
                   <motion.button
