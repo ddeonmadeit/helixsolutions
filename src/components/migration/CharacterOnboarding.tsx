@@ -11,7 +11,7 @@ const FUNCTION_OPTIONS = [
   { value: "email-management", label: "Email Management" },
   { value: "customer-support", label: "Customer Support" },
   { value: "team-management", label: "Team Management" },
-  { value: "scheduling", label: "Scheduling" },
+  { value: "scheduling", label: "Management/Scheduling" },
 ];
 
 const PERSONALITY_OPTIONS = [
