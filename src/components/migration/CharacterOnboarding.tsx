@@ -13,10 +13,6 @@ const FUNCTION_OPTIONS = [
   { value: "support", label: "Handle Support" },
   { value: "automate", label: "Automate Tasks" },
   { value: "data", label: "Analyze Data" },
-  { value: "social", label: "Social Media" },
-  { value: "invoices", label: "Send Invoices" },
-  { value: "onboard", label: "Onboard Clients" },
-  { value: "reports", label: "Generate Reports" },
 ];
 
 const PERSONALITY_OPTIONS = [
@@ -52,7 +48,7 @@ const CharacterOnboarding = () => {
   // Generate random drift offsets on mount
   useEffect(() => {
     setDriftOffsets(
-      Array.from({ length: 10 }, () => ({
+      Array.from({ length: 6 }, () => ({
         x: Math.random() * 6 - 3,
         y: Math.random() * 6 - 3,
       }))

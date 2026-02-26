@@ -10,7 +10,7 @@ interface EvolvingCharacterProps {
 const lerp = (a: number, b: number, t: number) => a + (b - a) * Math.min(Math.max(t, 0), 1);
 
 const EvolvingCharacter = ({ stage, color }: EvolvingCharacterProps) => {
-  const t = stage / 10; // 0 to 1 normalized
+  const t = stage / 6; // 0 to 1 normalized
 
   // Progressive measurements
   const headSize = lerp(28, 52, t);
@@ -24,34 +24,34 @@ const EvolvingCharacter = ({ stage, color }: EvolvingCharacterProps) => {
   const legHeight = lerp(10, 35, t);
   const legGap = lerp(2, 6, t);
 
-  // Shoulder pads appear at stage 3+
-  const showShoulderPads = stage >= 3;
-  const shoulderPadSize = lerp(0, 18, (stage - 3) / 7);
-  const shoulderPadOffset = lerp(0, 8, (stage - 3) / 7);
+  // Shoulder pads appear at stage 2+
+  const showShoulderPads = stage >= 2;
+  const shoulderPadSize = lerp(0, 18, (stage - 2) / 4);
+  const shoulderPadOffset = lerp(0, 8, (stage - 2) / 4);
 
-  // Extra shoulder spikes at stage 6+
-  const showSpikes = stage >= 6;
-  const spikeHeight = lerp(0, 22, (stage - 6) / 4);
-  const spikeWidth = lerp(0, 6, (stage - 6) / 4);
+  // Extra shoulder spikes at stage 4+
+  const showSpikes = stage >= 4;
+  const spikeHeight = lerp(0, 22, (stage - 4) / 2);
+  const spikeWidth = lerp(0, 6, (stage - 4) / 2);
 
-  // Extra arms at stage 8+
-  const showExtraArms = stage >= 8;
-  const extraArmHeight = lerp(0, 30, (stage - 8) / 2);
-  const extraArmWidth = lerp(0, 8, (stage - 8) / 2);
+  // Extra arms at stage 5+
+  const showExtraArms = stage >= 5;
+  const extraArmHeight = lerp(0, 30, (stage - 5) / 1);
+  const extraArmWidth = lerp(0, 8, (stage - 5) / 1);
 
-  // Chest plate at stage 5+
-  const showChestPlate = stage >= 5;
-  const chestWidth = lerp(0, bodyWidth * 0.7, (stage - 5) / 5);
-  const chestHeight = lerp(0, bodyHeight * 0.3, (stage - 5) / 5);
+  // Chest plate at stage 3+
+  const showChestPlate = stage >= 3;
+  const chestWidth = lerp(0, bodyWidth * 0.7, (stage - 3) / 3);
+  const chestHeight = lerp(0, bodyHeight * 0.3, (stage - 3) / 3);
 
   // Hand/fist size
-  const showHands = stage >= 2;
-  const handSize = lerp(0, armWidth * 1.4, (stage - 2) / 8);
+  const showHands = stage >= 1;
+  const handSize = lerp(0, armWidth * 1.4, (stage - 1) / 5);
 
   // Foot size
-  const showFeet = stage >= 4;
-  const footWidth = lerp(0, legWidth * 1.6, (stage - 4) / 6);
-  const footHeight = lerp(0, 6, (stage - 4) / 6);
+  const showFeet = stage >= 2;
+  const footWidth = lerp(0, legWidth * 1.6, (stage - 2) / 4);
+  const footHeight = lerp(0, 6, (stage - 2) / 4);
 
   const transition = { duration: 0.6, ease: "easeOut" as const };
   const fillColor = `hsl(${color})`;
