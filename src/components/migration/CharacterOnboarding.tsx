@@ -191,12 +191,22 @@ const CharacterOnboarding = () => {
       {/* Steps 0 & 1: Character + Orbit */}
       {step < 2 ? (
         <div className="relative flex items-center justify-center w-full overflow-visible" style={{ height: orbitRadius * 2 + 80 }}>
-          <div className="absolute z-10 flex items-center justify-center overflow-visible">
-            <EvolvingCharacter
-              selectionCount={selectedFunctions.length}
-              color={characterColor}
-            />
-          </div>
+          {/* Character with blur transition */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`char-${step}`}
+              className="absolute z-10 flex items-center justify-center overflow-visible"
+              initial={{ filter: "blur(8px)", opacity: 0.5 }}
+              animate={{ filter: "blur(0px)", opacity: 1 }}
+              exit={{ filter: "blur(8px)", opacity: 0.5 }}
+              transition={{ duration: 0.4 }}
+            >
+              <EvolvingCharacter
+                selectionCount={selectedFunctions.length}
+                color={characterColor}
+              />
+            </motion.div>
+          </AnimatePresence>
 
           <AnimatePresence mode="wait">
             <motion.div
