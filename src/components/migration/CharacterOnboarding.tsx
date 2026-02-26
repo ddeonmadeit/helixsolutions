@@ -21,8 +21,9 @@ const PERSONALITY_OPTIONS = [
   { value: "calm", label: "Calm", color: "175 55% 45%" },
 ];
 
-const BASE_HEIGHT = 64;
-const GROWN_HEIGHT = 78;
+const BASE_HEIGHT = 40;
+const HEIGHT_PER_SELECTION = 8;
+const MAX_HEIGHT = 80;
 
 // Orbit positions for 5 items around center
 const getOrbitPositions = (count: number, radius: number) => {
@@ -37,7 +38,7 @@ const getOrbitPositions = (count: number, radius: number) => {
 
 const CharacterOnboarding = () => {
   const [step, setStep] = useState(0);
-  const [selectedFunction, setSelectedFunction] = useState<string | null>(null);
+  const [selectedFunctions, setSelectedFunctions] = useState<string[]>([]);
   const [selectedPersonality, setSelectedPersonality] = useState<string | null>(null);
   const [characterHeight, setCharacterHeight] = useState(BASE_HEIGHT);
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
@@ -58,8 +59,12 @@ const CharacterOnboarding = () => {
   }, []);
 
   const handleFunctionSelect = (value: string) => {
-    setSelectedFunction(value);
-    setCharacterHeight(GROWN_HEIGHT);
+    setSelectedFunctions((prev) => {
+      const next = prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value];
+      const newHeight = Math.min(BASE_HEIGHT + next.length * HEIGHT_PER_SELECTION, MAX_HEIGHT);
+      setCharacterHeight(newHeight);
+      return next;
+    });
   };
 
   const handlePersonalitySelect = (value: string) => {
@@ -69,7 +74,7 @@ const CharacterOnboarding = () => {
   };
 
   const canProceed = () => {
-    if (step === 0) return !!selectedFunction;
+    if (step === 0) return selectedFunctions.length > 0;
     if (step === 1) return !!selectedPersonality;
     if (step === 2) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     return false;
@@ -78,7 +83,7 @@ const CharacterOnboarding = () => {
   const buildCalUrl = () => {
     const base = "https://cal.com/helix-solutions/demo";
     const params = new URLSearchParams();
-    if (selectedFunction) params.set("metadata[function]", selectedFunction);
+    if (selectedFunctions.length > 0) params.set("metadata[function]", selectedFunctions.join(","));
     if (selectedPersonality) params.set("metadata[personality]", selectedPersonality);
     return `${base}?${params.toString()}`;
   };
@@ -90,7 +95,7 @@ const CharacterOnboarding = () => {
       setSubmitting(true);
       try {
         const body = {
-          timeSinks: [selectedFunction || ""],
+          timeSinks: selectedFunctions,
           timeSinksOther: "",
           businessType: selectedPersonality || "",
           businessTypeOther: "",
@@ -163,7 +168,7 @@ const CharacterOnboarding = () => {
   const positions = getOrbitPositions(currentOptions.length, orbitRadius);
 
   const stepTitles = [
-    { title: "What do you want it to do?", subtitle: "Choose the main function of your assistant." },
+    { title: "What do you want it to do?", subtitle: "Choose the main function's of your assistant." },
     { title: "What is its personality?", subtitle: "Choose how it should behave." },
     { title: "Almost there!", subtitle: "Where should we send your demo details?" },
   ];
@@ -203,50 +208,84 @@ const CharacterOnboarding = () => {
             }}
             key={`char-${characterHeight}-${characterColor}`}
           >
-            {/* Head */}
-            <motion.div
-              className="rounded-full"
-              style={{
-                width: 28,
-                height: 28,
-                backgroundColor: `hsl(${characterColor})`,
-                boxShadow: `0 0 20px hsl(${characterColor} / 0.3)`,
-              }}
+            {/* Star Head */}
+            <motion.svg
+              viewBox="0 0 60 60"
+              style={{ width: 40, height: 40 }}
               layout
               transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
-            {/* Body */}
-            <motion.div
-              className="rounded-b-2xl rounded-t-lg mt-0.5"
-              style={{
-                width: 24,
-                backgroundColor: `hsl(${characterColor})`,
-                boxShadow: `0 0 30px hsl(${characterColor} / 0.2)`,
-              }}
-              animate={{ height: characterHeight }}
-              transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
-            />
+            >
+              <motion.polygon
+                points={(() => {
+                  const cx = 30, cy = 30, spikes = 8, outerR = 28, innerR = 14;
+                  return Array.from({ length: spikes * 2 }, (_, i) => {
+                    const r = i % 2 === 0 ? outerR : innerR;
+                    const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+                    return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
+                  }).join(" ");
+                })()}
+                fill={`hsl(${characterColor})`}
+              />
+            </motion.svg>
+            {/* Body with Arms */}
+            <div className="relative flex items-start justify-center -mt-1">
+              {/* Left Arm */}
+              <motion.div
+                className="rounded-full"
+                style={{
+                  width: 8,
+                  backgroundColor: `hsl(${characterColor})`,
+                  borderRadius: 4,
+                  marginTop: 4,
+                  marginRight: -2,
+                }}
+                animate={{ height: Math.max(characterHeight * 0.45, 16) }}
+                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+              />
+              {/* Torso */}
+              <motion.div
+                className="rounded-b-2xl rounded-t-lg"
+                style={{
+                  width: 24,
+                  backgroundColor: `hsl(${characterColor})`,
+                  boxShadow: `0 0 30px hsl(${characterColor} / 0.2)`,
+                }}
+                animate={{ height: characterHeight }}
+                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+              />
+              {/* Right Arm */}
+              <motion.div
+                className="rounded-full"
+                style={{
+                  width: 8,
+                  backgroundColor: `hsl(${characterColor})`,
+                  borderRadius: 4,
+                  marginTop: 4,
+                  marginLeft: -2,
+                }}
+                animate={{ height: Math.max(characterHeight * 0.45, 16) }}
+                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
+              />
+            </div>
             {/* Legs */}
             <div className="flex gap-1.5 -mt-0.5">
               <motion.div
                 className="rounded-b-lg"
                 style={{
                   width: 8,
-                  height: 16,
                   backgroundColor: `hsl(${characterColor})`,
                 }}
-                layout
-                transition={{ duration: 0.5 }}
+                animate={{ height: Math.max(characterHeight * 0.35, 12) }}
+                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
               />
               <motion.div
                 className="rounded-b-lg"
                 style={{
                   width: 8,
-                  height: 16,
                   backgroundColor: `hsl(${characterColor})`,
                 }}
-                layout
-                transition={{ duration: 0.5 }}
+                animate={{ height: Math.max(characterHeight * 0.35, 12) }}
+                transition={{ duration: 0.5, type: "spring", stiffness: 150, damping: 15 }}
               />
             </div>
             {/* Glow underneath */}
@@ -277,7 +316,7 @@ const CharacterOnboarding = () => {
                 const drift = driftOffsets[i] || { x: 0, y: 0 };
                 const isSelected =
                   step === 0
-                    ? selectedFunction === opt.value
+                    ? selectedFunctions.includes(opt.value)
                     : selectedPersonality === opt.value;
 
                 return (
@@ -334,32 +373,27 @@ const CharacterOnboarding = () => {
           {/* Show the character small above the form */}
           <div className="flex justify-center mb-6">
             <div className="flex flex-col items-center">
-              <div
-                className="rounded-full"
-                style={{
-                  width: 20,
-                  height: 20,
-                  backgroundColor: `hsl(${characterColor})`,
-                  boxShadow: `0 0 16px hsl(${characterColor} / 0.3)`,
-                }}
-              />
-              <div
-                className="rounded-b-xl rounded-t-md mt-0.5"
-                style={{
-                  width: 16,
-                  height: 44,
-                  backgroundColor: `hsl(${characterColor})`,
-                }}
-              />
+              <svg viewBox="0 0 60 60" style={{ width: 28, height: 28 }}>
+                <polygon
+                  points={(() => {
+                    const cx = 30, cy = 30, spikes = 8, outerR = 28, innerR = 14;
+                    return Array.from({ length: spikes * 2 }, (_, i) => {
+                      const r = i % 2 === 0 ? outerR : innerR;
+                      const angle = (i / (spikes * 2)) * Math.PI * 2 - Math.PI / 2;
+                      return `${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`;
+                    }).join(" ");
+                  })()}
+                  fill={`hsl(${characterColor})`}
+                />
+              </svg>
+              <div className="relative flex items-start justify-center -mt-0.5">
+                <div className="rounded-full" style={{ width: 5, height: 20, backgroundColor: `hsl(${characterColor})`, marginTop: 2, marginRight: -1, borderRadius: 3 }} />
+                <div className="rounded-b-xl rounded-t-md" style={{ width: 16, height: 44, backgroundColor: `hsl(${characterColor})` }} />
+                <div className="rounded-full" style={{ width: 5, height: 20, backgroundColor: `hsl(${characterColor})`, marginTop: 2, marginLeft: -1, borderRadius: 3 }} />
+              </div>
               <div className="flex gap-1 -mt-0.5">
-                <div
-                  className="rounded-b-md"
-                  style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }}
-                />
-                <div
-                  className="rounded-b-md"
-                  style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }}
-                />
+                <div className="rounded-b-md" style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }} />
+                <div className="rounded-b-md" style={{ width: 6, height: 10, backgroundColor: `hsl(${characterColor})` }} />
               </div>
             </div>
           </div>
