@@ -196,9 +196,7 @@ const CharacterOnboarding = () => {
       {step < 2 ? (
         <div className="relative flex items-center justify-center w-full" style={{ height: orbitRadius * 2 + 80 }}>
           {/* Character */}
-          <motion.div
-            className="absolute z-10 flex flex-col items-center"
-          >
+          <div className="absolute z-10 flex flex-col items-center" style={{ transform: "scale(1.4)" }}>
             {/* Star Head */}
             <svg viewBox="0 0 60 60" style={{ width: 40, height: 40 }}>
               <polygon
@@ -291,7 +289,7 @@ const CharacterOnboarding = () => {
               animate={{ opacity: [0.3, 0.6, 0.3] }}
               transition={{ duration: 3, repeat: Infinity }}
             />
-          </motion.div>
+          </div>
 
           {/* Orbiting Options */}
           <AnimatePresence mode="wait">
