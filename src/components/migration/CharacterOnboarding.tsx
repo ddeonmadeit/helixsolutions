@@ -8,7 +8,7 @@ import EvolvingCharacter from "./EvolvingCharacter";
 
 const FUNCTION_OPTIONS = [
   { value: "scheduling", label: "Management / Scheduling" },
-  { value: "email-management", label: "Email Management" },
+  { value: "email-management", label: "Manage Email" },
   { value: "customer-support", label: "Customer Support" },
   { value: "team-management", label: "Team Management" },
   { value: "admin", label: "Admin / Data" },
