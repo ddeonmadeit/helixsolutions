@@ -283,27 +283,21 @@ const CharacterOnboarding = () => {
           className="w-full max-w-sm space-y-4 mb-4"
         >
           <div className="flex flex-col items-center mb-2">
-            {/* Gamertag name above character */}
+            {/* Gamertag — plain colored text */}
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="px-4 py-1.5 rounded-lg bg-primary/5"
-              style={{
-                border: `1px solid hsl(${characterColor} / 0.4)`,
-                boxShadow: `0 0 16px hsl(${characterColor} / 0.15)`,
-              }}
+              className="mb-1"
             >
-              <span className="text-sm font-bold tracking-wide" style={{ color: `hsl(${characterColor})` }}>
+              <span className="text-base font-bold tracking-wide" style={{ color: `hsl(${characterColor})` }}>
                 {assistantName}
               </span>
             </motion.div>
-            <div className="-mt-3">
-              <EvolvingCharacter
+            <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
               scale={0.8}
             />
-            </div>
           </div>
 
           {/* Title below character, above form */}
