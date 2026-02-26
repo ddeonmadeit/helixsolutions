@@ -17,12 +17,9 @@ const corsHeaders = {
 
 const OWNER_EMAIL = "info@helixsolution.au";
 
-// Shared forced-dark CSS — overrides iOS Mail light mode, Gmail, Outlook dark mode
+// Shared forced-dark CSS
 const forcedDarkStyles = `
-  /* Force dark regardless of system colour scheme */
   :root { color-scheme: dark !important; }
-
-  /* iOS Mail / Apple Mail light-mode override */
   @media (prefers-color-scheme: light) {
     body, .email-bg { background-color: #0b0f1a !important; color: #e8edf2 !important; }
     .card { background-color: #111827 !important; }
@@ -36,8 +33,6 @@ const forcedDarkStyles = `
     .text-dimmer { color: #2a3a4a !important; }
     .border-dark { border-color: #1e2a3a !important; }
   }
-
-  /* Outlook dark-mode overrides (data-ogsc) */
   [data-ogsc] body, [data-ogsc] .email-bg { background-color: #0b0f1a !important; }
   [data-ogsc] .card { background-color: #111827 !important; }
   [data-ogsc] .card-inner { background-color: #111827 !important; }
@@ -50,11 +45,73 @@ const forcedDarkStyles = `
   [data-ogsc] .text-dimmer { color: #2a3a4a !important; }
   [data-ogsc] .btn-teal { background-color: #36b8c8 !important; }
   [data-ogsc] .btn-teal a { color: #0b0f1a !important; background-color: #36b8c8 !important; }
-
-  /* Base resets */
   body { margin: 0; padding: 0; background-color: #0b0f1a !important; -webkit-text-size-adjust: 100%; }
   * { box-sizing: border-box; }
 `;
+
+function buildOpenClawPrompt(data: {
+  functions: string[];
+  personality: string;
+  name: string;
+  email: string;
+  website: string;
+  phone: string;
+}): string {
+  const functionLabels: Record<string, string> = {
+    emails: "Send & manage emails on behalf of the owner",
+    meetings: "Book and manage calendar meetings",
+    crm: "Manage CRM entries, contacts, and deal pipelines",
+    support: "Handle customer support tickets and inquiries",
+    automate: "Automate repetitive operational tasks",
+  };
+
+  const personalityDescriptions: Record<string, string> = {
+    professional: "Maintain a professional, business-appropriate tone at all times. Be concise, polished, and respectful.",
+    friendly: "Be warm, approachable, and personable. Use a conversational but still competent tone.",
+    playful: "Be lighthearted, witty, and fun. Add personality and humor where appropriate while staying helpful.",
+    direct: "Be straightforward and to-the-point. Minimize fluff—just deliver clear, actionable information.",
+    calm: "Be composed, measured, and reassuring. Use a soothing, thoughtful tone in all communications.",
+  };
+
+  const skillsList = data.functions
+    .map((f) => `- ${functionLabels[f] || f}`)
+    .join("\n");
+
+  const personalityDesc = personalityDescriptions[data.personality] || data.personality;
+
+  return `# OpenClaw AI Assistant Configuration
+
+## Owner Information
+- **Name:** ${data.name}
+- **Email:** ${data.email}
+- **Website:** ${data.website}
+${data.phone ? `- **Phone:** ${data.phone}` : ""}
+
+## Skills & Capabilities
+You are an AI assistant for ${data.name}. Your core skills are:
+${skillsList}
+
+## Personality & Communication Style
+${personalityDesc}
+
+## Website Context
+Refer to ${data.website} for business context, branding, services, and tone of voice. Align your communication with the brand identity found there.
+
+## Heartbeat — Daily Updates
+You must send a daily update to ${data.name} covering:
+1. **Tasks completed** — Summary of actions taken today (emails sent, meetings booked, CRM updates, support tickets resolved, automations triggered).
+2. **Pending items** — Anything that requires the owner's attention or approval.
+3. **Upcoming schedule** — Meetings, deadlines, or follow-ups for the next 24-48 hours.
+4. **Insights & suggestions** — Patterns noticed (e.g., "3 leads went cold this week—suggest re-engagement sequence") or proactive recommendations.
+
+Schedule the heartbeat around the owner's timezone and business hours. Default to end-of-business-day unless instructed otherwise.
+
+## General Instructions
+- Always act in the best interest of ${data.name} and their business.
+- When uncertain, ask for clarification rather than assuming.
+- Keep all client and business data confidential.
+- Log all significant actions for transparency in the daily heartbeat.`;
+}
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -62,9 +119,12 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { timeSinks, businessType, currentSoftware, timeSinksOther, businessTypeOther } = await req.json();
+    const { functions, personality, name, email, website, phone } = await req.json();
 
-    // ─── Owner notification email ───────────────────────────────────────────
+    // Generate OpenClaw prompt
+    const openclawPrompt = buildOpenClawPrompt({ functions: functions || [], personality: personality || "", name: name || "", email: email || "", website: website || "", phone: phone || "" });
+
+    // Owner notification email
     const ownerHtml = `<!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
@@ -81,22 +141,23 @@ const handler = async (req: Request): Promise<Response> => {
   <tr>
     <td align="center" bgcolor="#0b0f1a" class="email-bg" style="background-color:#0b0f1a !important;">
       <table class="card" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#111827 !important;border-radius:20px;border:1px solid #1e2a3a;overflow:hidden;">
-        <!-- Header -->
         <tr>
           <td align="center" bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:36px 40px 28px;border-bottom:2px solid #1e2a3a;">
             <img src="https://helixsolutions.lovable.app/favicon.jpeg" alt="Helix Solutions" width="48" height="48" style="display:block;margin:0 auto 16px;border-radius:12px;" />
             <p class="text-teal" style="margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#36b8c8 !important;">HELIX SOLUTIONS</p>
-            <h1 class="text-white" style="margin:10px 0 0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:26px;font-weight:800;color:#e8edf2 !important;">New Quiz Submission</h1>
+            <h1 class="text-white" style="margin:10px 0 0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:26px;font-weight:800;color:#e8edf2 !important;">New Lead Submission</h1>
           </td>
         </tr>
-        <!-- Body -->
         <tr>
           <td bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:32px 40px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               ${[
-                ["Business Type", businessType === "other" ? (businessTypeOther || "Other") : (businessType || "—")],
-                ["Time Sinks", (timeSinks || []).map((s: string) => s === "other" ? (timeSinksOther || "Other") : s).join(", ") || "—"],
-                ["Current Software", (currentSoftware || []).join(", ") || "—"],
+                ["Name", name || "—"],
+                ["Email", email || "—"],
+                ["Website", website || "—"],
+                ["Phone", phone || "—"],
+                ["Functions", (functions || []).join(", ") || "—"],
+                ["Personality", personality || "—"],
               ].map(([label, value]) => `
               <tr>
                 <td bgcolor="#111827" class="card-inner text-muted" style="background-color:#111827 !important;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#6b7a8d !important;width:160px;vertical-align:top;">${label}</td>
@@ -105,7 +166,6 @@ const handler = async (req: Request): Promise<Response> => {
             </table>
           </td>
         </tr>
-        <!-- Footer -->
         <tr>
           <td bgcolor="#111827" class="card-inner" style="background-color:#111827 !important;padding:20px 40px 32px;border-top:1px solid #1e2a3a;">
             <p class="text-dim" style="margin:0;font-family:Inter,-apple-system,sans-serif;font-size:12px;color:#3d4d5c !important;">Helix Solutions · helixsolution.au</p>
@@ -120,14 +180,19 @@ const handler = async (req: Request): Promise<Response> => {
 
     await Promise.all([
       supabaseAdmin.from("leads").insert({
-        time_sinks: timeSinks || [],
-        business_type: businessType || null,
-        current_software: currentSoftware || [],
+        name: name || null,
+        email: email || null,
+        website: website || null,
+        phone: phone || null,
+        time_sinks: functions || [],
+        business_type: personality || null,
+        personality: personality || null,
+        openclaw_prompt: openclawPrompt,
       }),
       resend.emails.send({
         from: "Helix Solutions <noreply@helixsolution.au>",
         to: [OWNER_EMAIL, "hitsbydeon@gmail.com"],
-        subject: "New Quiz Submission",
+        subject: `New Lead: ${name || "Unknown"}`,
         html: ownerHtml,
       }),
     ]);

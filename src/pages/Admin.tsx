@@ -16,6 +16,10 @@ interface Lead {
   time_sinks: string[] | null;
   business_type: string | null;
   current_software: string[] | null;
+  personality: string | null;
+  website: string | null;
+  phone: string | null;
+  openclaw_prompt: string | null;
   created_at: string;
 }
 
@@ -531,9 +535,11 @@ const Admin = () => {
                 <TableRow className="border-border">
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
-                  <TableHead>Business Type</TableHead>
-                  <TableHead>Time Sinks</TableHead>
-                  <TableHead>Software</TableHead>
+                  <TableHead>Website</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Functions</TableHead>
+                  <TableHead>Personality</TableHead>
+                  <TableHead>OpenClaw Prompt</TableHead>
                   <TableHead>Date</TableHead>
                 </TableRow>
               </TableHeader>
@@ -550,10 +556,15 @@ const Admin = () => {
                         </a>
                       ) : "—"}
                     </TableCell>
-                    <TableCell>
-                      {lead.business_type ? (
-                        <Badge variant="secondary">{formatLabel(lead.business_type)}</Badge>
+                    <TableCell className="text-muted-foreground">
+                      {lead.website ? (
+                        <a href={lead.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {lead.website.replace(/^https?:\/\//, "")}
+                        </a>
                       ) : "—"}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {lead.phone || "—"}
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1">
@@ -565,13 +576,23 @@ const Admin = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {(lead.current_software ?? []).map((s) => (
-                          <Badge key={s} variant="outline" className="text-xs">
-                            {formatLabel(s)}
-                          </Badge>
-                        ))}
-                      </div>
+                      {lead.personality ? (
+                        <Badge variant="secondary">{formatLabel(lead.personality)}</Badge>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell>
+                      {lead.openclaw_prompt ? (
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(lead.openclaw_prompt!);
+                            toast({ title: "Copied!", description: "OpenClaw prompt copied to clipboard." });
+                          }}
+                          className="flex items-center gap-1.5 rounded-lg border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                          Copy Prompt
+                        </button>
+                      ) : "—"}
                     </TableCell>
                     <TableCell className="text-muted-foreground text-sm">
                       {new Date(lead.created_at).toLocaleDateString("en-AU", {

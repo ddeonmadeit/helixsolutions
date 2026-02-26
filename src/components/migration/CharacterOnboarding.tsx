@@ -89,13 +89,12 @@ const CharacterOnboarding = () => {
       setSubmitting(true);
       try {
         const body = {
-          timeSinks: selectedFunctions,
-          timeSinksOther: "",
-          businessType: selectedPersonality || "",
-          businessTypeOther: "",
-          currentSoftware: [],
+          functions: selectedFunctions,
+          personality: selectedPersonality || "",
           name,
           email,
+          website,
+          phone,
         };
         const { error: migError } = await supabase.functions.invoke("send-migration-emails", { body });
         if (migError) throw migError;

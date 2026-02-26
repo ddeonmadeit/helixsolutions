@@ -22,7 +22,11 @@ export type Database = {
           email: string | null
           id: string
           name: string | null
+          openclaw_prompt: string | null
+          personality: string | null
+          phone: string | null
           time_sinks: string[] | null
+          website: string | null
         }
         Insert: {
           business_type?: string | null
@@ -31,7 +35,11 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
+          openclaw_prompt?: string | null
+          personality?: string | null
+          phone?: string | null
           time_sinks?: string[] | null
+          website?: string | null
         }
         Update: {
           business_type?: string | null
@@ -40,7 +48,11 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
+          openclaw_prompt?: string | null
+          personality?: string | null
+          phone?: string | null
           time_sinks?: string[] | null
+          website?: string | null
         }
         Relationships: []
       }
