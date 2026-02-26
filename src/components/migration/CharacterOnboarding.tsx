@@ -22,9 +22,6 @@ const PERSONALITY_OPTIONS = [
   { value: "calm", label: "Calm", color: "175 55% 45%" },
 ];
 
-// Character height constants removed - now using EvolvingCharacter stages
-
-// Orbit positions for 5 items around center
 const getOrbitPositions = (count: number, radius: number) => {
   return Array.from({ length: count }, (_, i) => {
     const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
@@ -42,11 +39,11 @@ const CharacterOnboarding = () => {
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [assistantName, setAssistantName] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [driftOffsets, setDriftOffsets] = useState<{ x: number; y: number }[]>([]);
 
-  // Generate random drift offsets on mount
   useEffect(() => {
     setDriftOffsets(
       Array.from({ length: 5 }, () => ({
@@ -71,7 +68,8 @@ const CharacterOnboarding = () => {
   const canProceed = () => {
     if (step === 0) return selectedFunctions.length > 0;
     if (step === 1) return !!selectedPersonality;
-    if (step === 2) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (step === 2) return assistantName.trim().length > 0;
+    if (step === 3) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     return false;
   };
 
@@ -84,7 +82,7 @@ const CharacterOnboarding = () => {
   };
 
   const handleNext = async () => {
-    if (step < 2) {
+    if (step < 3) {
       setStep(step + 1);
     } else {
       setSubmitting(true);
@@ -163,8 +161,9 @@ const CharacterOnboarding = () => {
   const positions = getOrbitPositions(currentOptions.length, orbitRadius);
 
   const stepTitles = [
-    { title: "What do you want it to do?", subtitle: "Choose the main function's of your assistant." },
+    { title: "What do you want it to do?", subtitle: "Choose the main functions of your assistant." },
     { title: "What is its personality?", subtitle: "Choose how it should behave." },
+    { title: "What do you want to name him?", subtitle: "Give your assistant an identity." },
     { title: "Almost there!", subtitle: "Where should we send your demo details?" },
   ];
 
@@ -187,10 +186,9 @@ const CharacterOnboarding = () => {
         </motion.div>
       </AnimatePresence>
 
-      {/* Character + Orbit Area */}
+      {/* Steps 0 & 1: Character + Orbit */}
       {step < 2 ? (
         <div className="relative flex items-center justify-center w-full overflow-visible" style={{ height: orbitRadius * 2 + 80 }}>
-          {/* Character */}
           <div className="absolute z-10 flex items-center justify-center overflow-visible">
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
@@ -198,7 +196,6 @@ const CharacterOnboarding = () => {
             />
           </div>
 
-          {/* Orbiting Options */}
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -229,22 +226,10 @@ const CharacterOnboarding = () => {
                         ? { boxShadow: `0 0 24px hsl(${step === 1 ? (PERSONALITY_OPTIONS.find(p => p.value === opt.value)?.color || "185 70% 50%") : "185 70% 50%"} / 0.3)` }
                         : {}),
                     }}
-                    initial={{
-                      x: 0,
-                      y: 0,
-                      opacity: 0,
-                    }}
-                    animate={{
-                      x: pos.x + drift.x,
-                      y: pos.y + drift.y,
-                      opacity: 1,
-                    }}
+                    initial={{ x: 0, y: 0, opacity: 0 }}
+                    animate={{ x: pos.x + drift.x, y: pos.y + drift.y, opacity: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
-                    transition={{
-                      delay: i * 0.06,
-                      duration: 0.5,
-                      ease: "easeOut",
-                    }}
+                    transition={{ delay: i * 0.06, duration: 0.5, ease: "easeOut" }}
                     whileHover={{ scale: 1.08 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() =>
@@ -260,6 +245,25 @@ const CharacterOnboarding = () => {
             </motion.div>
           </AnimatePresence>
         </div>
+      ) : step === 2 ? (
+        /* Step 2: Name the assistant */
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center w-full max-w-sm"
+        >
+          <Input
+            value={assistantName}
+            onChange={(e) => setAssistantName(e.target.value)}
+            className="bg-background/40 text-center text-lg mb-8 max-w-[200px]"
+            autoFocus
+          />
+
+          <EvolvingCharacter
+            selectionCount={selectedFunctions.length}
+            color={characterColor}
+          />
+        </motion.div>
       ) : (
         /* Step 3: Contact form */
         <motion.div
@@ -267,7 +271,6 @@ const CharacterOnboarding = () => {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm space-y-4 mb-4"
         >
-          {/* Show the character small above the form */}
           <div className="flex justify-center mb-6">
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
@@ -311,7 +314,7 @@ const CharacterOnboarding = () => {
             className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40"
             style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
           >
-            {submitting ? "Submitting…" : step === 2 ? "Submit" : "Next"}
+            {submitting ? "Submitting…" : step === 3 ? "Submit" : "Next"}
             {!submitting && <ArrowRight className="h-4 w-4" />}
           </motion.button>
         )}
