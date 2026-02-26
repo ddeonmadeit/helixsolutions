@@ -189,9 +189,9 @@ const CharacterOnboarding = () => {
 
       {/* Character + Orbit Area */}
       {step < 2 ? (
-        <div className="relative flex items-center justify-center w-full" style={{ height: orbitRadius * 2 + 80 }}>
+        <div className="relative flex items-center justify-center w-full overflow-visible" style={{ height: orbitRadius * 2 + 80 }}>
           {/* Character */}
-          <div className="absolute z-10">
+          <div className="absolute z-10 flex items-center justify-center overflow-visible">
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
