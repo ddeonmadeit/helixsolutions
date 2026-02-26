@@ -20,7 +20,7 @@ interface EvolvingCharacterProps {
 const EvolvingCharacter = ({ selectionCount, color, scale = 1.4 }: EvolvingCharacterProps) => {
   const stageIndex = getStageIndex(selectionCount);
   const hslColor = `hsl(${color})`;
-  const size = 160 * scale;
+  const size = 100 * scale;
 
   return (
     <motion.div
