@@ -233,6 +233,9 @@ const CharacterOnboarding = () => {
                     ? selectedFunctions.includes(opt.value)
                     : selectedPersonality === opt.value;
 
+                // Per-bubble manual nudge
+                const nudge = step === 0 && opt.value === "email-management" ? { x: 15, y: 0 } : { x: 0, y: 0 };
+
                 return (
                   <motion.button
                     key={opt.value}
@@ -247,7 +250,7 @@ const CharacterOnboarding = () => {
                         : {}),
                     }}
                     initial={{ x: 0, y: 0, opacity: 0, scale: 0.8 }}
-                    animate={{ x: pos.x + drift.x, y: pos.y + drift.y, opacity: 1, scale: 1 }}
+                    animate={{ x: pos.x + drift.x + nudge.x, y: pos.y + drift.y + nudge.y, opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
                     transition={{ delay: 0.1 + i * 0.05, duration: 0.35, ease: "easeOut" }}
                     whileHover={{ scale: 1.08 }}
