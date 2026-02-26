@@ -7,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import EvolvingCharacter from "./EvolvingCharacter";
 
 const FUNCTION_OPTIONS = [
+  { value: "admin", label: "Admin" },
   { value: "email-management", label: "Email Management" },
   { value: "customer-support", label: "Customer Support" },
   { value: "team-management", label: "Team Management" },
   { value: "scheduling", label: "Scheduling & Coordination" },
-  { value: "admin", label: "Admin" },
 ];
 
 const PERSONALITY_OPTIONS = [
