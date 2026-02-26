@@ -15,12 +15,17 @@ serve(async (req) => {
 
   try {
     const payload = await req.json();
+    console.log("Inbound webhook payload keys:", JSON.stringify(Object.keys(payload)));
 
-    const from = payload.from || "Unknown sender";
-    const subject = payload.subject || "(no subject)";
-    const textBody = payload.text || "";
-    const htmlBody = payload.html || "";
-    const to = payload.to || "";
+    // Resend inbound webhooks wrap email data inside a "data" object
+    const emailData = payload.data || payload;
+    console.log("Email data keys:", JSON.stringify(Object.keys(emailData)));
+
+    const from = emailData.from || payload.from || "Unknown sender";
+    const subject = emailData.subject || payload.subject || "(no subject)";
+    const textBody = emailData.text || payload.text || "";
+    const htmlBody = emailData.html || payload.html || "";
+    const to = Array.isArray(emailData.to) ? emailData.to.join(", ") : (emailData.to || payload.to || "");
 
     const wrappedHtml = `<!DOCTYPE html>
 <html lang="en">
