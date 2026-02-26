@@ -110,11 +110,6 @@ const CharacterOnboarding = () => {
         const { error: migError } = await supabase.functions.invoke("send-migration-emails", { body });
         if (migError) throw migError;
 
-        const { error: tyError } = await supabase.functions.invoke("send-thankyou-email", {
-          body: { name, email },
-        });
-        if (tyError) throw tyError;
-
         setSubmitted(true);
       } catch (err: any) {
         console.error("Submission error:", err);
