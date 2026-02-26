@@ -213,6 +213,7 @@ const CharacterOnboarding = () => {
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
+              scale={orbitRadius < 140 ? 0.9 : 1.4}
             />
           </motion.div>
 
