@@ -260,7 +260,7 @@ const CharacterOnboarding = () => {
               />
             </div>
             {/* Legs */}
-            <div className="flex gap-1.5 -mt-0.5">
+            <div className="flex gap-1.5 -mt-1.5">
               <motion.div
                 className="rounded-b-lg"
                 style={{
