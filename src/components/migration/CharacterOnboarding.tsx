@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import EvolvingCharacter from "./EvolvingCharacter";
 
 const FUNCTION_OPTIONS = [
-  { value: "admin", label: "Admin" },
+  { value: "admin", label: "Admin/Data" },
   { value: "email-management", label: "Email Management" },
   { value: "customer-support", label: "Customer Support" },
   { value: "team-management", label: "Team Management" },
