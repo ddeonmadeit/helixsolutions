@@ -36,7 +36,7 @@ const CharacterOnboarding = () => {
   const [step, setStep] = useState(0);
   const [selectedFunctions, setSelectedFunctions] = useState<string[]>([]);
   const [selectedPersonality, setSelectedPersonality] = useState<string | null>(null);
-  const [characterColor, setCharacterColor] = useState("0 0% 10%");
+  const [characterColor, setCharacterColor] = useState("185 70% 50%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
