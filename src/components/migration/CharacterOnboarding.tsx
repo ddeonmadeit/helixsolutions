@@ -22,15 +22,6 @@ const PERSONALITY_OPTIONS = [
   { value: "calm", label: "Calm", color: "175 55% 45%" },
 ];
 
-const SOFTWARE_OPTIONS = [
-  { value: "gmail", label: "Gmail" },
-  { value: "slack", label: "Slack" },
-  { value: "hubspot", label: "HubSpot" },
-  { value: "notion", label: "Notion" },
-  { value: "google-calendar", label: "Google Calendar" },
-  { value: "trello", label: "Trello" },
-];
-
 const getOrbitPositions = (count: number, radius: number) => {
   return Array.from({ length: count }, (_, i) => {
     const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
@@ -45,7 +36,6 @@ const CharacterOnboarding = () => {
   const [step, setStep] = useState(0);
   const [selectedFunctions, setSelectedFunctions] = useState<string[]>([]);
   const [selectedPersonality, setSelectedPersonality] = useState<string | null>(null);
-  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -58,7 +48,7 @@ const CharacterOnboarding = () => {
 
   useEffect(() => {
     setDriftOffsets(
-      Array.from({ length: 6 }, () => ({
+      Array.from({ length: 5 }, () => ({
         x: Math.random() * 6 - 3,
         y: Math.random() * 6 - 3,
       }))
@@ -77,17 +67,10 @@ const CharacterOnboarding = () => {
     if (opt) setCharacterColor(opt.color);
   };
 
-  const handleSoftwareSelect = (value: string) => {
-    setSelectedSoftware((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
-  };
-
   const canProceed = () => {
     if (step === 0) return selectedFunctions.length > 0;
     if (step === 1) return !!selectedPersonality;
-    if (step === 2) return selectedSoftware.length > 0;
-    if (step === 3) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && website.trim().length > 0;
+    if (step === 2) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && website.trim().length > 0;
     return false;
   };
 
@@ -100,7 +83,7 @@ const CharacterOnboarding = () => {
   };
 
   const handleNext = async () => {
-    if (step < 3) {
+    if (step < 2) {
       setStep(step + 1);
     } else {
       setSubmitting(true);
@@ -108,7 +91,6 @@ const CharacterOnboarding = () => {
         const body = {
           functions: selectedFunctions,
           personality: selectedPersonality || "",
-          software: selectedSoftware,
           name,
           email,
           website,
@@ -174,21 +156,20 @@ const CharacterOnboarding = () => {
     );
   }
 
-  const currentOptions = step === 0 ? FUNCTION_OPTIONS : step === 1 ? PERSONALITY_OPTIONS : step === 2 ? SOFTWARE_OPTIONS : [];
+  const currentOptions = step === 0 ? FUNCTION_OPTIONS : step === 1 ? PERSONALITY_OPTIONS : [];
   const orbitRadius = typeof window !== "undefined" && window.innerWidth < 640 ? 120 : 160;
   const positions = getOrbitPositions(currentOptions.length, orbitRadius);
 
   const stepTitles = [
     { title: "What do you want it to do?", subtitle: "Choose the main functions of your assistant." },
     { title: "What is its personality?", subtitle: "Choose how it should behave." },
-    { title: "What software do you want to connect?", subtitle: "Select the tools your assistant will work with." },
     { title: "Almost there!", subtitle: "How should we communicate with you during setup?" },
   ];
 
   return (
     <div className="flex flex-col items-center w-full">
       {/* Title — shown above for steps 0-2, moved below character for step 3 */}
-      {step < 3 && (
+      {step < 2 && (
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -207,7 +188,7 @@ const CharacterOnboarding = () => {
       )}
 
       {/* Steps 0 & 1: Character + Orbit */}
-      {step < 3 ? (
+      {step < 2 ? (
         <div className="relative flex items-center justify-center w-full overflow-visible" style={{ height: orbitRadius * 2 + 80 }}>
           {/* Character — fades out, then unblurs back in sync with bubbles */}
           <motion.div
@@ -238,8 +219,6 @@ const CharacterOnboarding = () => {
                 const isSelected =
                   step === 0
                     ? selectedFunctions.includes(opt.value)
-                    : step === 2
-                    ? selectedSoftware.includes(opt.value)
                     : selectedPersonality === opt.value;
 
                 return (
@@ -264,8 +243,6 @@ const CharacterOnboarding = () => {
                     onClick={() =>
                       step === 0
                         ? handleFunctionSelect(opt.value)
-                        : step === 2
-                        ? handleSoftwareSelect(opt.value)
                         : handlePersonalitySelect(opt.value)
                     }
                   >
@@ -277,7 +254,7 @@ const CharacterOnboarding = () => {
           </AnimatePresence>
         </div>
       ) : (
-        /* Step 3: Contact form */
+        /* Step 2: Contact form */
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -299,9 +276,9 @@ const CharacterOnboarding = () => {
             className="text-center pb-2"
           >
             <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
-              {stepTitles[3].title}
+              {stepTitles[2].title}
             </h2>
-            <p className="text-sm text-muted-foreground">{stepTitles[3].subtitle}</p>
+            <p className="text-sm text-muted-foreground">{stepTitles[2].subtitle}</p>
           </motion.div>
 
           <div>
@@ -358,7 +335,7 @@ const CharacterOnboarding = () => {
             className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40"
             style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
           >
-            {submitting ? "Submitting…" : step === 3 ? "Create Assistant" : "Next"}
+            {submitting ? "Submitting…" : step === 2 ? "Create Assistant" : "Next"}
             {!submitting && <ArrowRight className="h-4 w-4" />}
           </motion.button>
         )}
