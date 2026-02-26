@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Calendar, Rocket } from "lucide-react";
+import { ArrowRight, CreditCard, Rocket, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -39,6 +39,7 @@ const CharacterOnboarding = () => {
   const [characterColor, setCharacterColor] = useState("0 0% 10%");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [checkingOut, setCheckingOut] = useState(false);
   
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
@@ -74,12 +75,22 @@ const CharacterOnboarding = () => {
     return false;
   };
 
-  const buildCalUrl = () => {
-    const base = "https://cal.com/helix-solutions/demo";
-    const params = new URLSearchParams();
-    if (selectedFunctions.length > 0) params.set("metadata[function]", selectedFunctions.join(","));
-    if (selectedPersonality) params.set("metadata[personality]", selectedPersonality);
-    return `${base}?${params.toString()}`;
+  const handleCheckout = async () => {
+    setCheckingOut(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-onboarding-checkout", {
+        body: { email, functionCount: selectedFunctions.length },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (err: any) {
+      console.error("Checkout error:", err);
+      toast.error("Could not start checkout. Please try again.");
+    } finally {
+      setCheckingOut(false);
+    }
   };
 
   const handleNext = async () => {
@@ -99,9 +110,8 @@ const CharacterOnboarding = () => {
         const { error: migError } = await supabase.functions.invoke("send-migration-emails", { body });
         if (migError) throw migError;
 
-        const calUrl = buildCalUrl();
         const { error: tyError } = await supabase.functions.invoke("send-thankyou-email", {
-          body: { name, email, calUrl },
+          body: { name, email },
         });
         if (tyError) throw tyError;
 
@@ -115,7 +125,10 @@ const CharacterOnboarding = () => {
     }
   };
 
+  const SETUP_AMOUNTS: Record<number, number> = { 1: 200, 2: 300, 3: 500, 4: 700, 5: 1000 };
+
   if (submitted) {
+    const setupAmount = SETUP_AMOUNTS[selectedFunctions.length] || 200;
     return (
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
@@ -130,28 +143,27 @@ const CharacterOnboarding = () => {
         >
           <Rocket className="h-8 w-8 text-primary" />
         </motion.div>
-        <h2 className="mb-2 text-2xl font-bold text-foreground">One last step!</h2>
-        <p className="text-muted-foreground mb-6">
-          Book your same-day demo to see your custom AI assistant in action.
+        <h2 className="mb-2 text-2xl font-bold text-foreground">You're all set!</h2>
+        <p className="text-muted-foreground mb-2">
+          Your custom AI assistant is ready to be built.
         </p>
-        <motion.a
-          href={buildCalUrl()}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => {
-            if (typeof window !== "undefined" && (window as any).fbq) {
-              (window as any).fbq("track", "Lead");
-            }
-          }}
+        <p className="text-sm text-muted-foreground mb-6">
+          <span className="font-semibold text-foreground">${setupAmount} AUD</span> setup + <span className="font-semibold text-foreground">$100 AUD/mo</span> maintenance
+        </p>
+        <motion.button
+          onClick={handleCheckout}
+          disabled={checkingOut}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40"
           style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
         >
-          <Calendar className="h-4 w-4" />
-          Book Your Demo
-          <ArrowRight className="h-4 w-4" />
-        </motion.a>
+          {checkingOut ? (
+            <><Loader2 className="h-4 w-4 animate-spin" /> Opening checkout…</>
+          ) : (
+            <><CreditCard className="h-4 w-4" /> Proceed to Payment <ArrowRight className="h-4 w-4" /></>
+          )}
+        </motion.button>
       </motion.div>
     );
   }
