@@ -171,22 +171,24 @@ const CharacterOnboarding = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      {/* Title */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.3 }}
-          className="text-center mb-8"
-        >
-          <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
-            {stepTitles[step].title}
-          </h2>
-          <p className="text-sm text-muted-foreground">{stepTitles[step].subtitle}</p>
-        </motion.div>
-      </AnimatePresence>
+      {/* Title — shown above for steps 0-2, moved below character for step 3 */}
+      {step < 3 && (
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">
+              {stepTitles[step].title}
+            </h2>
+            <p className="text-sm text-muted-foreground">{stepTitles[step].subtitle}</p>
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {/* Steps 0 & 1: Character + Orbit */}
       {step < 2 ? (
@@ -280,13 +282,16 @@ const CharacterOnboarding = () => {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm space-y-4 mb-4"
         >
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-2">
             {/* Gamertag name above character */}
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-3 px-4 py-1.5 rounded-lg border border-primary/30 bg-primary/5"
-              style={{ boxShadow: `0 0 16px hsl(${characterColor} / 0.15)` }}
+              className="mb-1 px-4 py-1.5 rounded-lg bg-primary/5"
+              style={{
+                border: `1px solid hsl(${characterColor} / 0.4)`,
+                boxShadow: `0 0 16px hsl(${characterColor} / 0.15)`,
+              }}
             >
               <span className="text-sm font-bold tracking-wide" style={{ color: `hsl(${characterColor})` }}>
                 {assistantName}
@@ -298,6 +303,19 @@ const CharacterOnboarding = () => {
               scale={0.8}
             />
           </div>
+
+          {/* Title below character, above form */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="text-center pb-2"
+          >
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-1">
+              {stepTitles[3].title}
+            </h2>
+            <p className="text-sm text-muted-foreground">{stepTitles[3].subtitle}</p>
+          </motion.div>
 
           <div>
             <label className="text-sm text-muted-foreground mb-1.5 block">Full Name</label>
