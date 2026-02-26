@@ -41,6 +41,7 @@ const CharacterOnboarding = () => {
   const [submitting, setSubmitting] = useState(false);
   const [assistantName, setAssistantName] = useState("");
   const [name, setName] = useState("");
+  const [website, setWebsite] = useState("");
   const [email, setEmail] = useState("");
   const [driftOffsets, setDriftOffsets] = useState<{ x: number; y: number }[]>([]);
 
@@ -69,7 +70,7 @@ const CharacterOnboarding = () => {
     if (step === 0) return selectedFunctions.length > 0;
     if (step === 1) return !!selectedPersonality;
     if (step === 2) return assistantName.trim().length > 0;
-    if (step === 3) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (step === 3) return name.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && website.trim().length > 0;
     return false;
   };
 
@@ -296,6 +297,16 @@ const CharacterOnboarding = () => {
               className="bg-background/40"
             />
           </div>
+          <div>
+            <label className="text-sm text-muted-foreground mb-1.5 block">Website</label>
+            <Input
+              type="url"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              className="bg-background/40"
+              placeholder="https://"
+            />
+          </div>
         </motion.div>
       )}
 
@@ -314,7 +325,7 @@ const CharacterOnboarding = () => {
             className="mt-4 flex items-center gap-2 rounded-xl bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground transition-all disabled:opacity-40"
             style={{ boxShadow: "0 0 20px hsl(185 70% 50% / 0.3)" }}
           >
-            {submitting ? "Submitting…" : step === 3 ? "Submit" : "Next"}
+            {submitting ? "Submitting…" : step === 3 ? "Create Assistant" : "Next"}
             {!submitting && <ArrowRight className="h-4 w-4" />}
           </motion.button>
         )}
