@@ -52,6 +52,7 @@ const forcedDarkStyles = `
 function buildOpenClawPrompt(data: {
   functions: string[];
   personality: string;
+  software: string[];
   name: string;
   email: string;
   website: string;
@@ -79,6 +80,10 @@ function buildOpenClawPrompt(data: {
 
   const personalityDesc = personalityDescriptions[data.personality] || data.personality;
 
+  const softwareList = data.software.length > 0
+    ? data.software.map((s) => `- ${s}`).join("\n")
+    : "- None specified";
+
   return `# OpenClaw AI Assistant Configuration
 
 ## Owner Information
@@ -93,6 +98,9 @@ ${skillsList}
 
 ## Personality & Communication Style
 ${personalityDesc}
+
+## Connected Software & Integrations
+${softwareList}
 
 ## Website Context
 Refer to ${data.website} for business context, branding, services, and tone of voice. Align your communication with the brand identity found there.
@@ -119,10 +127,10 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { functions, personality, name, email, website, phone } = await req.json();
+    const { functions, personality, software, name, email, website, phone } = await req.json();
 
     // Generate OpenClaw prompt
-    const openclawPrompt = buildOpenClawPrompt({ functions: functions || [], personality: personality || "", name: name || "", email: email || "", website: website || "", phone: phone || "" });
+    const openclawPrompt = buildOpenClawPrompt({ functions: functions || [], personality: personality || "", software: software || [], name: name || "", email: email || "", website: website || "", phone: phone || "" });
 
     // Owner notification email
     const ownerHtml = `<!DOCTYPE html>
@@ -158,6 +166,7 @@ const handler = async (req: Request): Promise<Response> => {
                 ["Phone", phone || "—"],
                 ["Functions", (functions || []).join(", ") || "—"],
                 ["Personality", personality || "—"],
+                ["Software", (software || []).join(", ") || "—"],
               ].map(([label, value]) => `
               <tr>
                 <td bgcolor="#111827" class="card-inner text-muted" style="background-color:#111827 !important;padding:10px 0;font-family:Inter,-apple-system,sans-serif;font-size:13px;color:#6b7a8d !important;width:160px;vertical-align:top;">${label}</td>
@@ -187,6 +196,7 @@ const handler = async (req: Request): Promise<Response> => {
         time_sinks: functions || [],
         business_type: personality || null,
         personality: personality || null,
+        current_software: software || [],
         openclaw_prompt: openclawPrompt,
       }),
       resend.emails.send({
