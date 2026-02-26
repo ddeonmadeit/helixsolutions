@@ -197,7 +197,7 @@ const CharacterOnboarding = () => {
             className="absolute z-10 flex items-center justify-center overflow-visible"
             initial={{ filter: "blur(14px)", opacity: 0 }}
             animate={{ filter: "blur(0px)", opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7, ease: "easeOut" }}
+            transition={{ duration: 0.6, delay: 1.5, ease: "easeOut" }}
           >
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
