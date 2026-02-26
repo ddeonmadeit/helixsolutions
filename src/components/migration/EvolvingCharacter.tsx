@@ -85,7 +85,10 @@ const EvolvingCharacter = ({ selectionCount, color, scale = 1.4 }: EvolvingChara
           initial={false}
           animate={{ opacity: i === stageIndex ? 1 : 0 }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
-          style={{ pointerEvents: i === stageIndex ? "auto" : "none" }}
+          style={{
+            pointerEvents: i === stageIndex ? "auto" : "none",
+            filter: `drop-shadow(0 0 12px ${hslColor})`,
+          }}
         >
           <StageComponent color={hslColor} />
         </motion.div>
