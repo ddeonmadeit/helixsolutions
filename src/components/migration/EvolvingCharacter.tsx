@@ -44,7 +44,7 @@ const EvolvingCharacter = ({ selectionCount, color, scale = 1.4 }: EvolvingChara
             className="w-full h-full object-contain"
             style={{
               filter: `drop-shadow(0 0 12px ${hslColor})`,
-              transform: "translateX(-4px)",
+              transform: "translateX(-12px)",
             }}
           />
         </motion.div>
