@@ -42,6 +42,7 @@ const CharacterOnboarding = () => {
   const [assistantName, setAssistantName] = useState("");
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [driftOffsets, setDriftOffsets] = useState<{ x: number; y: number }[]>([]);
 
@@ -165,7 +166,7 @@ const CharacterOnboarding = () => {
     { title: "What do you want it to do?", subtitle: "Choose the main functions of your assistant." },
     { title: "What is its personality?", subtitle: "Choose how it should behave." },
     { title: "What do you want to name him?", subtitle: "Give your assistant an identity." },
-    { title: "Almost there!", subtitle: "Where should we send your demo details?" },
+    { title: "Almost there!", subtitle: "How should we communicate with you during setup?" },
   ];
 
   return (
@@ -266,13 +267,24 @@ const CharacterOnboarding = () => {
           />
         </motion.div>
       ) : (
-        /* Step 3: Contact form */
+        /* Step 3: Contact form with gamertag */
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm space-y-4 mb-4"
         >
-          <div className="flex justify-center mb-6">
+          <div className="flex flex-col items-center mb-6">
+            {/* Gamertag name above character */}
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-3 px-4 py-1.5 rounded-lg border border-primary/30 bg-primary/5"
+              style={{ boxShadow: `0 0 16px hsl(${characterColor} / 0.15)` }}
+            >
+              <span className="text-sm font-bold tracking-wide" style={{ color: `hsl(${characterColor})` }}>
+                {assistantName}
+              </span>
+            </motion.div>
             <EvolvingCharacter
               selectionCount={selectedFunctions.length}
               color={characterColor}
@@ -305,6 +317,15 @@ const CharacterOnboarding = () => {
               onChange={(e) => setWebsite(e.target.value)}
               className="bg-background/40"
               placeholder="https://"
+            />
+          </div>
+          <div>
+            <label className="text-sm text-muted-foreground mb-1.5 block">Phone <span className="text-xs text-muted-foreground/60">(optional)</span></label>
+            <Input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="bg-background/40"
             />
           </div>
         </motion.div>
