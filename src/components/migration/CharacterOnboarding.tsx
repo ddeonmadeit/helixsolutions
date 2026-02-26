@@ -236,7 +236,12 @@ const CharacterOnboarding = () => {
 
                 // Per-bubble manual nudge (smaller on mobile)
                 const isMobile = orbitRadius < 140;
-                const nudge = step === 0 && opt.value === "email-management" ? { x: isMobile ? 8 : 15, y: 0 } : { x: 0, y: 0 };
+                const nudges: Record<string, { x: number; y: number }> = {
+                  "email-management": { x: isMobile ? 8 : 15, y: 0 },
+                  "customer-support": { x: isMobile ? -10 : 0, y: isMobile ? -8 : 0 },
+                  "team-management": { x: isMobile ? 10 : 0, y: isMobile ? 8 : 0 },
+                };
+                const nudge = (step === 0 && nudges[opt.value]) || { x: 0, y: 0 };
 
                 return (
                   <motion.button
