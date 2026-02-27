@@ -59,7 +59,7 @@ const Admin = () => {
   // Thank you email state
   const [tyName, setTyName] = useState("");
   const [tyEmail, setTyEmail] = useState("");
-  const [tyTier, setTyTier] = useState("1");
+  const [tyTier, setTyTier] = useState("tier1");
   const [tySending, setTySending] = useState(false);
   const [tySent, setTySent] = useState(false);
 
@@ -94,7 +94,7 @@ const Admin = () => {
       setTySent(true);
       setTyName("");
       setTyEmail("");
-      setTyTier("1");
+      setTyTier("tier1");
       toast({ title: "Email sent!", description: `Thank you email sent to ${tyEmail.trim()}` });
     } catch (err: any) {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
@@ -269,6 +269,7 @@ const Admin = () => {
                 <SelectValue placeholder="Tier" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="tier1">Tier 1 — Original</SelectItem>
                 <SelectItem value="1">Tier 1 — $200</SelectItem>
                 <SelectItem value="2">Tier 2 — $300</SelectItem>
                 <SelectItem value="3">Tier 3 — $500</SelectItem>
