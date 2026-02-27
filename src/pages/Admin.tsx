@@ -5,6 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Users, Mail, Send, CheckCircle, PenLine, FileText, Eye } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 const ADMIN_PASSWORD = "helix2024";
@@ -52,6 +59,7 @@ const Admin = () => {
   // Thank you email state
   const [tyName, setTyName] = useState("");
   const [tyEmail, setTyEmail] = useState("");
+  const [tyTier, setTyTier] = useState("1");
   const [tySending, setTySending] = useState(false);
   const [tySent, setTySent] = useState(false);
 
@@ -80,12 +88,13 @@ const Admin = () => {
     setTySent(false);
     try {
       const { error } = await supabase.functions.invoke("send-thankyou-email", {
-        body: { name: tyName.trim(), email: tyEmail.trim() },
+        body: { name: tyName.trim(), email: tyEmail.trim(), functionCount: Number(tyTier) },
       });
       if (error) throw error;
       setTySent(true);
       setTyName("");
       setTyEmail("");
+      setTyTier("1");
       toast({ title: "Email sent!", description: `Thank you email sent to ${tyEmail.trim()}` });
     } catch (err: any) {
       toast({ title: "Send failed", description: err.message, variant: "destructive" });
@@ -255,6 +264,18 @@ const Admin = () => {
               onChange={(e) => setTyEmail(e.target.value)}
               className="bg-background/40 flex-1"
             />
+            <Select value={tyTier} onValueChange={setTyTier}>
+              <SelectTrigger className="bg-background/40 w-full sm:w-[160px]">
+                <SelectValue placeholder="Tier" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Tier 1 — $200</SelectItem>
+                <SelectItem value="2">Tier 2 — $300</SelectItem>
+                <SelectItem value="3">Tier 3 — $500</SelectItem>
+                <SelectItem value="4">Tier 4 — $700</SelectItem>
+                <SelectItem value="5">Tier 5 — $1000</SelectItem>
+              </SelectContent>
+            </Select>
             <button
               onClick={handleSendThankYou}
               disabled={tySending || !tyName.trim() || !tyEmail.trim().includes("@")}
