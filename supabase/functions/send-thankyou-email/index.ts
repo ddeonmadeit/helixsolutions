@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -8,6 +9,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const SETUP_PRICES: Record<number, { id: string; label: string }> = {
+  1: { id: "price_1T4yY76JRSjqUM0WPNm1XOc5", label: "$200" },
+  2: { id: "price_1T4ycA6JRSjqUM0WFUu6ovna", label: "$300" },
+  3: { id: "price_1T4ycg6JRSjqUM0WYz4vjGsz", label: "$500" },
+  4: { id: "price_1T4yed6JRSjqUM0WuWy53Clj", label: "$700" },
+  5: { id: "price_1T4yfq6JRSjqUM0WXbbYlqyl", label: "$1000" },
+};
+
+const MAINTENANCE_PRICE_ID = "price_1T2oDy6JRSjqUM0WnJdBW2Au";
 
 const forcedDarkStyles = `
   :root { color-scheme: dark !important; }
@@ -25,7 +36,7 @@ const forcedDarkStyles = `
   [data-ogsc] .text-teal { color: #36b8c8 !important; }
 `;
 
-const buildEmail = (name: string, calUrl: string) => {
+const buildEmail = (name: string, checkoutUrl: string) => {
   const firstName = name.split(" ")[0];
   return `
 <!DOCTYPE html>
@@ -79,7 +90,7 @@ const buildEmail = (name: string, calUrl: string) => {
                 <tr>
                   <td style="padding-bottom:28px;">
                     <p style="margin:0;font-size:15px;color:#8a9bb0;line-height:1.7;" class="text-muted">
-                      We're excited to show you what your custom AI assistant can do. Book your free demo below and we'll walk you through everything — same day.
+                      We're excited to get your custom AI assistant set up. Click the button below to complete your payment and we'll have you running — same day.
                     </p>
                   </td>
                 </tr>
@@ -91,11 +102,11 @@ const buildEmail = (name: string, calUrl: string) => {
                       <tr>
                         <td style="background:linear-gradient(135deg,#36b8c8,#2a8fa0);border-radius:12px;padding:0;">
                           <a
-                            href="${calUrl}"
+                            href="${checkoutUrl}"
                             style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
                             class="text-white"
                           >
-                            Book Your Demo &rarr;
+                            Complete Payment &rarr;
                           </a>
                         </td>
                       </tr>
@@ -129,7 +140,7 @@ const buildEmail = (name: string, calUrl: string) => {
                         <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
                           <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
                             <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">01</span>
-                            Book your free demo call
+                            Complete your payment
                           </p>
                         </td>
                       </tr>
@@ -137,7 +148,7 @@ const buildEmail = (name: string, calUrl: string) => {
                         <td style="padding:16px 20px;border-bottom:1px solid #1e2a3a;">
                           <p style="margin:0;font-size:14px;color:#e8edf2;" class="text-white">
                             <span style="color:#36b8c8;font-weight:700;margin-right:8px;" class="text-teal">02</span>
-                            See your custom AI assistant in action
+                            We build your custom AI assistant
                           </p>
                         </td>
                       </tr>
@@ -197,17 +208,44 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { name, email, calUrl } = await req.json();
+    const { name, email, functionCount } = await req.json();
     if (!email || !name) throw new Error("name and email are required");
 
+    const count = Math.min(5, Math.max(1, Number(functionCount) || 1));
+    const setupPrice = SETUP_PRICES[count];
     const firstName = name.split(" ")[0];
-    const bookingUrl = calUrl || "https://cal.com/helix-solutions/demo";
+
+    // Create a Stripe checkout session for this tier
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
+
+    // Check for existing customer
+    let customerId: string | undefined;
+    const customers = await stripe.customers.list({ email, limit: 1 });
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id;
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : email,
+      line_items: [
+        { price: setupPrice.id, quantity: 1 },
+        { price: MAINTENANCE_PRICE_ID, quantity: 1 },
+      ],
+      mode: "subscription",
+      success_url: "https://helixsolutions.lovable.app/?status=success",
+      cancel_url: "https://helixsolutions.lovable.app/?status=cancelled",
+    });
+
+    const checkoutUrl = session.url || "https://helixsolutions.lovable.app";
 
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
       to: [email],
-      subject: `Thank you, ${firstName} — Book Your Demo`,
-      html: buildEmail(name, bookingUrl),
+      subject: `Thank you, ${firstName} — Complete Your Payment`,
+      html: buildEmail(name, checkoutUrl),
     });
 
     return new Response(JSON.stringify({ success: true }), {
