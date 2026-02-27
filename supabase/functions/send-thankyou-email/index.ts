@@ -216,7 +216,7 @@ serve(async (req) => {
 
     if (functionCount === "tier1") {
       // Original tier1 onboarding page
-      checkoutUrl = "https://helixsolution.au/tier1";
+      checkoutUrl = "https://helixsolutions.lovable.app/tier1";
     } else {
       const count = Math.min(5, Math.max(1, Number(functionCount) || 1));
       const setupPrice = SETUP_PRICES[count];
