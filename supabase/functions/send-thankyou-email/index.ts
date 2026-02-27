@@ -106,7 +106,7 @@ const buildEmail = (name: string, checkoutUrl: string) => {
                             style="display:inline-block;padding:14px 36px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:0.01em;"
                             class="text-white"
                           >
-                            Complete Payment &rarr;
+                            Next Step &rarr;
                           </a>
                         </td>
                       </tr>
