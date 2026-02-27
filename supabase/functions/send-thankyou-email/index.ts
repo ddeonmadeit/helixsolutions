@@ -83,7 +83,7 @@ const buildEmail = (name: string, checkoutUrl: string) => {
                 <tr>
                   <td style="padding-bottom:16px;">
                     <h1 style="margin:0;font-size:26px;font-weight:700;color:#e8edf2;line-height:1.25;" class="text-white">
-                      Thank you for your interest, ${firstName}.
+                      Thank you for your time, ${firstName}.
                     </h1>
                   </td>
                 </tr>
