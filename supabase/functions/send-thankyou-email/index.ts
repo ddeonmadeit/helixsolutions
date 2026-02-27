@@ -211,35 +211,41 @@ serve(async (req) => {
     const { name, email, functionCount } = await req.json();
     if (!email || !name) throw new Error("name and email are required");
 
-    const count = Math.min(5, Math.max(1, Number(functionCount) || 1));
-    const setupPrice = SETUP_PRICES[count];
     const firstName = name.split(" ")[0];
+    let checkoutUrl: string;
 
-    // Create a Stripe checkout session for this tier
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
+    if (functionCount === "tier1") {
+      // Original tier1 onboarding page
+      checkoutUrl = "https://helixsolution.au/tier1";
+    } else {
+      const count = Math.min(5, Math.max(1, Number(functionCount) || 1));
+      const setupPrice = SETUP_PRICES[count];
 
-    // Check for existing customer
-    let customerId: string | undefined;
-    const customers = await stripe.customers.list({ email, limit: 1 });
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
+      // Create a Stripe checkout session for this tier
+      const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+        apiVersion: "2025-08-27.basil",
+      });
+
+      let customerId: string | undefined;
+      const customers = await stripe.customers.list({ email, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        customer_email: customerId ? undefined : email,
+        line_items: [
+          { price: setupPrice.id, quantity: 1 },
+          { price: MAINTENANCE_PRICE_ID, quantity: 1 },
+        ],
+        mode: "subscription",
+        success_url: "https://helixsolutions.lovable.app/?status=success",
+        cancel_url: "https://helixsolutions.lovable.app/?status=cancelled",
+      });
+
+      checkoutUrl = session.url || "https://helixsolutions.lovable.app";
     }
-
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : email,
-      line_items: [
-        { price: setupPrice.id, quantity: 1 },
-        { price: MAINTENANCE_PRICE_ID, quantity: 1 },
-      ],
-      mode: "subscription",
-      success_url: "https://helixsolutions.lovable.app/?status=success",
-      cancel_url: "https://helixsolutions.lovable.app/?status=cancelled",
-    });
-
-    const checkoutUrl = session.url || "https://helixsolutions.lovable.app";
 
     await resend.emails.send({
       from: "Helix Solutions <hello@helixsolution.au>",
