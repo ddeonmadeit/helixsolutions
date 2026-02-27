@@ -88,7 +88,7 @@ const Admin = () => {
     setTySent(false);
     try {
       const { error } = await supabase.functions.invoke("send-thankyou-email", {
-        body: { name: tyName.trim(), email: tyEmail.trim(), functionCount: Number(tyTier) },
+        body: { name: tyName.trim(), email: tyEmail.trim(), functionCount: tyTier },
       });
       if (error) throw error;
       setTySent(true);
