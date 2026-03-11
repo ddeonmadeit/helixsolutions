@@ -10,6 +10,7 @@ import About from "./pages/About";
 // import Testimonials from "./pages/Testimonials"; // temporarily hidden
 import Policies from "./pages/Policies";
 import Peter from "./pages/Peter";
+import Quote from "./pages/Quote";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
