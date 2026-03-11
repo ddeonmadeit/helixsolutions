@@ -2,8 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" type="image/x-icon" href="/favicon.jpeg">
+
+    <!-- PWA: dynamic manifest based on path -->
+    <script>
+      if (window.location.pathname.startsWith('/quote')) {
+        document.write('<link rel="manifest" href="/manifest-quote.json">');
+      } else {
+        document.write('<link rel="manifest" href="/manifest.json">');
+      }
+    </script>
+
+    <!-- Apple PWA meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Helix">
+    <link rel="apple-touch-icon" href="/favicon.jpeg">
 
 
     <!-- Meta Pixel Code -->
