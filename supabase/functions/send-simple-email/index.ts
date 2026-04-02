@@ -12,7 +12,9 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { to, subject, name, body } = await req.json();
+    const { to, subject, name, body, greeting } = await req.json();
+
+    const headingText = greeting || `Thank you for your time, ${name}.`;
 
     const html = `
 <!DOCTYPE html>
@@ -30,7 +32,7 @@ serve(async (req) => {
           <tr>
             <td style="background-color:#111827;border-radius:20px;border:1px solid #1e2a3a;padding:40px 40px 32px;">
               <p style="margin:0 0 20px;font-size:22px;font-weight:700;color:#e8edf2;">
-                Thank you for your time, ${name}.
+                ${headingText}
               </p>
               <p style="margin:0 0 28px;font-size:15px;color:#8a9bb0;line-height:1.7;">
                 ${body}
