@@ -191,7 +191,7 @@ const handler = async (req: Request): Promise<Response> => {
       }),
       resend.emails.send({
         from: "Helix Solutions <noreply@helixsolution.au>",
-        to: [OWNER_EMAIL, "hitsbydeon@gmail.com"],
+        to: [OWNER_EMAIL],
         subject: `New Lead: ${name || "Unknown"}`,
         html: ownerHtml,
       }),
