@@ -3,24 +3,24 @@ import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const supabase = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 const LOGO_URL =
   "https://eiqmwhiidovkcihwbmvq.supabase.co/storage/v1/object/public/email-assets/helix-logo.png";
+const FROM = "Helix Solutions <hello@helixsolution.au>";
+const REPLY_TO = "info@helixsolution.au";
+const UNSUB_BASE = `${SUPABASE_URL}/functions/v1/unsubscribe`;
 
 interface Payload {
   to: string;
   subject: string;
-  bodyHtml: string; // raw inner HTML the user composed
+  bodyHtml: string;
   fontFamily?: string;
   textColor?: string;
   bgColor?: string;
@@ -28,58 +28,7 @@ interface Payload {
   accentColor?: string;
   showLogo?: boolean;
   showFooter?: boolean;
-  preview?: boolean; // if true, just return rendered HTML without sending
-}
-
-export function renderEmail(p: Payload): string {
-  const font =
-    p.fontFamily || "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const text = p.textColor || "#e8edf2";
-  const muted = "#8a9bb0";
-  const bg = p.bgColor || "#0b0f1a";
-  const card = p.cardColor || "#111827";
-  const accent = p.accentColor || "#22d3ee";
-  const logo = p.showLogo !== false;
-  const footer = p.showFooter !== false;
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${escapeHtml(p.subject)}</title>
-</head>
-<body style="margin:0;padding:0;background-color:${bg};font-family:${font};" bgcolor="${bg}">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bg}">
-  <tr><td align="center" style="padding:40px 16px;">
-    <table width="100%" style="max-width:600px;" cellpadding="0" cellspacing="0" border="0">
-      ${
-        logo
-          ? `<tr><td align="center" style="padding-bottom:24px;">
-            <img src="${LOGO_URL}" alt="Helix Solutions" width="64" height="64" style="display:block;border:0;border-radius:14px;" />
-          </td></tr>`
-          : ""
-      }
-      <tr><td style="background-color:${card};border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${text};font-size:15px;line-height:1.7;">
-        <div style="color:${text};">${p.bodyHtml}</div>
-        <p style="margin:32px 0 0;font-size:14px;color:${muted};line-height:1.7;">
-          Kind Regards,<br/>
-          <span style="color:${text};font-weight:600;">Helix Team</span>
-        </p>
-      </td></tr>
-      ${
-        footer
-          ? `<tr><td align="center" style="padding-top:24px;">
-              <p style="margin:0;font-size:11px;color:#3d4d5c;">
-                © 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${accent};text-decoration:none;">helixsolution.au</a>
-              </p>
-            </td></tr>`
-          : ""
-      }
-    </table>
-  </td></tr>
-</table>
-</body></html>`;
+  preview?: boolean;
 }
 
 function escapeHtml(s: string): string {
@@ -88,12 +37,88 @@ function escapeHtml(s: string): string {
   );
 }
 
+function htmlToText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|h[1-6]|li|tr)>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "• ")
+    .replace(/<a [^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/gi, "$2 ($1)")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+export function renderEmail(p: Payload, unsubUrl: string): string {
+  const font = p.fontFamily || "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const text = p.textColor || "#e8edf2";
+  const muted = "#8a9bb0";
+  const bg = p.bgColor || "#0b0f1a";
+  const card = p.cardColor || "#111827";
+  const accent = p.accentColor || "#22d3ee";
+  const logo = p.showLogo !== false;
+  const footer = p.showFooter !== false;
+
+  // Hidden unsubscribe — same color as background, tiny font, near-zero opacity.
+  // Still a real <a> link so spam filters detect a List-Unsubscribe equivalent.
+  const hiddenUnsub = `
+    <div style="font-size:1px;line-height:1px;color:${bg};opacity:0.01;mso-hide:all;">
+      <a href="${unsubUrl}" style="color:${bg};text-decoration:none;font-size:1px;">unsubscribe</a>
+    </div>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="x-apple-disable-message-reformatting" />
+<meta name="color-scheme" content="dark" />
+<meta name="supported-color-schemes" content="dark light" />
+<title>${escapeHtml(p.subject)}</title>
+</head>
+<body style="margin:0;padding:0;background-color:${bg};font-family:${font};" bgcolor="${bg}">
+<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:${bg};opacity:0;">
+  ${escapeHtml(p.subject)} — Helix Solutions
+</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bg}" role="presentation">
+  <tr><td align="center" style="padding:40px 16px;">
+    <table width="100%" style="max-width:600px;" cellpadding="0" cellspacing="0" border="0" role="presentation">
+      ${logo ? `<tr><td align="center" style="padding-bottom:24px;">
+        <img src="${LOGO_URL}" alt="Helix Solutions" width="64" height="64" style="display:block;border:0;border-radius:14px;" />
+      </td></tr>` : ""}
+      <tr><td style="background-color:${card};border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${text};font-size:15px;line-height:1.7;">
+        <div style="color:${text};">${p.bodyHtml}</div>
+        <p style="margin:32px 0 0;font-size:14px;color:${muted};line-height:1.7;">
+          Kind Regards,<br/>
+          <span style="color:${text};font-weight:600;">Helix Team</span>
+        </p>
+      </td></tr>
+      ${footer ? `<tr><td align="center" style="padding-top:24px;">
+        <p style="margin:0;font-size:11px;color:#3d4d5c;">
+          © 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${accent};text-decoration:none;">helixsolution.au</a>
+        </p>
+      </td></tr>` : ""}
+      <tr><td>${hiddenUnsub}</td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
     const payload = (await req.json()) as Payload;
-    const html = renderEmail(payload);
+    const recipient = payload.to.trim().toLowerCase();
+    const unsubUrl = `${UNSUB_BASE}?e=${encodeURIComponent(recipient)}`;
+    const html = renderEmail(payload, unsubUrl);
 
     if (payload.preview) {
       return new Response(JSON.stringify({ html }), {
@@ -101,19 +126,41 @@ serve(async (req) => {
       });
     }
 
+    // Suppression list check
+    const { data: sup } = await supabase
+      .from("unsubscribes").select("email").eq("email", recipient).maybeSingle();
+    if (sup) {
+      await supabase.from("emails").insert({
+        direction: "sent", from_email: "hello@helixsolution.au",
+        to_email: recipient, subject: payload.subject, html,
+        status: "suppressed", resend_id: null,
+      });
+      return new Response(JSON.stringify({ success: false, suppressed: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const text = htmlToText(payload.bodyHtml);
+
     const result = await resend.emails.send({
-      from: "Helix Solutions <hello@helixsolution.au>",
-      to: [payload.to],
+      from: FROM,
+      to: [recipient],
+      reply_to: REPLY_TO,
       subject: payload.subject,
       html,
+      text, // plain-text alternative — major spam-score reducer
+      headers: {
+        // RFC 8058 one-click unsubscribe — Gmail/Yahoo bulk-sender requirement
+        "List-Unsubscribe": `<${unsubUrl}>, <mailto:unsubscribe@helixsolution.au?subject=unsubscribe>`,
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        "X-Entity-Ref-ID": crypto.randomUUID(),
+        "Precedence": "bulk",
+      },
     });
 
     await supabase.from("emails").insert({
-      direction: "sent",
-      from_email: "hello@helixsolution.au",
-      to_email: payload.to,
-      subject: payload.subject,
-      html,
+      direction: "sent", from_email: "hello@helixsolution.au",
+      to_email: recipient, subject: payload.subject, html,
       status: result.error ? "failed" : "sent",
       resend_id: result.data?.id ?? null,
     });
