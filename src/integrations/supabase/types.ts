@@ -128,6 +128,21 @@ export type Database = {
         }
         Relationships: []
       }
+      unsubscribes: {
+        Row: {
+          email: string
+          unsubscribed_at: string
+        }
+        Insert: {
+          email: string
+          unsubscribed_at?: string
+        }
+        Update: {
+          email?: string
+          unsubscribed_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
