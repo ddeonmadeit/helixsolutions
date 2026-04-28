@@ -63,6 +63,18 @@ const Mailpage = () => {
   const [loadingList, setLoadingList] = useState(false);
   const [viewing, setViewing] = useState<EmailRow | null>(null);
 
+  // Templates
+  interface Template {
+    id: string; name: string; subject: string | null; body_html: string;
+    font_family: string | null; text_color: string | null; bg_color: string | null;
+    card_color: string | null; accent_color: string | null;
+    show_logo: boolean | null; show_footer: boolean | null;
+  }
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [openTemplateId, setOpenTemplateId] = useState<string | null>(null);
+  const [newTemplateName, setNewTemplateName] = useState("");
+  const [savingTemplate, setSavingTemplate] = useState(false);
+
   // ---- Email rendering (mirrors edge function output exactly) ----
   const renderedHtml = useMemo(() => {
     const muted = "#8a9bb0";
@@ -142,8 +154,67 @@ const Mailpage = () => {
   };
 
   useEffect(() => {
-    if (authed) loadEmails();
+    if (authed) { loadEmails(); loadTemplates(); }
   }, [authed]);
+
+  const loadTemplates = async () => {
+    const { data, error } = await supabase.functions.invoke("manage-email-templates", { body: { action: "list" } });
+    if (!error) setTemplates(data?.templates ?? []);
+  };
+
+  const saveTemplate = async () => {
+    if (!newTemplateName.trim()) {
+      toast({ title: "Name required", description: "Give the template a name first.", variant: "destructive" });
+      return;
+    }
+    setSavingTemplate(true);
+    try {
+      const { error } = await supabase.functions.invoke("manage-email-templates", {
+        body: {
+          action: "save",
+          template: {
+            name: newTemplateName.trim(),
+            subject, body_html: bodyHtml,
+            font_family: fontFamily, text_color: textColor, bg_color: bgColor,
+            card_color: cardColor, accent_color: accentColor,
+            show_logo: showLogo, show_footer: showFooter,
+          },
+        },
+      });
+      if (error) throw error;
+      toast({ title: "Template saved", description: newTemplateName });
+      setNewTemplateName("");
+      loadTemplates();
+    } catch (e: any) {
+      toast({ title: "Save failed", description: e.message, variant: "destructive" });
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
+  const applyTemplate = (t: Template) => {
+    setSubject(t.subject ?? "");
+    setBodyHtml(t.body_html);
+    if (editorRef.current) editorRef.current.innerHTML = t.body_html;
+    if (t.font_family) setFontFamily(t.font_family);
+    if (t.text_color) setTextColor(t.text_color);
+    if (t.bg_color) setBgColor(t.bg_color);
+    if (t.card_color) setCardColor(t.card_color);
+    if (t.accent_color) setAccentColor(t.accent_color);
+    if (t.show_logo !== null) setShowLogo(!!t.show_logo);
+    if (t.show_footer !== null) setShowFooter(!!t.show_footer);
+    setTab("compose");
+    toast({ title: "Template applied", description: t.name });
+  };
+
+  const deleteTemplate = async (id: string) => {
+    const { error } = await supabase.functions.invoke("manage-email-templates", { body: { action: "delete", id } });
+    if (error) {
+      toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    } else {
+      setTemplates((prev) => prev.filter((t) => t.id !== id));
+    }
+  };
 
   // Init editor content once
   useEffect(() => {
