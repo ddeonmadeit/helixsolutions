@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      email_templates: {
+        Row: {
+          accent_color: string | null
+          bg_color: string | null
+          body_html: string
+          card_color: string | null
+          created_at: string
+          font_family: string | null
+          id: string
+          name: string
+          show_footer: boolean | null
+          show_logo: boolean | null
+          subject: string | null
+          text_color: string | null
+        }
+        Insert: {
+          accent_color?: string | null
+          bg_color?: string | null
+          body_html: string
+          card_color?: string | null
+          created_at?: string
+          font_family?: string | null
+          id?: string
+          name: string
+          show_footer?: boolean | null
+          show_logo?: boolean | null
+          subject?: string | null
+          text_color?: string | null
+        }
+        Update: {
+          accent_color?: string | null
+          bg_color?: string | null
+          body_html?: string
+          card_color?: string | null
+          created_at?: string
+          font_family?: string | null
+          id?: string
+          name?: string
+          show_footer?: boolean | null
+          show_logo?: boolean | null
+          subject?: string | null
+          text_color?: string | null
+        }
+        Relationships: []
+      }
       emails: {
         Row: {
           created_at: string
