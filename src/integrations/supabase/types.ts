@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      emails: {
+        Row: {
+          created_at: string
+          direction: string
+          from_email: string
+          html: string | null
+          id: string
+          resend_id: string | null
+          status: string | null
+          subject: string | null
+          text: string | null
+          to_email: string
+        }
+        Insert: {
+          created_at?: string
+          direction: string
+          from_email: string
+          html?: string | null
+          id?: string
+          resend_id?: string | null
+          status?: string | null
+          subject?: string | null
+          text?: string | null
+          to_email: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          from_email?: string
+          html?: string | null
+          id?: string
+          resend_id?: string | null
+          status?: string | null
+          subject?: string | null
+          text?: string | null
+          to_email?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           business_type: string | null
