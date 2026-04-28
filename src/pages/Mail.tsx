@@ -389,6 +389,95 @@ const Mailpage = () => {
             )}
           </div>
         )}
+
+        {/* Saved Templates */}
+        <div className="glass rounded-2xl overflow-hidden">
+          <div className="px-6 py-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center gap-3">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2 flex-1">
+              <FolderOpen className="h-4 w-4 text-primary"/> Email Templates
+              <span className="text-xs font-normal text-muted-foreground">({templates.length})</span>
+            </h2>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Template name (e.g. Welcome)"
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
+                className="bg-background/40 h-9 text-sm w-full sm:w-64"
+              />
+              <button
+                onClick={saveTemplate}
+                disabled={savingTemplate}
+                className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:brightness-110 disabled:opacity-50 whitespace-nowrap"
+              >
+                {savingTemplate ? <Loader2 className="h-3.5 w-3.5 animate-spin"/> : <Save className="h-3.5 w-3.5"/>}
+                Save current
+              </button>
+            </div>
+          </div>
+          {templates.length === 0 ? (
+            <div className="py-12 text-center text-muted-foreground text-sm">
+              No saved templates yet. Compose an email above and click "Save current" to create one.
+            </div>
+          ) : (
+            <div className="divide-y divide-border/40">
+              {templates.map((t) => {
+                const isOpen = openTemplateId === t.id;
+                const muted = "#8a9bb0";
+                const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"/></head>
+<body style="margin:0;padding:0;background-color:${t.bg_color || "#0b0f1a"};font-family:${t.font_family || "Helvetica,Arial,sans-serif"};">
+<table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="padding:32px 16px;">
+<table width="100%" style="max-width:600px;" cellpadding="0" cellspacing="0" border="0">
+${t.show_logo !== false ? `<tr><td align="center" style="padding-bottom:20px;"><img src="${LOGO_URL}" width="56" height="56" style="border-radius:12px;display:block;border:0;"/></td></tr>` : ""}
+<tr><td style="background-color:${t.card_color || "#111827"};border-radius:20px;border:1px solid #1e2a3a;padding:32px;color:${t.text_color || "#e8edf2"};font-size:15px;line-height:1.7;">
+${t.body_html}
+<p style="margin:28px 0 0;font-size:14px;color:${muted};">Kind Regards,<br/><span style="color:${t.text_color || "#e8edf2"};font-weight:600;">Helix Team</span></p>
+</td></tr>
+${t.show_footer !== false ? `<tr><td align="center" style="padding-top:20px;"><p style="margin:0;font-size:11px;color:#3d4d5c;">© 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${t.accent_color || "#22d3ee"};text-decoration:none;">helixsolution.au</a></p></td></tr>` : ""}
+</table></td></tr></table></body></html>`;
+                return (
+                  <div key={t.id}>
+                    <div className="flex items-center px-6 py-3 hover:bg-primary/5 transition-colors">
+                      <button
+                        onClick={() => setOpenTemplateId(isOpen ? null : t.id)}
+                        className="flex items-center gap-3 flex-1 text-left"
+                      >
+                        {isOpen ? <ChevronDown className="h-4 w-4 text-primary"/> : <ChevronRight className="h-4 w-4 text-muted-foreground"/>}
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-foreground truncate">{t.name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{t.subject || "(no subject)"}</p>
+                        </div>
+                      </button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => applyTemplate(t)}
+                          className="flex items-center gap-1 rounded-lg bg-primary/15 hover:bg-primary/25 text-primary px-3 py-1.5 text-xs font-semibold"
+                        >
+                          <Check className="h-3.5 w-3.5"/> Apply
+                        </button>
+                        <button
+                          onClick={() => deleteTemplate(t.id)}
+                          className="rounded-lg p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          title="Delete template"
+                        >
+                          <Trash2 className="h-3.5 w-3.5"/>
+                        </button>
+                      </div>
+                    </div>
+                    {isOpen && (
+                      <div className="px-6 pb-5">
+                        <iframe
+                          srcDoc={html}
+                          title={t.name}
+                          className="w-full h-[500px] rounded-xl bg-white border border-border/50"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       {viewing && (
