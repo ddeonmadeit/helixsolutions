@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Policies from "./pages/Policies";
 import Peter from "./pages/Peter";
 import Quote from "./pages/Quote";
+import Mail from "./pages/Mail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/tier1" element={<Tier1 />} />
           <Route path="/peter" element={<Peter />} />
           <Route path="/quote" element={<Quote />} />
+          <Route path="/mail" element={<Mail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
