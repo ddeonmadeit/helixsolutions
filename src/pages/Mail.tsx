@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Bold, Italic, Underline, Link as LinkIcon, List, ListOrdered,
   Heading1, Heading2, Send, Loader2, Mail, Inbox, Eye, RefreshCw,
+  ChevronDown, ChevronRight, FolderOpen, Save, Trash2, Check,
 } from "lucide-react";
 
 const ADMIN_PASSWORD = "helix2024";
