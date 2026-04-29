@@ -223,21 +223,6 @@ const Mailpage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authed]);
 
-  if (!authed) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <form
-          onSubmit={(e) => { e.preventDefault(); if (pw === ADMIN_PASSWORD) setAuthed(true); }}
-          className="glass glow-primary rounded-2xl p-10 w-full max-w-sm space-y-5"
-        >
-          <h1 className="text-2xl font-bold text-foreground text-center">Mail Studio</h1>
-          <Input type="password" placeholder="Password" value={pw} onChange={(e) => setPw(e.target.value)} className="bg-background/40" />
-          <button className="w-full rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground">Enter</button>
-        </form>
-      </div>
-    );
-  }
-
   const list = emails.filter((e) => tab === "sent" ? e.direction === "sent" : tab === "received" ? e.direction === "received" : true);
 
   return (
