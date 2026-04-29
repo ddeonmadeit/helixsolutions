@@ -37,8 +37,7 @@ const FONT_OPTIONS = [
 
 const Mailpage = () => {
   const { toast } = useToast();
-  const [authed, setAuthed] = useState(false);
-  const [pw, setPw] = useState("");
+  const authed = true;
 
   // Composer
   const [to, setTo] = useState("");
