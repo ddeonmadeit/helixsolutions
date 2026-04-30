@@ -10,7 +10,7 @@ import {
   Send, Loader2, Mail, Inbox, Eye, RefreshCw,
   ChevronDown, ChevronRight, FolderOpen, Save, Trash2, Check,
   GripVertical, Plus, Type, Image as ImageIcon, MousePointerClick,
-  Heading1, Minus, ArrowUp, ArrowDown, X,
+  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users,
 } from "lucide-react";
 
 const LOGO_URL =
