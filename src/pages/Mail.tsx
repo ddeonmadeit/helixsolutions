@@ -552,10 +552,95 @@ const Mailpage = () => {
                   </div>
                 </div>
 
+                {/* Bulk CSV send */}
+                <div className="space-y-3 rounded-xl bg-background/40 border border-border/50 p-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary"/>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Bulk send via CSV</p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    Upload a CSV with a header row. Use <code className="text-primary">{"{{column_name}}"}</code> in your subject or text blocks to personalise per recipient (e.g. <code className="text-primary">{"Hi {{name}}"}</code>).
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="flex items-center gap-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-foreground px-3 py-1.5 text-xs font-medium cursor-pointer">
+                      <Upload className="h-3.5 w-3.5"/> {csvFileName ? "Change CSV" : "Upload CSV"}
+                      <input
+                        type="file"
+                        accept=".csv,text/csv"
+                        className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) onCsvFile(f); e.currentTarget.value = ""; }}
+                      />
+                    </label>
+                    {csvFileName && (
+                      <>
+                        <span className="text-[11px] text-muted-foreground truncate max-w-[180px]">{csvFileName}</span>
+                        <span className="text-[11px] text-primary font-medium">{csvRows.length} rows</span>
+                        <button
+                          type="button"
+                          onClick={() => { setCsvRows([]); setCsvHeaders([]); setCsvFileName(""); setEmailColumn(""); }}
+                          className="text-[11px] text-muted-foreground hover:text-destructive underline">
+                          Clear
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {csvHeaders.length > 0 && (
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Email column</Label>
+                        <Select value={emailColumn} onValueChange={setEmailColumn}>
+                          <SelectTrigger className="bg-background/40 mt-1"><SelectValue placeholder="Choose column"/></SelectTrigger>
+                          <SelectContent>
+                            {csvHeaders.map((h) => <SelectItem key={h} value={h}>{h}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Available placeholders</Label>
+                        <div className="mt-1 flex flex-wrap gap-1 rounded-md bg-background/40 border border-border/50 p-2 max-h-20 overflow-y-auto">
+                          {csvHeaders.map((h) => (
+                            <button
+                              key={h}
+                              type="button"
+                              onClick={() => navigator.clipboard.writeText(`{{${h}}}`).then(() => toast({ title: "Copied", description: `{{${h}}}` }))}
+                              className="text-[10px] bg-primary/10 hover:bg-primary/20 text-primary rounded px-1.5 py-0.5 font-mono">
+                              {`{{${h}}}`}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {bulkSending && (
+                    <div className="space-y-1">
+                      <div className="h-2 w-full bg-background/60 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all"
+                          style={{ width: `${bulkProgress.total ? (bulkProgress.done / bulkProgress.total) * 100 : 0}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        Sending {bulkProgress.done}/{bulkProgress.total} · {bulkProgress.ok} sent · {bulkProgress.failed} failed
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleBulkSend}
+                    disabled={bulkSending || !csvRows.length}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/30 px-5 py-2.5 text-sm font-semibold text-foreground disabled:opacity-50">
+                    {bulkSending ? <Loader2 className="h-4 w-4 animate-spin"/> : <Users className="h-4 w-4"/>}
+                    {bulkSending ? `Sending… (${bulkProgress.done}/${bulkProgress.total})` : `Bulk send to ${csvRows.length || 0} recipients`}
+                  </button>
+                </div>
+
                 <button onClick={handleSend} disabled={sending}
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:brightness-110 disabled:opacity-50">
                   {sending ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4"/>}
-                  {sending ? "Sending…" : "Send Email"}
+                  {sending ? "Sending…" : "Send Single Email"}
                 </button>
               </div>
             </div>
