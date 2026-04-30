@@ -10,7 +10,7 @@ import {
   Send, Loader2, Mail, Inbox, Eye, RefreshCw,
   ChevronDown, ChevronRight, FolderOpen, Save, Trash2, Check,
   GripVertical, Plus, Type, Image as ImageIcon, MousePointerClick,
-  Heading1, Minus, ArrowUp, ArrowDown, X,
+  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users,
 } from "lucide-react";
 
 const LOGO_URL =
@@ -110,6 +110,15 @@ const Mailpage = () => {
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const [sending, setSending] = useState(false);
+
+  // Bulk CSV
+  const [csvRows, setCsvRows] = useState<Record<string, string>[]>([]);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvFileName, setCsvFileName] = useState<string>("");
+  const [emailColumn, setEmailColumn] = useState<string>("");
+  const [bulkSending, setBulkSending] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number; ok: number; failed: number }>({ done: 0, total: 0, ok: 0, failed: 0 });
+
   const [tab, setTab] = useState<"compose" | "sent" | "received">("compose");
   const [emails, setEmails] = useState<EmailRow[]>([]);
   const [loadingList, setLoadingList] = useState(false);
@@ -232,7 +241,98 @@ const Mailpage = () => {
     }
   };
 
-  // ---- Load emails ----
+  // ---- CSV parsing (handles quoted fields, commas, newlines, escaped quotes) ----
+  const parseCsv = (text: string): { headers: string[]; rows: Record<string, string>[] } => {
+    const out: string[][] = [];
+    let row: string[] = [];
+    let cur = "";
+    let inQ = false;
+    const t = text.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+    for (let i = 0; i < t.length; i++) {
+      const c = t[i];
+      if (inQ) {
+        if (c === '"') {
+          if (t[i + 1] === '"') { cur += '"'; i++; } else { inQ = false; }
+        } else cur += c;
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ",") { row.push(cur); cur = ""; }
+        else if (c === "\n") { row.push(cur); out.push(row); row = []; cur = ""; }
+        else cur += c;
+      }
+    }
+    if (cur.length || row.length) { row.push(cur); out.push(row); }
+    const cleaned = out.filter((r) => r.some((v) => v.trim() !== ""));
+    if (!cleaned.length) return { headers: [], rows: [] };
+    const headers = cleaned[0].map((h) => h.trim());
+    const rows = cleaned.slice(1).map((r) => {
+      const obj: Record<string, string> = {};
+      headers.forEach((h, idx) => { obj[h] = (r[idx] ?? "").trim(); });
+      return obj;
+    });
+    return { headers, rows };
+  };
+
+  const onCsvFile = async (file: File) => {
+    const text = await file.text();
+    const { headers, rows } = parseCsv(text);
+    if (!headers.length || !rows.length) {
+      toast({ title: "Empty CSV", description: "Could not find any rows.", variant: "destructive" });
+      return;
+    }
+    setCsvFileName(file.name);
+    setCsvHeaders(headers);
+    setCsvRows(rows);
+    // Auto-pick email column
+    const guess = headers.find((h) => /e[-_ ]?mail/i.test(h)) || headers[0];
+    setEmailColumn(guess);
+    toast({ title: "CSV loaded", description: `${rows.length} rows · ${headers.length} columns` });
+  };
+
+  const fillTemplate = (tpl: string, row: Record<string, string>) =>
+    tpl.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (_, k) => row[k] ?? "");
+
+  const handleBulkSend = async () => {
+    if (!csvRows.length) { toast({ title: "No CSV", description: "Upload a CSV file first.", variant: "destructive" }); return; }
+    if (!emailColumn) { toast({ title: "Pick column", description: "Choose which column contains the email address.", variant: "destructive" }); return; }
+    if (!subject.trim()) { toast({ title: "Subject required", variant: "destructive" }); return; }
+
+    const targets = csvRows
+      .map((r) => ({ row: r, email: (r[emailColumn] || "").trim().toLowerCase() }))
+      .filter((t) => t.email.includes("@"));
+    if (!targets.length) { toast({ title: "No valid emails", variant: "destructive" }); return; }
+
+    setBulkSending(true);
+    setBulkProgress({ done: 0, total: targets.length, ok: 0, failed: 0 });
+
+    let ok = 0, failed = 0;
+    for (let i = 0; i < targets.length; i++) {
+      const { row, email } = targets[i];
+      try {
+        const personalisedSubject = fillTemplate(subject, row);
+        const personalisedBody = fillTemplate(bodyHtml, row);
+        const { error } = await supabase.functions.invoke("send-custom-email", {
+          body: {
+            to: email, subject: personalisedSubject, bodyHtml: personalisedBody,
+            fontFamily, textColor, bgColor, cardColor, accentColor,
+            showLogo, showFooter,
+          },
+        });
+        if (error) throw error;
+        ok++;
+      } catch {
+        failed++;
+      }
+      setBulkProgress({ done: i + 1, total: targets.length, ok, failed });
+      // Small delay to avoid rate limits
+      await new Promise((r) => setTimeout(r, 250));
+    }
+
+    setBulkSending(false);
+    toast({ title: "Bulk send complete", description: `${ok} sent · ${failed} failed` });
+    loadEmails();
+  };
+
   const loadEmails = async () => {
     setLoadingList(true);
     try {
@@ -452,10 +552,95 @@ const Mailpage = () => {
                   </div>
                 </div>
 
+                {/* Bulk CSV send */}
+                <div className="space-y-3 rounded-xl bg-background/40 border border-border/50 p-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary"/>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Bulk send via CSV</p>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    Upload a CSV with a header row. Use <code className="text-primary">{"{{column_name}}"}</code> in your subject or text blocks to personalise per recipient (e.g. <code className="text-primary">{"Hi {{name}}"}</code>).
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="flex items-center gap-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-foreground px-3 py-1.5 text-xs font-medium cursor-pointer">
+                      <Upload className="h-3.5 w-3.5"/> {csvFileName ? "Change CSV" : "Upload CSV"}
+                      <input
+                        type="file"
+                        accept=".csv,text/csv"
+                        className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) onCsvFile(f); e.currentTarget.value = ""; }}
+                      />
+                    </label>
+                    {csvFileName && (
+                      <>
+                        <span className="text-[11px] text-muted-foreground truncate max-w-[180px]">{csvFileName}</span>
+                        <span className="text-[11px] text-primary font-medium">{csvRows.length} rows</span>
+                        <button
+                          type="button"
+                          onClick={() => { setCsvRows([]); setCsvHeaders([]); setCsvFileName(""); setEmailColumn(""); }}
+                          className="text-[11px] text-muted-foreground hover:text-destructive underline">
+                          Clear
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {csvHeaders.length > 0 && (
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Email column</Label>
+                        <Select value={emailColumn} onValueChange={setEmailColumn}>
+                          <SelectTrigger className="bg-background/40 mt-1"><SelectValue placeholder="Choose column"/></SelectTrigger>
+                          <SelectContent>
+                            {csvHeaders.map((h) => <SelectItem key={h} value={h}>{h}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-muted-foreground">Available placeholders</Label>
+                        <div className="mt-1 flex flex-wrap gap-1 rounded-md bg-background/40 border border-border/50 p-2 max-h-20 overflow-y-auto">
+                          {csvHeaders.map((h) => (
+                            <button
+                              key={h}
+                              type="button"
+                              onClick={() => navigator.clipboard.writeText(`{{${h}}}`).then(() => toast({ title: "Copied", description: `{{${h}}}` }))}
+                              className="text-[10px] bg-primary/10 hover:bg-primary/20 text-primary rounded px-1.5 py-0.5 font-mono">
+                              {`{{${h}}}`}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {bulkSending && (
+                    <div className="space-y-1">
+                      <div className="h-2 w-full bg-background/60 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-primary transition-all"
+                          style={{ width: `${bulkProgress.total ? (bulkProgress.done / bulkProgress.total) * 100 : 0}%` }}
+                        />
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        Sending {bulkProgress.done}/{bulkProgress.total} · {bulkProgress.ok} sent · {bulkProgress.failed} failed
+                      </p>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleBulkSend}
+                    disabled={bulkSending || !csvRows.length}
+                    className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary/15 hover:bg-primary/25 border border-primary/30 px-5 py-2.5 text-sm font-semibold text-foreground disabled:opacity-50">
+                    {bulkSending ? <Loader2 className="h-4 w-4 animate-spin"/> : <Users className="h-4 w-4"/>}
+                    {bulkSending ? `Sending… (${bulkProgress.done}/${bulkProgress.total})` : `Bulk send to ${csvRows.length || 0} recipients`}
+                  </button>
+                </div>
+
                 <button onClick={handleSend} disabled={sending}
                   className="w-full flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:brightness-110 disabled:opacity-50">
                   {sending ? <Loader2 className="h-4 w-4 animate-spin"/> : <Send className="h-4 w-4"/>}
-                  {sending ? "Sending…" : "Send Email"}
+                  {sending ? "Sending…" : "Send Single Email"}
                 </button>
               </div>
             </div>
