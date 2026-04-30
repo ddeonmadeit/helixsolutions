@@ -110,6 +110,15 @@ const Mailpage = () => {
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   const [sending, setSending] = useState(false);
+
+  // Bulk CSV
+  const [csvRows, setCsvRows] = useState<Record<string, string>[]>([]);
+  const [csvHeaders, setCsvHeaders] = useState<string[]>([]);
+  const [csvFileName, setCsvFileName] = useState<string>("");
+  const [emailColumn, setEmailColumn] = useState<string>("");
+  const [bulkSending, setBulkSending] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number; ok: number; failed: number }>({ done: 0, total: 0, ok: 0, failed: 0 });
+
   const [tab, setTab] = useState<"compose" | "sent" | "received">("compose");
   const [emails, setEmails] = useState<EmailRow[]>([]);
   const [loadingList, setLoadingList] = useState(false);
