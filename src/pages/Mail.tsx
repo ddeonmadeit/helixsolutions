@@ -241,7 +241,98 @@ const Mailpage = () => {
     }
   };
 
-  // ---- Load emails ----
+  // ---- CSV parsing (handles quoted fields, commas, newlines, escaped quotes) ----
+  const parseCsv = (text: string): { headers: string[]; rows: Record<string, string>[] } => {
+    const out: string[][] = [];
+    let row: string[] = [];
+    let cur = "";
+    let inQ = false;
+    const t = text.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+    for (let i = 0; i < t.length; i++) {
+      const c = t[i];
+      if (inQ) {
+        if (c === '"') {
+          if (t[i + 1] === '"') { cur += '"'; i++; } else { inQ = false; }
+        } else cur += c;
+      } else {
+        if (c === '"') inQ = true;
+        else if (c === ",") { row.push(cur); cur = ""; }
+        else if (c === "\n") { row.push(cur); out.push(row); row = []; cur = ""; }
+        else cur += c;
+      }
+    }
+    if (cur.length || row.length) { row.push(cur); out.push(row); }
+    const cleaned = out.filter((r) => r.some((v) => v.trim() !== ""));
+    if (!cleaned.length) return { headers: [], rows: [] };
+    const headers = cleaned[0].map((h) => h.trim());
+    const rows = cleaned.slice(1).map((r) => {
+      const obj: Record<string, string> = {};
+      headers.forEach((h, idx) => { obj[h] = (r[idx] ?? "").trim(); });
+      return obj;
+    });
+    return { headers, rows };
+  };
+
+  const onCsvFile = async (file: File) => {
+    const text = await file.text();
+    const { headers, rows } = parseCsv(text);
+    if (!headers.length || !rows.length) {
+      toast({ title: "Empty CSV", description: "Could not find any rows.", variant: "destructive" });
+      return;
+    }
+    setCsvFileName(file.name);
+    setCsvHeaders(headers);
+    setCsvRows(rows);
+    // Auto-pick email column
+    const guess = headers.find((h) => /e[-_ ]?mail/i.test(h)) || headers[0];
+    setEmailColumn(guess);
+    toast({ title: "CSV loaded", description: `${rows.length} rows · ${headers.length} columns` });
+  };
+
+  const fillTemplate = (tpl: string, row: Record<string, string>) =>
+    tpl.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (_, k) => row[k] ?? "");
+
+  const handleBulkSend = async () => {
+    if (!csvRows.length) { toast({ title: "No CSV", description: "Upload a CSV file first.", variant: "destructive" }); return; }
+    if (!emailColumn) { toast({ title: "Pick column", description: "Choose which column contains the email address.", variant: "destructive" }); return; }
+    if (!subject.trim()) { toast({ title: "Subject required", variant: "destructive" }); return; }
+
+    const targets = csvRows
+      .map((r) => ({ row: r, email: (r[emailColumn] || "").trim().toLowerCase() }))
+      .filter((t) => t.email.includes("@"));
+    if (!targets.length) { toast({ title: "No valid emails", variant: "destructive" }); return; }
+
+    setBulkSending(true);
+    setBulkProgress({ done: 0, total: targets.length, ok: 0, failed: 0 });
+
+    let ok = 0, failed = 0;
+    for (let i = 0; i < targets.length; i++) {
+      const { row, email } = targets[i];
+      try {
+        const personalisedSubject = fillTemplate(subject, row);
+        const personalisedBody = fillTemplate(bodyHtml, row);
+        const { error } = await supabase.functions.invoke("send-custom-email", {
+          body: {
+            to: email, subject: personalisedSubject, bodyHtml: personalisedBody,
+            fontFamily, textColor, bgColor, cardColor, accentColor,
+            showLogo, showFooter,
+          },
+        });
+        if (error) throw error;
+        ok++;
+      } catch {
+        failed++;
+      }
+      setBulkProgress({ done: i + 1, total: targets.length, ok, failed });
+      // Small delay to avoid rate limits
+      await new Promise((r) => setTimeout(r, 250));
+    }
+
+    setBulkSending(false);
+    toast({ title: "Bulk send complete", description: `${ok} sent · ${failed} failed` });
+    loadEmails();
+  };
+
   const loadEmails = async () => {
     setLoadingList(true);
     try {
