@@ -952,4 +952,79 @@ const ColorField = ({ label, value, onChange }: { label: string; value: string; 
   </div>
 );
 
+const ImageUploadField = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const { toast } = useToast();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFile = async (file: File) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 10MB. Compress your image/GIF.", variant: "destructive" });
+      return;
+    }
+    const okTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp", "image/svg+xml"];
+    if (!okTypes.includes(file.type)) {
+      toast({ title: "Unsupported file", description: "Use PNG, JPG, GIF, WEBP or SVG.", variant: "destructive" });
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("email-assets").upload(path, file, {
+        cacheControl: "31536000",
+        contentType: file.type,
+        upsert: false,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from("email-assets").getPublicUrl(path);
+      onChange(data.publicUrl);
+      toast({ title: "Uploaded", description: file.name });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files?.[0];
+    if (f) handleFile(f);
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs text-muted-foreground">Image / GIF</Label>
+      <div
+        onDragOver={(e)=>e.preventDefault()}
+        onDrop={onDrop}
+        onClick={()=>fileRef.current?.click()}
+        className="cursor-pointer rounded-md border-2 border-dashed border-border/60 hover:border-primary/50 bg-background/40 p-4 flex flex-col items-center justify-center gap-2 text-center transition-colors"
+      >
+        {value ? (
+          <img src={value} alt="" className="max-h-32 rounded object-contain"/>
+        ) : (
+          <div className="text-xs text-muted-foreground">Click or drop a PNG, JPG, GIF, WEBP or SVG</div>
+        )}
+        <div className="text-[11px] text-muted-foreground">{uploading ? "Uploading…" : value ? "Click to replace" : "Max 10MB"}</div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml"
+          className="hidden"
+          onChange={(e)=>{ const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+        />
+      </div>
+      <Input
+        value={value}
+        onChange={(e)=>onChange(e.target.value)}
+        placeholder="…or paste an image URL"
+        className="bg-background/40 text-xs"
+      />
+    </div>
+  );
+};
+
 export default Mailpage;
