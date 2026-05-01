@@ -78,30 +78,49 @@ export function renderEmail(p: Payload, unsubUrl: string): string {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="x-apple-disable-message-reformatting" />
-<meta name="color-scheme" content="dark" />
-<meta name="supported-color-schemes" content="dark light" />
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="only light" />
 <title>${escapeHtml(p.subject)}</title>
+<style>
+  :root { color-scheme: only light; supported-color-schemes: only light; }
+  /* Outlook.com dark mode override */
+  [data-ogsc] body, [data-ogsc] .force-bg { background-color: ${bg} !important; }
+  [data-ogsc] .force-card { background-color: ${card} !important; }
+  [data-ogsc] .force-text, [data-ogsc] .force-text * { color: ${text} !important; }
+  [data-ogsc] .force-muted { color: ${muted} !important; }
+  [data-ogsc] .force-accent { color: ${accent} !important; }
+  /* Apple Mail / iOS / Gmail dark mode override */
+  @media (prefers-color-scheme: dark) {
+    body, .force-bg { background-color: ${bg} !important; }
+    .force-card { background-color: ${card} !important; }
+    .force-text, .force-text * { color: ${text} !important; }
+    .force-muted { color: ${muted} !important; }
+    .force-accent { color: ${accent} !important; }
+  }
+  /* Disable iOS auto-detection link recoloring */
+  u + .body a, #MessageViewBody a { color: inherit !important; text-decoration: none !important; }
+</style>
 </head>
-<body style="margin:0;padding:0;background-color:${bg};font-family:${font};" bgcolor="${bg}">
+<body class="body force-bg" style="margin:0;padding:0;background-color:${bg} !important;font-family:${font};color:${text};" bgcolor="${bg}">
 <div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:${bg};opacity:0;">
   ${escapeHtml(p.subject)} — Helix Solutions
 </div>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bg}" role="presentation">
-  <tr><td align="center" style="padding:40px 16px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bg}" class="force-bg" role="presentation" style="background-color:${bg} !important;">
+  <tr><td align="center" bgcolor="${bg}" style="padding:40px 16px;background-color:${bg} !important;">
     <table width="100%" style="max-width:600px;" cellpadding="0" cellspacing="0" border="0" role="presentation">
       ${logo ? `<tr><td align="center" style="padding-bottom:24px;">
         <img src="${LOGO_URL}" alt="Helix Solutions" width="64" height="64" style="display:block;border:0;border-radius:14px;" />
       </td></tr>` : ""}
-      <tr><td style="background-color:${card};border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${text};font-size:15px;line-height:1.7;">
-        <div style="color:${text};">${p.bodyHtml}</div>
-        <p style="margin:32px 0 0;font-size:14px;color:${muted};line-height:1.7;">
+      <tr><td class="force-card force-text" bgcolor="${card}" style="background-color:${card} !important;border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${text} !important;font-size:15px;line-height:1.7;">
+        <div class="force-text" style="color:${text} !important;">${p.bodyHtml}</div>
+        <p class="force-muted" style="margin:32px 0 0;font-size:14px;color:${muted} !important;line-height:1.7;">
           Kind Regards,<br/>
-          <span style="color:${text};font-weight:600;">Helix Team</span>
+          <span class="force-text" style="color:${text} !important;font-weight:600;">Helix Team</span>
         </p>
       </td></tr>
       ${footer ? `<tr><td align="center" style="padding-top:24px;">
         <p style="margin:0;font-size:11px;color:#3d4d5c;">
-          © 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${accent};text-decoration:none;">helixsolution.au</a>
+          © 2025 Helix Solutions · <a class="force-accent" href="https://helixsolution.au" style="color:${accent} !important;text-decoration:none;">helixsolution.au</a>
         </p>
       </td></tr>` : ""}
       <tr><td>${hiddenUnsub}</td></tr>

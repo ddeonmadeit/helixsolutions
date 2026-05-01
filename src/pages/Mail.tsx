@@ -146,22 +146,41 @@ const Mailpage = () => {
   const renderedHtml = useMemo(() => {
     const muted = "#8a9bb0";
     return `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/></head>
-<body style="margin:0;padding:0;background-color:${bgColor};font-family:${fontFamily};">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bgColor}">
-  <tr><td align="center" style="padding:40px 16px;">
+<html lang="en"><head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="x-apple-disable-message-reformatting"/>
+<meta name="color-scheme" content="only light"/>
+<meta name="supported-color-schemes" content="only light"/>
+<style>
+  :root { color-scheme: only light; supported-color-schemes: only light; }
+  /* Force colors in Outlook.com dark mode */
+  [data-ogsc] body, [data-ogsc] .force-bg { background-color: ${bgColor} !important; }
+  [data-ogsc] .force-card { background-color: ${cardColor} !important; }
+  [data-ogsc] .force-text, [data-ogsc] .force-text * { color: ${textColor} !important; }
+  /* Force colors in Apple Mail / iOS dark mode */
+  @media (prefers-color-scheme: dark) {
+    body, .force-bg { background-color: ${bgColor} !important; }
+    .force-card { background-color: ${cardColor} !important; }
+    .force-text, .force-text * { color: ${textColor} !important; }
+  }
+</style>
+</head>
+<body class="force-bg" style="margin:0;padding:0;background-color:${bgColor} !important;font-family:${fontFamily};color:${textColor};">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bgColor}" class="force-bg" style="background-color:${bgColor} !important;">
+  <tr><td align="center" style="padding:40px 16px;background-color:${bgColor} !important;" bgcolor="${bgColor}">
     <table width="100%" style="max-width:600px;" cellpadding="0" cellspacing="0" border="0">
       ${showLogo ? `<tr><td align="center" style="padding-bottom:24px;">
         <img src="${LOGO_URL}" alt="Helix Solutions" width="64" height="64" style="display:block;border:0;border-radius:14px;"/>
       </td></tr>` : ""}
-      <tr><td style="background-color:${cardColor};border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${textColor};font-size:15px;line-height:1.7;">
+      <tr><td class="force-card force-text" bgcolor="${cardColor}" style="background-color:${cardColor} !important;border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${textColor} !important;font-size:15px;line-height:1.7;">
         ${bodyHtml}
-        <p style="margin:32px 0 0;font-size:14px;color:${muted};line-height:1.7;">
-          Kind Regards,<br/><span style="color:${textColor};font-weight:600;">Helix Team</span>
+        <p style="margin:32px 0 0;font-size:14px;color:${muted} !important;line-height:1.7;">
+          Kind Regards,<br/><span style="color:${textColor} !important;font-weight:600;">Helix Team</span>
         </p>
       </td></tr>
       ${showFooter ? `<tr><td align="center" style="padding-top:24px;">
-        <p style="margin:0;font-size:11px;color:#3d4d5c;">© 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${accentColor};text-decoration:none;">helixsolution.au</a></p>
+        <p style="margin:0;font-size:11px;color:#3d4d5c;">© 2025 Helix Solutions · <a href="https://helixsolution.au" style="color:${accentColor} !important;text-decoration:none;">helixsolution.au</a></p>
       </td></tr>` : ""}
     </table>
   </td></tr>
@@ -862,10 +881,10 @@ const BlockEditor = ({ block, onChange }: { block: Block; onChange: (patch: Part
   if (block.type === "image") {
     return (
       <div className="space-y-3">
-        <div>
-          <Label className="text-xs text-muted-foreground">Image URL</Label>
-          <Input value={block.src} onChange={(e)=>onChange({ src: e.target.value } as any)} className="bg-background/40 mt-1"/>
-        </div>
+        <ImageUploadField
+          value={block.src}
+          onChange={(v)=>onChange({ src: v } as any)}
+        />
         <div>
           <Label className="text-xs text-muted-foreground">Link URL (optional)</Label>
           <Input value={block.href || ""} onChange={(e)=>onChange({ href: e.target.value } as any)} className="bg-background/40 mt-1"/>
@@ -951,5 +970,80 @@ const ColorField = ({ label, value, onChange }: { label: string; value: string; 
     </div>
   </div>
 );
+
+const ImageUploadField = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const { toast } = useToast();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleFile = async (file: File) => {
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Max 10MB. Compress your image/GIF.", variant: "destructive" });
+      return;
+    }
+    const okTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif", "image/webp", "image/svg+xml"];
+    if (!okTypes.includes(file.type)) {
+      toast({ title: "Unsupported file", description: "Use PNG, JPG, GIF, WEBP or SVG.", variant: "destructive" });
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `uploads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("email-assets").upload(path, file, {
+        cacheControl: "31536000",
+        contentType: file.type,
+        upsert: false,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from("email-assets").getPublicUrl(path);
+      onChange(data.publicUrl);
+      toast({ title: "Uploaded", description: file.name });
+    } catch (err: any) {
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files?.[0];
+    if (f) handleFile(f);
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-xs text-muted-foreground">Image / GIF</Label>
+      <div
+        onDragOver={(e)=>e.preventDefault()}
+        onDrop={onDrop}
+        onClick={()=>fileRef.current?.click()}
+        className="cursor-pointer rounded-md border-2 border-dashed border-border/60 hover:border-primary/50 bg-background/40 p-4 flex flex-col items-center justify-center gap-2 text-center transition-colors"
+      >
+        {value ? (
+          <img src={value} alt="" className="max-h-32 rounded object-contain"/>
+        ) : (
+          <div className="text-xs text-muted-foreground">Click or drop a PNG, JPG, GIF, WEBP or SVG</div>
+        )}
+        <div className="text-[11px] text-muted-foreground">{uploading ? "Uploading…" : value ? "Click to replace" : "Max 10MB"}</div>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml"
+          className="hidden"
+          onChange={(e)=>{ const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }}
+        />
+      </div>
+      <Input
+        value={value}
+        onChange={(e)=>onChange(e.target.value)}
+        placeholder="…or paste an image URL"
+        className="bg-background/40 text-xs"
+      />
+    </div>
+  );
+};
 
 export default Mailpage;
