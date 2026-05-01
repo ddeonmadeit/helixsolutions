@@ -862,10 +862,10 @@ const BlockEditor = ({ block, onChange }: { block: Block; onChange: (patch: Part
   if (block.type === "image") {
     return (
       <div className="space-y-3">
-        <div>
-          <Label className="text-xs text-muted-foreground">Image URL</Label>
-          <Input value={block.src} onChange={(e)=>onChange({ src: e.target.value } as any)} className="bg-background/40 mt-1"/>
-        </div>
+        <ImageUploadField
+          value={block.src}
+          onChange={(v)=>onChange({ src: v } as any)}
+        />
         <div>
           <Label className="text-xs text-muted-foreground">Link URL (optional)</Label>
           <Input value={block.href || ""} onChange={(e)=>onChange({ href: e.target.value } as any)} className="bg-background/40 mt-1"/>
