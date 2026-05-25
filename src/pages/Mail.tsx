@@ -561,6 +561,18 @@ const Mailpage = () => {
                   </div>
                 </div>
 
+                {/* Presets */}
+                <div className="flex flex-wrap items-center gap-2 rounded-xl bg-background/40 border border-border/50 p-2">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">Presets:</span>
+                  <button
+                    onClick={loadPropertyEdmPreset}
+                    className="flex items-center gap-1.5 rounded-md bg-primary/15 hover:bg-primary/25 text-primary px-2.5 py-1.5 text-xs font-semibold"
+                  >
+                    <Sparkles className="h-3.5 w-3.5"/> Property EDM (Nelson Bourke)
+                  </button>
+                </div>
+
+
                 {/* Add block toolbar */}
                 <div className="flex flex-wrap items-center gap-2 rounded-xl bg-background/40 border border-border/50 p-2">
                   <span className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">Add block:</span>
