@@ -10,11 +10,24 @@ import {
   Send, Loader2, Mail, Inbox, Eye, RefreshCw,
   ChevronDown, ChevronRight, FolderOpen, Save, Trash2, Check,
   GripVertical, Plus, Type, Image as ImageIcon, MousePointerClick,
-  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users,
+  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users, Sparkles,
 } from "lucide-react";
 
 const LOGO_URL =
   "https://eiqmwhiidovkcihwbmvq.supabase.co/storage/v1/object/public/email-assets/helix-logo.png";
+
+const KOMMODO_LOGO = "https://kommodo.ai/i/rPdKGAYiRSTgeELdqFde";
+const NB_IMG = (id: string) => `https://mir-s3-cdn-cf.behance.net/project_modules/1400_webp/${id}.jpg`;
+const NB_HERO = NB_IMG("fba2fd60172519.5a4666e58766f");
+const NB_GALLERY = [
+  NB_IMG("de52dd60172519.5a44cb759a463"),
+  NB_IMG("a2803760172519.5a46721314d80"),
+  NB_IMG("f764ad60172519.5a4666e588068"),
+  NB_IMG("5e3d5d60172519.5a4666e588477"),
+  NB_IMG("03a8c760172519.5a466d76b7e0b"),
+  NB_IMG("88b00360172519.5a4280f93590f"),
+];
+
 
 interface EmailRow {
   id: string;
