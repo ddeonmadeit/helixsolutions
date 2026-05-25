@@ -29,6 +29,7 @@ interface Payload {
   showLogo?: boolean;
   showFooter?: boolean;
   preview?: boolean;
+  signature?: string;
 }
 
 function escapeHtml(s: string): string {
@@ -111,11 +112,11 @@ export function renderEmail(p: Payload, unsubUrl: string): string {
       ${logo ? `<tr><td align="center" style="padding-bottom:24px;">
         <img src="${LOGO_URL}" alt="Helix Solutions" width="64" height="64" style="display:block;border:0;border-radius:14px;" />
       </td></tr>` : ""}
-      <tr><td class="force-card force-text" bgcolor="${card}" style="background-color:${card} !important;border-radius:20px;border:1px solid #1e2a3a;padding:40px;color:${text} !important;font-size:15px;line-height:1.7;">
+      <tr><td class="force-card force-text" bgcolor="${card}" style="background-color:${card} !important;border-radius:20px;border:1px solid rgba(255,255,255,0.07);padding:40px;color:${text} !important;font-size:15px;line-height:1.7;">
         <div class="force-text" style="color:${text} !important;">${p.bodyHtml}</div>
         <p class="force-muted" style="margin:32px 0 0;font-size:14px;color:${muted} !important;line-height:1.7;">
           Kind Regards,<br/>
-          <span class="force-text" style="color:${text} !important;font-weight:600;">Helix Team</span>
+          <span class="force-text" style="color:${text} !important;font-weight:600;">${escapeHtml(p.signature || "Helix Solutions")}</span>
         </p>
       </td></tr>
       ${footer ? `<tr><td align="center" style="padding-top:24px;">
