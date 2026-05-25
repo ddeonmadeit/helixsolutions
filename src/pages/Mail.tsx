@@ -10,11 +10,24 @@ import {
   Send, Loader2, Mail, Inbox, Eye, RefreshCw,
   ChevronDown, ChevronRight, FolderOpen, Save, Trash2, Check,
   GripVertical, Plus, Type, Image as ImageIcon, MousePointerClick,
-  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users,
+  Heading1, Minus, ArrowUp, ArrowDown, X, Upload, Users, Sparkles,
 } from "lucide-react";
 
 const LOGO_URL =
   "https://eiqmwhiidovkcihwbmvq.supabase.co/storage/v1/object/public/email-assets/helix-logo.png";
+
+const KOMMODO_LOGO = "https://kommodo.ai/i/rPdKGAYiRSTgeELdqFde";
+const NB_IMG = (id: string) => `https://mir-s3-cdn-cf.behance.net/project_modules/1400_webp/${id}.jpg`;
+const NB_HERO = NB_IMG("fba2fd60172519.5a4666e58766f");
+const NB_GALLERY = [
+  NB_IMG("de52dd60172519.5a44cb759a463"),
+  NB_IMG("a2803760172519.5a46721314d80"),
+  NB_IMG("f764ad60172519.5a4666e588068"),
+  NB_IMG("5e3d5d60172519.5a4666e588477"),
+  NB_IMG("03a8c760172519.5a466d76b7e0b"),
+  NB_IMG("88b00360172519.5a4280f93590f"),
+];
+
 
 interface EmailRow {
   id: string;
@@ -215,7 +228,79 @@ const Mailpage = () => {
     setSelectedId(nb.id);
   };
 
-  // Drag-reorder
+  // ---- Preset: Nelson Bourke Premium Apartments EDM ----
+  const loadPropertyEdmPreset = () => {
+    const ink = "#1a1612";
+    const sub = "#6b5d4f";
+    const accent = "#8b7355";
+    const cream = "#f5f0e8";
+    const card = "#ffffff";
+
+    setSubject("Nelson Bourke — Premium Apartments, now selling");
+    setFontFamily("Georgia, 'Times New Roman', serif");
+    setTextColor(ink);
+    setBgColor(cream);
+    setCardColor(card);
+    setAccentColor(accent);
+    setShowLogo(false);
+    setShowFooter(false);
+
+    const heading = (text: string, size: 1 | 2 | 3 = 2, align: Align = "center", color = ink): Block =>
+      ({ id: uid(), type: "heading", text, size, align, color });
+    const para = (html: string, align: Align = "center"): Block =>
+      ({ id: uid(), type: "text", html, align });
+    const img = (src: string, alt = ""): Block =>
+      ({ id: uid(), type: "image", src, width: 560, align: "center", alt });
+    const div = (): Block => ({ id: uid(), type: "divider", color: "#d9cfc1", thickness: 1 });
+    const sp = (h: number): Block => ({ id: uid(), type: "spacer", height: h });
+
+    const preset: Block[] = [
+      { id: uid(), type: "image", src: KOMMODO_LOGO, width: 140, align: "center", alt: "Kommodo" },
+      sp(28),
+      img(NB_HERO, "Nelson Bourke exterior"),
+      sp(28),
+      heading("NELSON BOURKE", 1, "center", ink),
+      para(`<span style="letter-spacing:0.32em;font-size:11px;color:${sub};text-transform:uppercase;">Premium Apartments · Brunswick East</span>`),
+      sp(16),
+      div(),
+      sp(20),
+      para(`<span style="font-size:16px;line-height:1.8;color:${ink};">A collection of considered residences where refined interiors meet a calm, leafy pocket of Melbourne&rsquo;s inner north. Crafted finishes, generous proportions and natural light shape every home.</span>`),
+      sp(24),
+      img(NB_GALLERY[0], "Living"),
+      sp(20),
+      heading("Designed for the way you live", 2, "left", ink),
+      para(`<span style="color:${sub};line-height:1.8;">Open-plan living frames a quiet streetscape, anchored by oak floors, stone benchtops and soft neutral palettes. Each apartment is built around light, air and a sense of stillness.</span>`, "left"),
+      sp(20),
+      img(NB_GALLERY[1], "Kitchen"),
+      sp(20),
+      img(NB_GALLERY[2], "Bedroom"),
+      sp(24),
+      heading("Crafted interiors", 2, "left", ink),
+      para(`<span style="color:${sub};line-height:1.8;">Bespoke joinery, integrated appliances and full-height tiling carry the same restrained material language from kitchen to bath &mdash; warm, tactile and quietly luxurious.</span>`, "left"),
+      sp(20),
+      img(NB_GALLERY[3], "Bathroom"),
+      sp(20),
+      img(NB_GALLERY[4], "Detail"),
+      sp(28),
+      div(),
+      sp(20),
+      heading("Register your interest", 3, "center", ink),
+      para(`<span style="color:${sub};">Private appointments available by request.</span>`),
+      sp(8),
+      { id: uid(), type: "button", label: "Enquire Now", href: "mailto:hello@kommodo.ai?subject=Nelson%20Bourke%20Enquiry", align: "center", bg: accent, color: "#ffffff", radius: 2, padX: 36, padY: 16, fullWidth: false },
+      sp(28),
+      div(),
+      sp(16),
+      para(`<span style="letter-spacing:0.24em;font-size:10px;text-transform:uppercase;color:${sub};">Nelson Street &amp; Bourke Road · Brunswick East VIC</span>`),
+      sp(6),
+      para(`<a href="https://kommodo.ai" style="color:${accent};text-decoration:none;font-size:12px;">kommodo.ai</a>`),
+      sp(12),
+    ];
+    setBlocks(preset);
+    setSelectedId(null);
+    toast({ title: "Loaded: Nelson Bourke EDM", description: "Property template ready to send." });
+  };
+
   const onDragStart = (id: string) => setDragId(id);
   const onDragOverBlock = (id: string, e: React.DragEvent) => {
     e.preventDefault();
@@ -475,6 +560,18 @@ const Mailpage = () => {
                     <Input value={subject} onChange={(e)=>setSubject(e.target.value)} placeholder="Subject line" className="bg-background/40 mt-1"/>
                   </div>
                 </div>
+
+                {/* Presets */}
+                <div className="flex flex-wrap items-center gap-2 rounded-xl bg-background/40 border border-border/50 p-2">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground px-1">Presets:</span>
+                  <button
+                    onClick={loadPropertyEdmPreset}
+                    className="flex items-center gap-1.5 rounded-md bg-primary/15 hover:bg-primary/25 text-primary px-2.5 py-1.5 text-xs font-semibold"
+                  >
+                    <Sparkles className="h-3.5 w-3.5"/> Property EDM (Nelson Bourke)
+                  </button>
+                </div>
+
 
                 {/* Add block toolbar */}
                 <div className="flex flex-wrap items-center gap-2 rounded-xl bg-background/40 border border-border/50 p-2">
