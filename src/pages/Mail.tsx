@@ -228,7 +228,79 @@ const Mailpage = () => {
     setSelectedId(nb.id);
   };
 
-  // Drag-reorder
+  // ---- Preset: Nelson Bourke Premium Apartments EDM ----
+  const loadPropertyEdmPreset = () => {
+    const ink = "#1a1612";
+    const sub = "#6b5d4f";
+    const accent = "#8b7355";
+    const cream = "#f5f0e8";
+    const card = "#ffffff";
+
+    setSubject("Nelson Bourke — Premium Apartments, now selling");
+    setFontFamily("Georgia, 'Times New Roman', serif");
+    setTextColor(ink);
+    setBgColor(cream);
+    setCardColor(card);
+    setAccentColor(accent);
+    setShowLogo(false);
+    setShowFooter(false);
+
+    const heading = (text: string, size: 1 | 2 | 3 = 2, align: Align = "center", color = ink): Block =>
+      ({ id: uid(), type: "heading", text, size, align, color });
+    const para = (html: string, align: Align = "center"): Block =>
+      ({ id: uid(), type: "text", html, align });
+    const img = (src: string, alt = ""): Block =>
+      ({ id: uid(), type: "image", src, width: 560, align: "center", alt });
+    const div = (): Block => ({ id: uid(), type: "divider", color: "#d9cfc1", thickness: 1 });
+    const sp = (h: number): Block => ({ id: uid(), type: "spacer", height: h });
+
+    const preset: Block[] = [
+      { id: uid(), type: "image", src: KOMMODO_LOGO, width: 140, align: "center", alt: "Kommodo" },
+      sp(28),
+      img(NB_HERO, "Nelson Bourke exterior"),
+      sp(28),
+      heading("NELSON BOURKE", 1, "center", ink),
+      para(`<span style="letter-spacing:0.32em;font-size:11px;color:${sub};text-transform:uppercase;">Premium Apartments · Brunswick East</span>`),
+      sp(16),
+      div(),
+      sp(20),
+      para(`<span style="font-size:16px;line-height:1.8;color:${ink};">A collection of considered residences where refined interiors meet a calm, leafy pocket of Melbourne&rsquo;s inner north. Crafted finishes, generous proportions and natural light shape every home.</span>`),
+      sp(24),
+      img(NB_GALLERY[0], "Living"),
+      sp(20),
+      heading("Designed for the way you live", 2, "left", ink),
+      para(`<span style="color:${sub};line-height:1.8;">Open-plan living frames a quiet streetscape, anchored by oak floors, stone benchtops and soft neutral palettes. Each apartment is built around light, air and a sense of stillness.</span>`, "left"),
+      sp(20),
+      img(NB_GALLERY[1], "Kitchen"),
+      sp(20),
+      img(NB_GALLERY[2], "Bedroom"),
+      sp(24),
+      heading("Crafted interiors", 2, "left", ink),
+      para(`<span style="color:${sub};line-height:1.8;">Bespoke joinery, integrated appliances and full-height tiling carry the same restrained material language from kitchen to bath &mdash; warm, tactile and quietly luxurious.</span>`, "left"),
+      sp(20),
+      img(NB_GALLERY[3], "Bathroom"),
+      sp(20),
+      img(NB_GALLERY[4], "Detail"),
+      sp(28),
+      div(),
+      sp(20),
+      heading("Register your interest", 3, "center", ink),
+      para(`<span style="color:${sub};">Private appointments available by request.</span>`),
+      sp(8),
+      { id: uid(), type: "button", label: "Enquire Now", href: "mailto:hello@kommodo.ai?subject=Nelson%20Bourke%20Enquiry", align: "center", bg: accent, color: "#ffffff", radius: 2, padX: 36, padY: 16, fullWidth: false },
+      sp(28),
+      div(),
+      sp(16),
+      para(`<span style="letter-spacing:0.24em;font-size:10px;text-transform:uppercase;color:${sub};">Nelson Street &amp; Bourke Road · Brunswick East VIC</span>`),
+      sp(6),
+      para(`<a href="https://kommodo.ai" style="color:${accent};text-decoration:none;font-size:12px;">kommodo.ai</a>`),
+      sp(12),
+    ];
+    setBlocks(preset);
+    setSelectedId(null);
+    toast({ title: "Loaded: Nelson Bourke EDM", description: "Property template ready to send." });
+  };
+
   const onDragStart = (id: string) => setDragId(id);
   const onDragOverBlock = (id: string, e: React.DragEvent) => {
     e.preventDefault();
