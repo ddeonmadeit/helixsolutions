@@ -114,7 +114,7 @@ export function renderEmail(p: Payload, unsubUrl: string): string {
       </td></tr>` : ""}
       <tr><td class="force-card force-text" bgcolor="${card}" style="background-color:${card} !important;border-radius:20px;border:1px solid rgba(255,255,255,0.07);padding:40px;color:${text} !important;font-size:15px;line-height:1.7;">
         <div class="force-text" style="color:${text} !important;">${p.bodyHtml}</div>
-        <p class="force-muted" style="margin:32px 0 0;font-size:14px;color:${muted} !important;line-height:1.7;">
+        <p class="force-accent" style="margin:32px 0 0;font-size:14px;color:${accent} !important;line-height:1.7;">
           Kind Regards,<br/>
           <span class="force-text" style="color:${text} !important;font-weight:600;">${escapeHtml(p.signature || "Helix Solutions")}</span>
         </p>
